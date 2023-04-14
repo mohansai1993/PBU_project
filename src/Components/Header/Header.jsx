@@ -9,11 +9,11 @@ function Header() {
       title: "Home",
     },
     {
-      link: "/find",
+      link: "/find/coach",
       title: "Find a Coach",
     },
     {
-      link: "/home",
+      link: "/become/coach",
       title: "Become a Coach",
     },
     {
@@ -25,7 +25,7 @@ function Header() {
       title: "About Us",
     },
     {
-      link: "/home",
+      link: "/feed",
       title: "PBU Feed",
     },
   ];
@@ -41,12 +41,12 @@ function Header() {
                 <RxHamburgerMenu size={30} color="#fff" />
               </span>
               <div className=" hidden md:flex gap-3  ">
-                <Link>
+                <Link to="/login">
                   <button className="bg-primary-green text-white py-1  rounded-md min-w-[150px]">
                     Login
                   </button>
                 </Link>
-                <Link>
+                <Link to={"/register"}>
                   <button className="bg-primary-green text-white py-1  rounded-md min-w-[150px]">
                     Register
                   </button>
