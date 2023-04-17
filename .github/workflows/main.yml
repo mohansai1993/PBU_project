@@ -5,23 +5,24 @@ jobs:
     name: 🎉 Deploy
     runs-on: ubuntu-latest
     steps:
-    - name: 🚚 Get latest code
-      uses: actions/checkout@v2
+      - name: 🚚 Get latest code
+        uses: actions/checkout@v2
 
-    - name: Use Node.js 18
-      uses: actions/setup-node@v2.5.2
-      with:
-        node-version: '18'
-        
-    - name: 🔨 Build Project
-      run: |
-        npm install
-        npm run build
-        
-    - name: 📂 Sync files
-      uses: SamKirkland/FTP-Deploy-Action@v4.3.4
-      with:
-        server: 109.106.251.69
-        username: new@sgvproject.in
-        password: Sgv@2023
-        port: 21
+      - name: Use Node.js 18
+        uses: actions/setup-node@v2.5.2
+        with:
+          node-version: "18"
+
+      - name: 🔨 Build Project
+        run: |
+          npm install
+          npm run build
+
+      - name: 📂 Sync files
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+        with:
+          server: 109.106.251.69
+          username: new@sgvproject.in
+          password: Sgv@2023
+          package: ./dist
+          port: 21
