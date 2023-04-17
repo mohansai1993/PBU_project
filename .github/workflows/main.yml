@@ -24,5 +24,4 @@ jobs:
           server: 109.106.251.69
           username: new@sgvproject.in
           password: Sgv@2023
-          package: ./dist
           port: 21
