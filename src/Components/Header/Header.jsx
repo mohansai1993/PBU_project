@@ -17,7 +17,7 @@ function Header() {
       title: "Become a Coach",
     },
     {
-      link: "/home",
+      link: "/courts",
       title: "Courts",
     },
     {

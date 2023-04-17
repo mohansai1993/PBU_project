@@ -3,7 +3,20 @@ import { FiSearch } from "react-icons/fi";
 import { IoNavigate, IoLocationSharp } from "react-icons/io5";
 import { AiFillStar } from "react-icons/ai";
 import bg_01 from "../assets/bg-01.png";
+import ball from "../assets/coach/ball.jpg";
+import baseball from "../assets/coach/baseball.jpg";
+import hockey from "../assets/coach/hockey.jpg";
 import Slider from "../Components/Slider/Slider";
+
+import review1 from "../assets/review/review1.jpg";
+import review2 from "../assets/review/review2.jpg";
+import review3 from "../assets/review/review3.jpg";
+import review4 from "../assets/review/review4.jpg";
+
+import comm1 from "../assets/community/comm1.jpg";
+import comm2 from "../assets/community/comm2.jpg";
+import comm3 from "../assets/community/comm3.jpg";
+
 function HomePage() {
   return (
     <div>
@@ -13,7 +26,7 @@ function HomePage() {
           className={`bg-[url(${bg_01})] py-20 px-[20px]  bg-cover  bg-center 
 `}
         >
-          <div className="max-w-2xl   mx-auto ">
+          <div className="max-w-2xl  mx-auto ">
             <h1 className="text-5xl capitalize mb-16 font-semibold leading-tight  text-white  tracking-wide">
               Find <span className="text-primary-green">PBU</span> Coach
               <br></br>Near You ...
@@ -86,12 +99,12 @@ function HomePage() {
                 {" "}
                 <Slider
                   data={[
-                    <CoachCard />,
-                    <CoachCard />,
-                    <CoachCard />,
-                    <CoachCard />,
-                    <CoachCard />,
-                    <CoachCard />,
+                    <CoachCard img={baseball} />,
+                    <CoachCard img={ball} />,
+                    <CoachCard img={hockey} />,
+                    <CoachCard img={baseball} />,
+                    <CoachCard img={ball} />,
+                    <CoachCard img={hockey} />,
                   ]}
                 />{" "}
               </div>
@@ -113,9 +126,18 @@ function HomePage() {
               your photos and/or videos with POU
             </p>
             <div className="  mt-10 grid sm:grid-cols-2 md:grid-cols-3  gap-3">
-              <img src={bg_01} className="object-cover h-[300px]  rounded-xl" />
-              <img src={bg_01} className="object-cover h-[300px]  rounded-xl" />
-              <img src={bg_01} className="object-cover h-[300px]  rounded-xl" />
+              <img
+                src={comm1}
+                className="object-cover h-[300px] w-full  rounded-xl"
+              />
+              <img
+                src={comm2}
+                className="object-cover h-[300px]  w-full rounded-xl"
+              />
+              <img
+                src={comm3}
+                className="object-cover h-[300px] w-full  rounded-xl"
+              />
             </div>
             <div className="py-10 flex justify-center ">
               <button className=" bg-primary-green rounded-md  px-10 text-white py-2">
@@ -137,8 +159,8 @@ function HomePage() {
                 <div>
                   {" "}
                   <img
-                    src={bg_01}
-                    className="object-cover h-[200px]  rounded-xl"
+                    src={review4}
+                    className="object-cover w-full h-[200px]  rounded-xl"
                   />
                   <div className="py-5">
                     <div className="flex ">
@@ -173,8 +195,8 @@ function HomePage() {
                 <div>
                   {" "}
                   <img
-                    src={bg_01}
-                    className="object-cover h-[200px]  rounded-xl"
+                    src={review1}
+                    className="object-cover w-full h-[200px]  rounded-xl"
                   />
                   <div className="py-5">
                     <div className="flex ">
@@ -209,8 +231,8 @@ function HomePage() {
                 <div>
                   {" "}
                   <img
-                    src={bg_01}
-                    className="object-cover h-[200px]  rounded-xl"
+                    src={review2}
+                    className="object-cover w-full h-[200px]  rounded-xl"
                   />
                   <div className="py-5">
                     <div className="flex ">
@@ -245,8 +267,8 @@ function HomePage() {
                 <div>
                   {" "}
                   <img
-                    src={bg_01}
-                    className="object-cover h-[200px]  rounded-xl"
+                    src={review3}
+                    className="object-cover w-full h-[200px]  rounded-xl"
                   />
                   <div className="py-5">
                     <div className="flex ">
@@ -284,13 +306,13 @@ function HomePage() {
   );
 }
 
-const CoachCard = () => {
+const CoachCard = ({ img }) => {
   return (
     <>
       <div>
         <div className="">
           <div
-            className={`bg-[url(${bg_01})] py-20  bg-cover h-[250px] bg-center 
+            className={`bg-[url(${img})] py-20  bg-cover h-[250px] bg-center 
 `}
           ></div>
           <div className=" flex gap-3   items-center  bg-neutral-800 ">
