@@ -1,7 +1,28 @@
 import React from "react";
 import logo from "./../../assets/logo.png";
 import { Link } from "react-router-dom";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+
 function LoginPage() {
+  const formik = useFormik({
+    initialValues: {
+      email: "ritik@gmail.com",
+      password: "123456789",
+      keepLogin: true,
+    },
+    validationSchema: Yup.object({
+      email: Yup.string()
+        .email("Invalid email address")
+        .required("Email is required"),
+      password: Yup.string()
+        .required("Password is required")
+        .min(8, "Password must be at least 8 characters long"),
+    }),
+    onSubmit: (values) => {
+      console.log(values);
+    },
+  });
   return (
     <div className="  ">
       <div className="flex ">
@@ -27,10 +48,7 @@ function LoginPage() {
               <div className="py-16 flex-1 px-10">
                 <div className="max-w-sm w-full mx-auto">
                   <div className="flex justify-between  items-center  mb-10 ">
-                    <h3 className="text-black font-semibold ">
-                      {" "}
-                      Login for Athlete
-                    </h3>
+                    <h3 className="text-black font-semibold "></h3>
                     <div className="flex ">
                       <div className="px-3 py-2 bg-primary-green  border border-primary-green text-white   ">
                         Login
@@ -41,19 +59,51 @@ function LoginPage() {
                     </div>
                   </div>
                   <div className="w-full">
-                    <form className="flex flex-col gap-4">
-                      <input
-                        className="placeholder:text-primary-green border px-3 py-2 rounded-md border-primary-green w-full"
-                        placeholder="Email"
-                        type="email"
-                      />{" "}
-                      <input
-                        className="placeholder:text-primary-green border px-3 py-2 rounded-md border-primary-green w-full"
-                        placeholder="Password"
-                        type="password"
-                      />
+                    <form
+                      className="flex flex-col gap-4"
+                      onSubmit={formik.handleSubmit}
+                    >
+                      <div className="w-full">
+                        {" "}
+                        <input
+                          className="placeholder:text-primary-green border px-3 py-2 rounded-md border-primary-green w-full"
+                          placeholder="email"
+                          type="email"
+                          name="email"
+                          value={formik.values.email}
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
+                        />
+                        {formik.touched.email && formik.errors.email ? (
+                          <div className="text-red-600">
+                            {formik.errors.email}
+                          </div>
+                        ) : null}
+                      </div>{" "}
+                      <div className="w-full">
+                        {" "}
+                        <input
+                          className="placeholder:text-primary-green border px-3 py-2 rounded-md border-primary-green w-full"
+                          placeholder="password"
+                          type="password"
+                          name="password"
+                          value={formik.values.password}
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
+                        />
+                        {formik.touched.password && formik.errors.password ? (
+                          <div className="text-red-600">
+                            {formik.errors.password}
+                          </div>
+                        ) : null}
+                      </div>
                       <div className="flex gap-2">
-                        <input type="checkbox" />
+                        <input
+                          type="checkbox"
+                          name="keepLogin"
+                          checked={formik.values.keepLogin}
+                          onChange={formik.handleChange}
+                        />
                         <h4>Keep me logged In </h4>
                       </div>
                       <button className="bg-primary-green text-white py-2 rounded-md min-w-[150px]">

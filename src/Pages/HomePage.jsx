@@ -7,17 +7,26 @@ import ball from "../assets/coach/ball.jpg";
 import baseball from "../assets/coach/baseball.jpg";
 import hockey from "../assets/coach/hockey.jpg";
 import Slider from "../Components/Slider/Slider";
-
 import review1 from "../assets/review/review1.jpg";
 import review2 from "../assets/review/review2.jpg";
 import review3 from "../assets/review/review3.jpg";
 import review4 from "../assets/review/review4.jpg";
-
 import comm1 from "../assets/community/comm1.jpg";
 import comm2 from "../assets/community/comm2.jpg";
 import comm3 from "../assets/community/comm3.jpg";
-
+import { useFormik } from "formik";
 function HomePage() {
+  const formik = useFormik({
+    initialValues: {
+      name: "",
+      location: "",
+    },
+    onSubmit: (values) => {
+      console.log(values);
+      // Here you can perform the search with the values submitted by the form
+    },
+  });
+
   return (
     <div>
       {/* //Hero Section */}
@@ -36,7 +45,10 @@ function HomePage() {
             <div className=" text-white ">
               <div className="px-8 py-10 rounded-lg  bg-primary-green bg-opacity-40 ">
                 <h3 className="mb-4">Search of PBU Coach Here</h3>
-                <form className="flex flex-col gap-3">
+                <form
+                  className="flex flex-col gap-3"
+                  onSubmit={formik.handleSubmit}
+                >
                   <div>
                     <div className="flex justify-between  items-center  flex-wrap">
                       <label>Search Coach by Name:</label>
@@ -46,8 +58,11 @@ function HomePage() {
                         </span>
                         <input
                           type="search"
-                          name="q"
-                          className="py-2 text-sm   rounded-md pl-10 focus:outline-none placeholder:text-primary-gray  "
+                          id="name"
+                          name="name"
+                          value={formik.values.name}
+                          onChange={formik.handleChange}
+                          className="py-2 text-sm rounded-md pl-10 focus:outline-none placeholder:text-primary-gray"
                           placeholder="Search Coach by Name"
                           autoComplete="off"
                         />
@@ -56,7 +71,7 @@ function HomePage() {
                   </div>
                   <div>
                     <div className="flex justify-between  items-center flex-wrap ">
-                      <label>Search Coach by Name:</label>
+                      <label>Search Coach by Location:</label>
                       <div className="relative text-gray-600 rounded-md ">
                         <span className="absolute bg-primary-gray-light inset-y-0 left-0 flex items-center px-1 ">
                           <IoNavigate
@@ -66,17 +81,22 @@ function HomePage() {
                         </span>
                         <input
                           type="search"
-                          name="q"
-                          className="py-2 text-sm  rounded-md pl-10 focus:outline-none 
-                          placeholder:text-primary-gray  "
-                          placeholder="Search Coach by Name"
+                          id="location"
+                          name="location"
+                          value={formik.values.location}
+                          onChange={formik.handleChange}
+                          className="py-2 text-sm rounded-md pl-10 focus:outline-none placeholder:text-primary-gray"
+                          placeholder="Search Coach by Location"
                           autoComplete="off"
                         />
                       </div>
                     </div>
                   </div>
                   <div className="flex  md:justify-end ">
-                    <button className=" bg-primary-green rounded-md  px-10 text-white py-2">
+                    <button
+                      type="submit"
+                      className=" bg-primary-green rounded-md  px-10 text-white py-2"
+                    >
                       Search Now
                     </button>
                   </div>

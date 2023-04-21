@@ -1,8 +1,17 @@
 import React from "react";
-
+import { useFormik } from "formik";
 import sunset from "../assets/sunset.jpg";
 import DialogModal from "../Components/Modal/DialogModal";
 function CourtsPage() {
+  const formik = useFormik({
+    initialValues: {
+      search: "",
+    },
+    onSubmit: (values) => {
+      console.log(values);
+    },
+  });
+
   return (
     <div>
       <div>
@@ -17,19 +26,27 @@ function CourtsPage() {
                 Search <span className="text-primary-green">court</span> Near By
                 you
               </h1>
-              <form className="flex flex-col gap-3">
+              <form
+                onSubmit={formik.handleSubmit}
+                className="flex flex-col gap-3"
+              >
                 <div className="flex justify-between  items-center  flex-wrap">
                   <input
                     type="search"
-                    name="q"
-                    className="py-2 text-sm w-full   rounded-md pl-10 focus:outline-none placeholder:text-primary-gray  "
-                    placeholder="Search Coach by Name"
+                    name="search"
+                    className="py-2 text-sm w-full rounded-md pl-10 focus:outline-none placeholder:text-primary-gray"
+                    placeholder="Search Court by Name"
                     autoComplete="off"
+                    value={formik.values.search}
+                    onChange={formik.handleChange}
                   />
                 </div>
 
                 <div className="flex justify-center  ">
-                  <button className=" bg-primary-green rounded-md  px-10 text-white py-2">
+                  <button
+                    type="submit"
+                    className=" bg-primary-green rounded-md  px-10 text-white py-2"
+                  >
                     Search Now
                   </button>
                 </div>
@@ -49,7 +66,7 @@ function CourtsPage() {
           </div>
         </div>
       </div>
-      <DialogModal />
+      {/* <DialogModal /> */}
     </div>
   );
 }

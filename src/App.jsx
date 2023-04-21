@@ -13,6 +13,7 @@ import CoachDetails from "./Pages/Auth/CoachDetails";
 import PBUFeedPage from "./Pages/PBUFeedPage";
 import ApplyBecomeCoach from "./Pages/ApplyBecomeCoach";
 import CourtsPage from "./Pages/CourtsPage";
+import FeedPage from "./Pages/FeedPage";
 
 function App() {
   return (
@@ -23,7 +24,7 @@ function App() {
         <Route path="/about" element={<AboutPage />} />
         <Route path="/find/coach" element={<FindCoach />} />
         <Route path="/coach/:id" element={<CoachDetails />} />
-        <Route path="/feed" element={<PBUFeedPage />} />
+        <Route path="/feed" element={<FeedPage />} />
         <Route path="/courts" element={<CourtsPage />} />
         <Route path="/become/coach" element={<BecomeCoach />} />
         <Route path="/become/coach/apply" element={<ApplyBecomeCoach />} />

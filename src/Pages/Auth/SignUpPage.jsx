@@ -1,7 +1,35 @@
 import React from "react";
 import logo from "./../../assets/logo.png";
 import { Link } from "react-router-dom";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 function SignUpPage() {
+  const formik = useFormik({
+    initialValues: {
+      choice: "athlete",
+      firstName: "Ritik",
+      lastName: "Chhipa",
+      email: "ritik@gmail.com",
+      password: "123456789",
+      confirmPassword: "123456789",
+    },
+    validationSchema: Yup.object({
+      firstName: Yup.string().required("First Name is required"),
+      lastName: Yup.string().required("Last Name is required"),
+      email: Yup.string()
+        .email("Invalid email address")
+        .required("Email is required"),
+      password: Yup.string()
+        .required("Password is required")
+        .min(8, "Password must be at least 8 characters long"),
+      confirmPassword: Yup.string()
+        .required("Confirm Password is required")
+        .oneOf([Yup.ref("password"), null], "Passwords must match"),
+    }),
+    onSubmit: (values) => {
+      console.log(values);
+    },
+  });
   return (
     <div className="  ">
       <div className="flex ">
@@ -27,10 +55,7 @@ function SignUpPage() {
               <div className="py-16 flex-1 px-10">
                 <div className="max-w-sm w-full mx-auto">
                   <div className="flex justify-between  items-center  mb-10 ">
-                    <h3 className="text-black font-semibold ">
-                      {" "}
-                      Register for Athlete
-                    </h3>
+                    <h3 className="text-black font-semibold "></h3>
                     <div className="flex ">
                       <div className="px-3 py-2  border border-primary-green text-primary-green ">
                         Login
@@ -41,37 +66,113 @@ function SignUpPage() {
                     </div>
                   </div>
                   <div className="w-full">
-                    <form className="flex flex-col gap-4">
-                      <div className="flex gap-4">
-                        <input
-                          className="placeholder:text-primary-green border px-3 py-2 rounded-md border-primary-green w-full"
-                          placeholder="First Name "
-                          type="text"
-                        />{" "}
-                        <input
-                          className="placeholder:text-primary-green border px-3 py-2 rounded-md border-primary-green w-full"
-                          placeholder="last Name"
-                          type="text"
-                        />
-                      </div>{" "}
-                      <input
+                    <form
+                      onSubmit={formik.handleSubmit}
+                      className="flex flex-col gap-4"
+                    >
+                      <select
                         className="placeholder:text-primary-green border px-3 py-2 rounded-md border-primary-green w-full"
-                        placeholder="Email"
-                        type="email"
-                      />
+                        name="choice"
+                        value={formik.values.choice}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                      >
+                        <option value="athlete">Athlete</option>
+                        <option value="coach">Coach</option>
+                      </select>
                       <div className="flex gap-4">
+                        <div className="w-full">
+                          {" "}
+                          <input
+                            className="placeholder:text-primary-green border px-3 py-2 rounded-md border-primary-green w-full"
+                            placeholder="First Name "
+                            type="text"
+                            name="firstName"
+                            value={formik.values.firstName}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                          />
+                          {formik.touched.firstName &&
+                          formik.errors.firstName ? (
+                            <div className="text-red-600">
+                              {formik.errors.firstName}
+                            </div>
+                          ) : null}
+                        </div>
+                        <div className="w-full">
+                          <input
+                            className="placeholder:text-primary-green border px-3 py-2 rounded-md border-primary-green w-full"
+                            placeholder="Last Name"
+                            type="text"
+                            name="lastName"
+                            value={formik.values.lastName}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                          />
+                          {formik.touched.lastName && formik.errors.lastName ? (
+                            <div className="text-red-600">
+                              {formik.errors.lastName}
+                            </div>
+                          ) : null}
+                        </div>
+                      </div>{" "}
+                      <div className="w-full">
+                        {" "}
                         <input
                           className="placeholder:text-primary-green border px-3 py-2 rounded-md border-primary-green w-full"
-                          placeholder="password"
-                          type="password"
-                        />{" "}
-                        <input
-                          className="placeholder:text-primary-green border px-3 py-2 rounded-md border-primary-green w-full"
-                          placeholder="Confirm password"
-                          type="password"
+                          placeholder="email"
+                          type="email"
+                          name="email"
+                          value={formik.values.email}
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
                         />
+                        {formik.touched.email && formik.errors.email ? (
+                          <div className="text-red-600">
+                            {formik.errors.email}
+                          </div>
+                        ) : null}
                       </div>
-                      <button className="bg-primary-green text-white py-2 rounded-md min-w-[150px]">
+                      <div className="flex gap-4">
+                        <div className="w-full">
+                          {" "}
+                          <input
+                            className="placeholder:text-primary-green border px-3 py-2 rounded-md border-primary-green w-full"
+                            placeholder="Password"
+                            type="password"
+                            name="password"
+                            value={formik.values.password}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                          />
+                          {formik.touched.password && formik.errors.password ? (
+                            <div className="text-red-600">
+                              {formik.errors.password}
+                            </div>
+                          ) : null}
+                        </div>
+                        <div className="w-full">
+                          <input
+                            className="placeholder:text-primary-green border px-3 py-2 rounded-md border-primary-green w-full"
+                            placeholder="Confirm Password"
+                            type="password"
+                            name="confirmPassword"
+                            value={formik.values.confirmPassword}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                          />
+                          {formik.touched.confirmPassword &&
+                          formik.errors.confirmPassword ? (
+                            <div className="text-red-600">
+                              {formik.errors.confirmPassword}
+                            </div>
+                          ) : null}
+                        </div>
+                      </div>
+                      <button
+                        type="submit"
+                        className="bg-primary-green text-white py-2 rounded-md min-w-[150px]"
+                      >
                         {" "}
                         Register
                       </button>

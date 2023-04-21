@@ -3,8 +3,19 @@ import { AiFillStar } from "react-icons/ai";
 import bg_01 from "../../assets/bg-01.png";
 import { IoIosArrowDroprightCircle } from "react-icons/io";
 import { Tab } from "@headlessui/react";
+import { useQuery } from "@apollo/client";
+import { Couch } from "../../graphql/query/Query";
+import { useParams } from "react-router-dom";
 
 function CoachDetails() {
+  let { id } = useParams();
+  console.log(id);
+  let { data: couch } = useQuery(Couch, {
+    variables: {
+      coachId: id,
+    },
+  });
+  console.log(couch?.getCoach);
   return (
     <>
       <div className="bg-[#152033]">
@@ -15,7 +26,7 @@ function CoachDetails() {
             </h3>
             <div className="md:flex gap-4">
               <div className="flex-1 mb-4">
-                <CoachCard />
+                <CoachCard couch={couch} />
 
                 <div>
                   <h3 className="font-semibold text-3xl text-white py-10 ">
@@ -108,7 +119,7 @@ function CoachDetails() {
   );
 }
 
-const PackageCard = () => {
+const PackageCard = ({ couch }) => {
   return (
     <div className="bg-white p-4 rounded-md">
       <h3 className="text-2xl font-bold  py-5">
@@ -145,19 +156,21 @@ const PackageCard = () => {
     </div>
   );
 };
-const CoachCard = () => {
+const CoachCard = ({ couch }) => {
   return (
     <>
       <div>
         <div className="p-7 bg-[#35A80778] gap-5 rounded-lg flex cursor-pointer">
           <div>
             <img
-              src={bg_01}
+              src={couch.getCoach.profilePicture}
               className="object-cover w-[400px] rounded-xl  h-full"
             />
           </div>
           <div className="text-white flex flex-col gap-3 ">
-            <h4 className="text-2xl font-bold ">Hanry Som</h4>
+            <h4 className="text-2xl font-bold ">
+              {couch?.getCoach?.firstName} {couch?.getCoach?.lastName}
+            </h4>
             <h5 className="text-primary-green capitalize font-semibold ">
               ready to complete training
             </h5>
