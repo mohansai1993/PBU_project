@@ -15,7 +15,13 @@ import comm1 from "../assets/community/comm1.jpg";
 import comm2 from "../assets/community/comm2.jpg";
 import comm3 from "../assets/community/comm3.jpg";
 import { useFormik } from "formik";
+import { useLazyQuery, useQuery } from "@apollo/client";
+import { Couches, GetTop4Reviews } from "../graphql/query/Query";
+import { Link } from "react-router-dom";
 function HomePage() {
+  const { data: Reviews } = useQuery(GetTop4Reviews);
+  const [getCoaches] = useLazyQuery(Couches);
+
   const formik = useFormik({
     initialValues: {
       name: "",
@@ -23,10 +29,15 @@ function HomePage() {
     },
     onSubmit: (values) => {
       console.log(values);
+      getCoaches({
+        variables: {
+          coachName: values.name,
+          pinCode: values.location == "" ? null : values.location,
+        },
+      }).then((res) => console.log(res.data));
       // Here you can perform the search with the values submitted by the form
     },
   });
-
   return (
     <div>
       {/* //Hero Section */}
@@ -174,150 +185,46 @@ function HomePage() {
           <div>
             <h1 className="text-6xl font-bold  pt-16 pb-5">Reviews</h1>{" "}
             <div className="  mt-10 grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-              <div className="bg-white  p-5 rounded-2xl ">
-                {" "}
-                <div>
-                  {" "}
-                  <img
-                    src={review4}
-                    className="object-cover w-full h-[200px]  rounded-xl"
-                  />
-                  <div className="py-5">
-                    <div className="flex ">
-                      <span>
-                        <AiFillStar size={25} className="text-yellow-400" />
-                      </span>
-                      <span>
-                        <AiFillStar size={25} className="text-yellow-400" />
-                      </span>
-                      <span>
-                        <AiFillStar size={25} className="text-yellow-400" />
-                      </span>
-                      <span>
-                        <AiFillStar size={25} className="text-yellow-400" />
-                      </span>
-                      <span>
-                        <AiFillStar size={25} className="text-yellow-400" />
-                      </span>
-                    </div>
+              {Reviews?.getTop4Reviews?.map((value, index) => (
+                <Link to={"/coach/" + value.id}>
+                  <div className="bg-white  p-5 rounded-2xl ">
+                    {" "}
                     <div>
-                      <h4>Jon</h4>
-                      <p className="text-gray-700">
-                        Fancy advertising Lots of excuses, but they are all
-                        lies. Never buy anything from this company!
-                      </p>
+                      {" "}
+                      <img
+                        src={value.profilePicture}
+                        alt={value.firstName}
+                        className="object-cover w-full h-[200px]  rounded-xl"
+                      />
+                      {}
+                      <div className="py-5">
+                        <div className="flex ">
+                          {Array(parseInt(value.averageRating)).fill(
+                            <span>
+                              <AiFillStar
+                                size={25}
+                                className="text-yellow-400"
+                              />
+                            </span>
+                          )}
+                          {Array(5 - parseInt(value.averageRating)).fill(
+                            <span>
+                              <AiFillStar size={25} className="text-gray-200" />
+                            </span>
+                          )}
+                        </div>
+                        <div>
+                          <h4>{value.firstName + " " + value.lastName}</h4>
+                          <p className="text-gray-700">
+                            Fancy advertising Lots of excuses, but they are all
+                            lies. Never buy anything from this company!
+                          </p>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </div>{" "}
-              <div className="bg-white  p-5 rounded-2xl ">
-                {" "}
-                <div>
-                  {" "}
-                  <img
-                    src={review1}
-                    className="object-cover w-full h-[200px]  rounded-xl"
-                  />
-                  <div className="py-5">
-                    <div className="flex ">
-                      <span>
-                        <AiFillStar size={25} className="text-yellow-400" />
-                      </span>
-                      <span>
-                        <AiFillStar size={25} className="text-yellow-400" />
-                      </span>
-                      <span>
-                        <AiFillStar size={25} className="text-yellow-400" />
-                      </span>
-                      <span>
-                        <AiFillStar size={25} className="text-yellow-400" />
-                      </span>
-                      <span>
-                        <AiFillStar size={25} className="text-yellow-400" />
-                      </span>
-                    </div>
-                    <div>
-                      <h4>Jon</h4>
-                      <p className="text-gray-700">
-                        Fancy advertising Lots of excuses, but they are all
-                        lies. Never buy anything from this company!
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>{" "}
-              <div className="bg-white  p-5 rounded-2xl ">
-                {" "}
-                <div>
-                  {" "}
-                  <img
-                    src={review2}
-                    className="object-cover w-full h-[200px]  rounded-xl"
-                  />
-                  <div className="py-5">
-                    <div className="flex ">
-                      <span>
-                        <AiFillStar size={25} className="text-yellow-400" />
-                      </span>
-                      <span>
-                        <AiFillStar size={25} className="text-yellow-400" />
-                      </span>
-                      <span>
-                        <AiFillStar size={25} className="text-yellow-400" />
-                      </span>
-                      <span>
-                        <AiFillStar size={25} className="text-yellow-400" />
-                      </span>
-                      <span>
-                        <AiFillStar size={25} className="text-yellow-400" />
-                      </span>
-                    </div>
-                    <div>
-                      <h4>Jon</h4>
-                      <p className="text-gray-700">
-                        Fancy advertising Lots of excuses, but they are all
-                        lies. Never buy anything from this company!
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>{" "}
-              <div className="bg-white  p-5 rounded-2xl ">
-                {" "}
-                <div>
-                  {" "}
-                  <img
-                    src={review3}
-                    className="object-cover w-full h-[200px]  rounded-xl"
-                  />
-                  <div className="py-5">
-                    <div className="flex ">
-                      <span>
-                        <AiFillStar size={25} className="text-yellow-400" />
-                      </span>
-                      <span>
-                        <AiFillStar size={25} className="text-yellow-400" />
-                      </span>
-                      <span>
-                        <AiFillStar size={25} className="text-yellow-400" />
-                      </span>
-                      <span>
-                        <AiFillStar size={25} className="text-yellow-400" />
-                      </span>
-                      <span>
-                        <AiFillStar size={25} className="text-yellow-400" />
-                      </span>
-                    </div>
-                    <div>
-                      <h4>Jon</h4>
-                      <p className="text-gray-700">
-                        Fancy advertising Lots of excuses, but they are all
-                        lies. Never buy anything from this company!
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
+                </Link>
+              ))}
             </div>
           </div>
         </div>

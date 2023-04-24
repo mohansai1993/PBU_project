@@ -25,6 +25,7 @@ function App() {
         <Route path="/find/coach" element={<FindCoach />} />
         <Route path="/coach/:id" element={<CoachDetails />} />
         <Route path="/feed" element={<FeedPage />} />
+        <Route path="/profile/:id" element={<PBUFeedPage />} />
         <Route path="/courts" element={<CourtsPage />} />
         <Route path="/become/coach" element={<BecomeCoach />} />
         <Route path="/become/coach/apply" element={<ApplyBecomeCoach />} />

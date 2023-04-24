@@ -4,8 +4,24 @@ import { TfiPencil } from "react-icons/tfi";
 import { IoNavigate } from "react-icons/io5";
 import { useFormik } from "formik";
 import { Formik, Form, Field, ErrorMessage } from "formik";
+import { useParams } from "react-router-dom";
+import { useMutation, useQuery } from "@apollo/client";
+import { Couch } from "../graphql/query/Query";
+import moment from "moment";
+import { PostFeed } from "../graphql/mutations/mutations";
 
 function PBUFeedPage() {
+  let { id } = useParams();
+  console.log(id);
+  let { data: couch } = useQuery(Couch, {
+    skip: !id,
+    variables: {
+      coachId: id,
+    },
+  });
+  let [postFeed] = useMutation(PostFeed);
+
+  console.log(couch);
   let Tabs = [
     {
       title: "Your Profile",
@@ -33,12 +49,12 @@ function PBUFeedPage() {
                   <div className="flex items-center  gap-4">
                     <img
                       alt=""
-                      src="https://png.pngtree.com/thumb_back/fh260/background/20200714/pngtree-modern-double-color-futuristic-neon-background-image_351866.jpg"
-                      className="rounded-md h-[100px] w-[100px]"
+                      src={couch?.getCoach?.profilePicture}
+                      className="rounded-md h-[100px] w-[100px] object-cover"
                     />
                     <div>
-                      <h3 className="mb-2 text-3xl font-bold ">Leo Messy </h3>
-                      <h5>Footballer</h5>
+                      <h3 className="mb-2 text-3xl font-bold ">{`${couch?.getCoach?.firstName} ${couch?.getCoach?.lastName}`}</h3>
+                      <h5>Footballer </h5>
                     </div>
                   </div>
                 </div>
@@ -68,7 +84,7 @@ function PBUFeedPage() {
             </div>
             <Tab.Panels className=" mt-6 pb-6">
               <Tab.Panel>
-                <ProfilePanel />
+                <ProfilePanel postFeed={postFeed} couch={couch?.getCoach} />
               </Tab.Panel>
 
               <Tab.Panel>
@@ -82,7 +98,7 @@ function PBUFeedPage() {
   );
 }
 
-const ProfilePanel = () => {
+const ProfilePanel = ({ couch, postFeed }) => {
   return (
     <>
       <div>
@@ -90,19 +106,29 @@ const ProfilePanel = () => {
           <div className="flex-[0.4]">
             <div className="bg-[#212F48] p-6 rounded-2xl mt-6">
               <h3 className="my-3  text-2xl font-bold  ">About Athlete</h3>
-              <p className="mb-4">
-                Lorem ipsum dolor sit amet cons al Ofectetur. Pellentesque ipsum
-                necat congue pretium cursus orci. It Commodo donec tellus lacus
-                pellentesque sagittis habitant quam amet praesent.
-              </p>
+              <p className="mb-4">{couch?.about}</p>
               <div>
                 <h3 className="my-4  text-2xl font-bold  ">Info</h3>
               </div>{" "}
               <ol className="flex flex-col gap-3">
-                <li className="flex items-center gap-2 ">Footballer</li>{" "}
-                <li className="flex items-center gap-2 ">9004573976</li>{" "}
-                <li className="flex items-center gap-2 ">Demo@gmail.com</li>
-                <li className="flex items-center gap-2 ">USA</li>
+                <li className="flex items-center gap-2 ">
+                  Skill Level:{" "}
+                  <span className="text-primary-green font-semibold">
+                    {couch?.skillLevel?.name}
+                  </span>
+                </li>
+                <li className="flex items-center gap-2 ">
+                  Phone:{" "}
+                  <span className="text-primary-green font-semibold">
+                    {couch?.contactDetails?.number}
+                  </span>
+                </li>{" "}
+                <li className="flex items-center gap-2 ">
+                  Email:
+                  <span className="text-primary-green font-semibold">
+                    {couch?.email}
+                  </span>
+                </li>
               </ol>
             </div>
 
@@ -113,7 +139,7 @@ const ProfilePanel = () => {
                 {" "}
                 <div className="flex items-center  gap-4">
                   <img
-                    src="https://png.pngtree.com/thumb_back/fh260/background/20200714/pngtree-modern-double-color-futuristic-neon-background-image_351866.jpg"
+                    src={couch?.profilePicture}
                     className="rounded-md h-[50px] w-[50px]"
                   />
                   <div>
@@ -150,8 +176,8 @@ const ProfilePanel = () => {
           <div className="flex-[0.6] mt-6">
             <div className="flex items-start  gap-4 bg-[#212F48] p-6 rounded-2xl  mb-6">
               <img
-                src="https://png.pngtree.com/thumb_back/fh260/background/20200714/pngtree-modern-double-color-futuristic-neon-background-image_351866.jpg"
-                className="rounded-md h-[50px] w-[50px]"
+                src={couch?.profilePicture}
+                className="rounded-md h-[50px] w-[50px] object-cover"
                 alt=""
               />
               <Formik
@@ -167,7 +193,23 @@ const ProfilePanel = () => {
                 }}
                 onSubmit={(values, { setSubmitting }) => {
                   setTimeout(() => {
-                    alert(JSON.stringify(values, null, 2));
+                    // alert(JSON.stringify(values, null, 2));
+                    console.log(values);
+                    postFeed({
+                      variables: {
+                        post: values.message,
+                        coachId: couch?.id,
+                        postBy: "coach",
+                      },
+                      refetchQueries: [
+                        {
+                          query: Couch,
+                          variables: {
+                            coachId: couch?.id,
+                          },
+                        },
+                      ],
+                    });
                     setSubmitting(false);
                   }, 400);
                 }}
@@ -204,35 +246,32 @@ const ProfilePanel = () => {
             </div>
 
             {/* //Message  */}
-            <div className="  gap-4 bg-[#212F48] p-6 rounded-2xl ">
-              <div className="flex  justify-between w-full">
-                <div className="flex  gap-3">
-                  <img
-                    src="https://png.pngtree.com/thumb_back/fh260/background/20200714/pngtree-modern-double-color-futuristic-neon-background-image_351866.jpg"
-                    className="rounded-md h-[50px] w-[50px]"
-                  />
-                  <div className="w-full">
-                    <h3 className="text-xl">Lerio Mao</h3>
-                    <h3 className="text-sm">Footballer</h3>
+            <div className="grid gap-4">
+              {couch?.feed?.map((feed, index) => (
+                <div className="   bg-[#212F48] p-6 rounded-2xl ">
+                  <div className="flex  justify-between w-full">
+                    <div className="flex  gap-3">
+                      <img
+                        src={couch?.profilePicture}
+                        className="rounded-md h-[50px] w-[50px] object-cover"
+                      />
+                      <div className="w-full">
+                        <h3 className="text-xl">
+                          {couch?.firstName + " " + couch?.lastName}
+                        </h3>
+                        <h3 className="text-sm">Footballer</h3>
+                      </div>
+                    </div>
+                  </div>
+                  <div>
+                    <p className="py-4">{feed?.post}</p>
+                    <div className="flex justify-between text-primary-green ">
+                      <span>{moment(feed?.updatedAt).format("LLL")}</span>
+                      {/* <span>Book Now</span> */}
+                    </div>
                   </div>
                 </div>
-
-                <button className="  gap-2 px-3 bg-primary-green text-white py-3 rounded-md min-w-[150px]">
-                  Message
-                </button>
-              </div>
-              <div>
-                <p className="py-4">
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Earum
-                  deserunt hic excepturi aspernatur itaque, alias voluptatem
-                  placeat assumenda quidem at nulla ipsum error, labore voluptas
-                  quis cumque similique sunt debitis.
-                </p>
-                <div className="flex justify-between text-primary-green ">
-                  <span>Start Price $50</span>
-                  <span>Book Now</span>
-                </div>
-              </div>
+              ))}
             </div>
           </div>
         </div>

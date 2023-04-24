@@ -11,11 +11,12 @@ function CoachDetails() {
   let { id } = useParams();
   console.log(id);
   let { data: couch } = useQuery(Couch, {
+    skip: !id,
     variables: {
       coachId: id,
     },
   });
-  console.log(couch?.getCoach);
+  console.log(couch);
   return (
     <>
       <div className="bg-[#152033]">
@@ -163,7 +164,7 @@ const CoachCard = ({ couch }) => {
         <div className="p-7 bg-[#35A80778] gap-5 rounded-lg flex cursor-pointer">
           <div>
             <img
-              src={couch.getCoach.profilePicture}
+              src={couch?.getCoach?.profilePicture}
               className="object-cover w-[400px] rounded-xl  h-full"
             />
           </div>
@@ -171,6 +172,7 @@ const CoachCard = ({ couch }) => {
             <h4 className="text-2xl font-bold ">
               {couch?.getCoach?.firstName} {couch?.getCoach?.lastName}
             </h4>
+
             <h5 className="text-primary-green capitalize font-semibold ">
               ready to complete training
             </h5>
@@ -191,11 +193,7 @@ const CoachCard = ({ couch }) => {
                 <AiFillStar size={25} className="text-yellow-400" />
               </span>
             </div>
-            <p>
-              Former Division 1 Quarterback | Former Poudre Varsity Quarterbacks
-              Coach Student of the game is who excited to help athletes learn,
-              compete, and reach whatever their ceiling is!
-            </p>
+            <p>{couch?.getCoach?.about}</p>
           </div>
         </div>
       </div>

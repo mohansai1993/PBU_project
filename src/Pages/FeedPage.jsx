@@ -93,7 +93,7 @@ function FeedPage() {
                   <div className="flex justify-between text-primary-green ">
                     <span>{moment(feed.updatedAt).format("LL")}</span>
                     {feed.postBy === "coach" && (
-                      <Link to={"/coach/" + feed.id}>
+                      <Link to={"/coach/" + feed.coach.id}>
                         <span>Book Now</span>
                       </Link>
                     )}

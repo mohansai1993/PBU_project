@@ -73,9 +73,9 @@ function BecomeCoach() {
                   </li>
                 </ol>
               </div>
-              <Link to="/become/coach/apply">
-                <button className="text-white bg-primary-green  px-3 py-2  rounded-md  my-5 ">
-                  Become a Coach
+              <Link className="pt-3" to="/become/coach/apply">
+                <button className="bg-primary-green text-white py-1  rounded-md min-w-[150px]">
+                  Become Coach
                 </button>
               </Link>
             </div>

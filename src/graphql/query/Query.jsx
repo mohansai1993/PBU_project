@@ -12,10 +12,12 @@ const GetFeeds = gql`
       athlete {
         profilePicture
         firstName
+        id
       }
       coach {
         profilePicture
         firstName
+        id
       }
     }
   }
@@ -35,7 +37,55 @@ const Couch = gql`
       skillLevel {
         name
       }
+      contactDetails {
+        number
+      }
+      feed {
+        post
+        postBy
+        updatedAt
+      }
     }
   }
 `;
-export { GetFeeds, Couch };
+const Couches = gql`
+  query GetCoaches($pinCode: String, $coachName: String) {
+    getCoaches(pinCode: $pinCode, coachName: $coachName) {
+      lastName
+      firstName
+      id
+      profilePicture
+      about
+      averageRating
+      totalReviews
+    }
+  }
+`;
+const GetSubscriptionPlans = gql`
+  query GetSubscriptionPlans {
+    getSubscriptionPlans {
+      id
+      sessionRate
+      platformFee
+      ccProcessing
+      amount
+      name
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
+const GetTop4Reviews = gql`
+  query GetTop4Reviews {
+    getTop4Reviews {
+      about
+      averageRating
+      id
+      lastName
+      firstName
+      profilePicture
+    }
+  }
+`;
+export { GetFeeds, Couch, Couches, GetSubscriptionPlans, GetTop4Reviews };
