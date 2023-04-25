@@ -10,4 +10,74 @@ const PostFeed = gql`
   }
 `;
 
-export { PostFeed };
+const RegisterCoach = gql`
+  mutation RegisterCoach(
+    $firstName: String
+    $lastName: String
+    $email: String
+    $password: String
+    $skillLevelId: ID
+    $coachingCity: String
+    $coachingState: String
+    $coachingCountry: String
+    $coachingPinCode: String
+    $document: String
+    $coachingStreet1: String
+    $subscriptionPlanId: ID
+  ) {
+    registerCoach(
+      firstName: $firstName
+      lastName: $lastName
+      email: $email
+      password: $password
+      skillLevelId: $skillLevelId
+      coachingCity: $coachingCity
+      coachingState: $coachingState
+      coachingCountry: $coachingCountry
+      coachingPinCode: $coachingPinCode
+      document: $document
+      coachingStreet1: $coachingStreet1
+      subscriptionPlanId: $subscriptionPlanId
+    ) {
+      email
+      userType
+      token
+    }
+  }
+`;
+
+const EditCoach = gql`
+  mutation EditCoach(
+    $profilePicture: String
+    $about: String
+    $game: String
+    $firstName: String
+    $lastName: String
+    $coachingStreet1: String
+    $coachingStreet2: String
+    $coachingCity: String
+    $coachingState: String
+    $coachingCountry: String
+    $coachingPinCode: String
+    $coachId: ID
+  ) {
+    editCoach(
+      profilePicture: $profilePicture
+      about: $about
+      game: $game
+      firstName: $firstName
+      lastName: $lastName
+      coachingStreet1: $coachingStreet1
+      coachingStreet2: $coachingStreet2
+      coachingCity: $coachingCity
+      coachingState: $coachingState
+      coachingCountry: $coachingCountry
+      coachingPinCode: $coachingPinCode
+      coachId: $coachId
+    ) {
+      about
+    }
+  }
+`;
+
+export { PostFeed, RegisterCoach, EditCoach };

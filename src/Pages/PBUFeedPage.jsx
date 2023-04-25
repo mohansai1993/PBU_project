@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useState } from "react";
 import { Tab } from "@headlessui/react";
 import { TfiPencil } from "react-icons/tfi";
 import { IoNavigate } from "react-icons/io5";
@@ -8,11 +8,11 @@ import { useParams } from "react-router-dom";
 import { useMutation, useQuery } from "@apollo/client";
 import { Couch } from "../graphql/query/Query";
 import moment from "moment";
-import { PostFeed } from "../graphql/mutations/mutations";
+import { PostFeed, EditCoach } from "../graphql/mutations/mutations";
+import { AiFillDelete } from "react-icons/ai";
 
 function PBUFeedPage() {
   let { id } = useParams();
-  console.log(id);
   let { data: couch } = useQuery(Couch, {
     skip: !id,
     variables: {
@@ -20,7 +20,7 @@ function PBUFeedPage() {
     },
   });
   let [postFeed] = useMutation(PostFeed);
-
+  let [editCoach] = useMutation(EditCoach);
   console.log(couch);
   let Tabs = [
     {
@@ -88,7 +88,7 @@ function PBUFeedPage() {
               </Tab.Panel>
 
               <Tab.Panel>
-                <SettingPanel />
+                <SettingPanel editCoach={editCoach} coachId={id} />
               </Tab.Panel>
             </Tab.Panels>
           </Tab.Group>
@@ -262,6 +262,11 @@ const ProfilePanel = ({ couch, postFeed }) => {
                         <h3 className="text-sm">Footballer</h3>
                       </div>
                     </div>
+                    <AiFillDelete
+                      size={24}
+                      color={"#ed5e68"}
+                      cursor={"pointer"}
+                    />
                   </div>
                   <div>
                     <p className="py-4">{feed?.post}</p>
@@ -280,19 +285,33 @@ const ProfilePanel = ({ couch, postFeed }) => {
   );
 };
 
-const SettingPanel = () => {
+const SettingPanel = ({ editCoach, coachId }) => {
+  const [File, setFile] = useState(null);
+
   const formik = useFormik({
     initialValues: {
-      sport: "football",
-      location: "",
-      whoTraining: "myself",
-      age: 10,
-      gender: "male",
-      goals: "",
+      profilePicture: null,
+      about: "THis is about ",
+      game: "foostball",
+      firstName: "new",
+      lastName: "sfsdf",
+      coachingStreet1: "ghjgjgh",
+      coachingCity: "fghfghfg",
+      coachingState: "fghfghfg",
+      coachingCountry: "hgfhfghfg",
+      coachingPinCode: "123456789",
     },
 
     onSubmit: (values) => {
-      console.log(values);
+      console.log(values, File);
+      editCoach({
+        variables: {
+          coachId: coachId,
+          profilePicture: null,
+          coachingPinCode: values.coachingPinCode.toString(),
+          ...values,
+        },
+      });
       // Your form submission logic goes here
     },
   });
@@ -305,25 +324,61 @@ const SettingPanel = () => {
       >
         <div className="flex flex-col gap-3">
           <div>
-            <label>Select Sport </label>
+            <label>First Name </label>
           </div>
-          <div className="w-full">
-            <select
-              name="sport"
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              value={formik.values.sport}
-              className={`p-3 rounded-md w-full text-black outline-none`}
-            >
-              <option value="">Select Sport</option>
-              <option value="football">Football</option>
-              <option value="cricket">Cricket</option>
-            </select>
+          <div className="relative text-gray-600 rounded-md ">
+            <div className="w-full">
+              <input
+                type="text"
+                name="location"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                className={`p-3 rounded-md w-full  text-sm  rounded-md focus:outline-none 
+              placeholder:text-primary-gray `}
+                placeholder="First name"
+              />
+            </div>
           </div>
         </div>
         <div className="flex flex-col gap-3">
           <div>
-            <label>Location </label>
+            <label>Last Name </label>
+          </div>
+          <div className="relative text-gray-600 rounded-md ">
+            <div className="w-full">
+              <input
+                type="text"
+                name="location"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                className={`p-3 rounded-md w-full  text-sm  rounded-md  focus:outline-none 
+              placeholder:text-primary-gray `}
+                placeholder="last name"
+              />
+            </div>
+          </div>
+        </div>{" "}
+        <div className="flex flex-col gap-3">
+          <div>
+            <label>Game</label>
+          </div>
+          <div className="relative text-gray-600 rounded-md ">
+            <div className="w-full">
+              <input
+                type="text"
+                name="game"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                className={`p-3 rounded-md w-full  text-sm  rounded-md  focus:outline-none 
+              placeholder:text-primary-gray `}
+                placeholder="Game"
+              />
+            </div>
+          </div>
+        </div>
+        <div className="flex flex-col gap-3">
+          <div>
+            <label>Coaching City </label>
           </div>
           <div className="relative text-gray-600 rounded-md ">
             <span className="absolute bg-primary-gray-light inset-y-0 left-0 flex items-center px-1 ">
@@ -331,14 +386,13 @@ const SettingPanel = () => {
             </span>
             <div className="w-full">
               <input
-                type="search"
-                name="location"
+                type="text"
+                name="coachingCity"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                value={formik.values.location}
                 className={`p-3 rounded-md w-full  text-sm  rounded-md pl-10 focus:outline-none 
               placeholder:text-primary-gray `}
-                placeholder="Search Coach by Name"
+                placeholder="Coaching City"
                 autoComplete="off"
               />
             </div>
@@ -346,68 +400,136 @@ const SettingPanel = () => {
         </div>
         <div className="flex flex-col gap-3">
           <div>
-            <label>Who's training? </label>
+            <label>Coaching State </label>
           </div>
-          <div className="w-full">
-            {" "}
-            <select
-              className=" p-3 rounded-md w-full text-black outline-none"
-              name="whoTraining"
-              value={formik.values.whoTraining}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-            >
-              <option value="">Select Option</option>
-              <option value="mySelf">MySelf</option>
-              <option value="child">Child</option>
-              <option value="other">Other</option>
-            </select>
+          <div className="relative text-gray-600 rounded-md ">
+            <span className="absolute bg-primary-gray-light inset-y-0 left-0 flex items-center px-1 ">
+              <IoNavigate size={25} className="text-primary-green" />
+            </span>
+            <div className="w-full">
+              <input
+                type="text"
+                name="coachingState"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                className={`p-3 rounded-md w-full  text-sm  rounded-md pl-10 focus:outline-none 
+              placeholder:text-primary-gray `}
+                placeholder="Coaching State"
+              />
+            </div>
           </div>
         </div>{" "}
         <div className="flex flex-col gap-3">
           <div>
-            <label>Age </label>
+            <label>Coaching Country </label>
           </div>
-          <input
-            placeholder="Athlete Age"
-            className=" p-3 rounded-md w-full text-black "
-            type="number"
-            name="age"
-            value={formik.values.age}
-            onChange={formik.handleChange}
-          ></input>{" "}
+          <div className="relative text-gray-600 rounded-md ">
+            <span className="absolute bg-primary-gray-light inset-y-0 left-0 flex items-center px-1 ">
+              <IoNavigate size={25} className="text-primary-green" />
+            </span>
+            <div className="w-full">
+              <input
+                type="text"
+                name="coachingCountry"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                className={`p-3 rounded-md w-full  text-sm  rounded-md pl-10 focus:outline-none 
+              placeholder:text-primary-gray `}
+                placeholder="Coaching Country"
+              />
+            </div>
+          </div>
         </div>
         <div className="flex flex-col gap-3">
           <div>
-            <label>Gender </label>
+            <label>Coaching Pincode </label>
           </div>
-          <select
-            name="gender"
-            value={formik.values.gender}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            className=" p-3 rounded-md w-full text-black outline-none"
-          >
-            <option value="male">Male</option>
-            <option value="female">Female</option>
-          </select>{" "}
+          <div className="relative text-gray-600 rounded-md ">
+            <span className="absolute bg-primary-gray-light inset-y-0 left-0 flex items-center px-1 ">
+              <IoNavigate size={25} className="text-primary-green" />
+            </span>
+            <div className="w-full">
+              <input
+                type="number"
+                name="coachingPinCode"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                className={`p-3 rounded-md w-full  text-sm  rounded-md pl-10 focus:outline-none 
+              placeholder:text-primary-gray `}
+                placeholder="Coaching Pincode"
+              />
+            </div>
+          </div>
         </div>{" "}
         <div className="flex flex-col gap-3">
           <div>
-            <label>Tell us your Training goals </label>
+            <label>Coaching Street </label>
           </div>
-          <textarea
-            placeholder="Your Goals"
-            name="goals"
-            value={formik.values.goals}
-            onChange={formik.handleChange}
-            className=" p-3 rounded-md text-black w-full"
-          ></textarea>
+          <div className="relative text-gray-600 rounded-md ">
+            <span className="absolute bg-primary-gray-light inset-y-0 left-0 flex items-center px-1 ">
+              <IoNavigate size={25} className="text-primary-green" />
+            </span>
+            <div className="w-full">
+              <input
+                type="text"
+                name="coachingStreet1"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                className={`p-3 rounded-md w-full  text-sm  rounded-md pl-10 focus:outline-none 
+              placeholder:text-primary-gray `}
+                placeholder="Coaching Street"
+              />
+            </div>
+          </div>
+        </div>
+        <div className="flex flex-col gap-3">
+          <div>
+            <label>Profile Image </label>
+          </div>
+          <div className="relative text-gray-600 rounded-md ">
+            <div className="w-full">
+              <input
+                type="file"
+                name="profilePicture"
+                onChange={
+                  (e) => {
+                    console.log(e.target.files[0]);
+                    setFile(e.target.files[0]);
+                  }
+                  // formik.handleChange
+                }
+                onBlur={formik.handleBlur}
+                className={`p-3 rounded-md w-full bg-white  text-sm  rounded-md focus:outline-none 
+              placeholder:text-primary-gray `}
+                placeholder="Select Profile image"
+              />
+            </div>
+          </div>
+        </div>{" "}
+        <div className="flex flex-col gap-3">
+          <div>
+            <label>About </label>
+          </div>
+          <div className="relative text-gray-600 rounded-md ">
+            <div className="w-full">
+              <textarea
+                type="text"
+                name="about"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                className={`p-3 rounded-md w-full  text-sm  rounded-md focus:outline-none 
+              placeholder:text-primary-gray `}
+                placeholder="Write about you"
+              />
+            </div>
+          </div>
         </div>
         <div>
           <button
             type="submit"
-            className=" px-3 bg-primary-green text-white py-3 rounded-md min-w-[150px]"
+            variant="contained"
+            color="primary"
+            className="bg-primary-green text-white py-1  rounded-md min-w-[150px]"
           >
             Submit
           </button>

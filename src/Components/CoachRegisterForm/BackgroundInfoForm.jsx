@@ -3,7 +3,16 @@ import React from "react";
 
 function BackgroundInfoForm(props) {
   const {
-    formField: { skillLevel, traningCity, experience, document },
+    formField: {
+      skillLevel,
+      experience,
+      document,
+      coachingCity,
+      coachingState,
+      coachingCountry,
+      coachingPinCode,
+      coachingStreet1,
+    },
   } = props;
   console.log(props.formField);
   return (
@@ -26,16 +35,76 @@ function BackgroundInfoForm(props) {
           </Field>
         </div>{" "}
         <div className="w-full">
-          <label> {traningCity.label}</label>
+          <label> {coachingCity.label}</label>
           <Field
-            name={traningCity.name}
-            placeholder={traningCity.placeholder}
+            name={coachingCity.name}
+            placeholder={coachingCity.placeholder}
             // as={"input"}
             type="text"
             className="border border-black w-full px-3 py-2 rounded-md "
           />
           <ErrorMessage
-            name={traningCity.name}
+            name={coachingCity.name}
+            component="div"
+            className="text-red-500"
+          />
+        </div>{" "}
+        <div className="w-full">
+          <label> {coachingState.label}</label>
+          <Field
+            name={coachingState.name}
+            placeholder={coachingState.placeholder}
+            // as={"input"}
+            type="text"
+            className="border border-black w-full px-3 py-2 rounded-md "
+          />
+          <ErrorMessage
+            name={coachingState.name}
+            component="div"
+            className="text-red-500"
+          />
+        </div>{" "}
+        <div className="w-full">
+          <label> {coachingCountry.label}</label>
+          <Field
+            name={coachingCountry.name}
+            placeholder={coachingCountry.placeholder}
+            // as={"input"}
+            type="text"
+            className="border border-black w-full px-3 py-2 rounded-md "
+          />
+          <ErrorMessage
+            name={coachingCountry.name}
+            component="div"
+            className="text-red-500"
+          />
+        </div>{" "}
+        <div className="w-full">
+          <label> {coachingPinCode.label}</label>
+          <Field
+            name={coachingPinCode.name}
+            placeholder={coachingPinCode.placeholder}
+            // as={"input"}
+            type="number"
+            className="border border-black w-full px-3 py-2 rounded-md "
+          />
+          <ErrorMessage
+            name={coachingPinCode.name}
+            component="div"
+            className="text-red-500"
+          />
+        </div>{" "}
+        <div className="w-full">
+          <label> {coachingStreet1.label}</label>
+          <Field
+            name={coachingStreet1.name}
+            placeholder={coachingStreet1.placeholder}
+            // as={"input"}
+            type="text"
+            className="border border-black w-full px-3 py-2 rounded-md "
+          />
+          <ErrorMessage
+            name={coachingStreet1.name}
             component="div"
             className="text-red-500"
           />

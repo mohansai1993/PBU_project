@@ -24,6 +24,32 @@ export default {
     },
 
     // Form 2
+    coachingCity: {
+      name: "coachingCity",
+      label: "Training City where you train athlete*",
+      requiredErrorMsg: "Training City is required",
+    },
+    coachingState: {
+      name: "coachingState",
+      label: "Training State *",
+      requiredErrorMsg: "Training State is required",
+    },
+    coachingCountry: {
+      name: "coachingCountry",
+      label: "Training Country where you train athlete*",
+      requiredErrorMsg: "Training Country is required",
+    },
+    coachingPinCode: {
+      name: "coachingPinCode",
+      label: "Training Pincode where you train athlete*",
+      requiredErrorMsg: "Training Pincode is required",
+    },
+
+    coachingStreet1: {
+      name: "coachingStreet",
+      label: "Training Street where you train athlete*",
+      requiredErrorMsg: "Training Street is required",
+    },
 
     skillLevel: {
       name: "skillLevel",
@@ -42,11 +68,6 @@ export default {
           value: "level3",
         },
       ],
-    },
-    traningCity: {
-      name: "traningCity",
-      label: "Training City where you train athlete*",
-      requiredErrorMsg: "Training City is required",
     },
     experience: {
       name: "experience",

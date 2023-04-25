@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { FiSearch } from "react-icons/fi";
 import { IoNavigate, IoLocationSharp } from "react-icons/io5";
 import { AiFillStar } from "react-icons/ai";
@@ -19,6 +19,7 @@ import { useLazyQuery, useQuery } from "@apollo/client";
 import { Couches, GetTop4Reviews } from "../graphql/query/Query";
 import { Link } from "react-router-dom";
 function HomePage() {
+  const [Coaches, setCoaches] = useState([]);
   const { data: Reviews } = useQuery(GetTop4Reviews);
   const [getCoaches] = useLazyQuery(Couches);
 
@@ -34,7 +35,10 @@ function HomePage() {
           coachName: values.name,
           pinCode: values.location == "" ? null : values.location,
         },
-      }).then((res) => console.log(res.data));
+      }).then((res) => {
+        console.log(res.data);
+        setCoaches(res.data?.getCoaches);
+      });
       // Here you can perform the search with the values submitted by the form
     },
   });
@@ -53,7 +57,7 @@ function HomePage() {
             </h1>
 
             {/* Form Container */}
-            <div className=" text-white ">
+            <div className=" text-white relative w-full z-10 ">
               <div className="px-8 py-10 rounded-lg  bg-primary-green bg-opacity-40 ">
                 <h3 className="mb-4">Search of PBU Coach Here</h3>
                 <form
@@ -112,6 +116,50 @@ function HomePage() {
                     </button>
                   </div>
                 </form>
+              </div>
+              <div className="absolute w-full">
+                {Coaches.map((value, index) => (
+                  <div className="grid grid-cols-2">
+                    <div
+                      key={index}
+                      className="bg-white rounded-lg col-start-2 col-end-3 w-full  mr-auto px-4 py-2 mb-2"
+                    >
+                      {" "}
+                      <Link to={"/coach/" + value.id}>
+                        <div className="text-black  font-semibold flex  items-center justify-between">
+                          <img
+                            className="max-w-[80px] h-[80px] rounded-lg w-full object-cover"
+                            src={value.profilePicture}
+                            alt=""
+                          />
+                          <div className="text-left">
+                            <div>{value.firstName + " " + value.lastName}</div>
+                            <div>
+                              <div className="flex justify-end ">
+                                {Array(parseInt(value.averageRating)).fill(
+                                  <span>
+                                    <AiFillStar
+                                      size={15}
+                                      className="text-yellow-400"
+                                    />
+                                  </span>
+                                )}
+                                {Array(5 - parseInt(value.averageRating)).fill(
+                                  <span>
+                                    <AiFillStar
+                                      size={15}
+                                      className="text-gray-200"
+                                    />
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        </div>{" "}
+                      </Link>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           </div>

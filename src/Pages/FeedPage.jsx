@@ -1,12 +1,17 @@
 import React from "react";
-import { GetFeeds } from "../graphql/query/Query";
+import { GetFeeds, GetTop4Reviews } from "../graphql/query/Query";
 import { useQuery } from "@apollo/client";
 import moment from "moment/moment";
 import { Link } from "react-router-dom";
-
+import Loading from "../Components/Loading/Loading";
+import { AiFillStar } from "react-icons/ai";
 function FeedPage() {
   const { data: getFeeds } = useQuery(GetFeeds);
+  const { data: Reviews } = useQuery(GetTop4Reviews);
   console.log(getFeeds);
+  if (!getFeeds) {
+    return <Loading />;
+  }
   return (
     <div className="bg-[#152033]">
       <div>
@@ -18,43 +23,44 @@ function FeedPage() {
               <h3 className="my-3  text-2xl font-bold  ">Coach List </h3>
               <div className="flex flex-col  gap-4">
                 {" "}
-                <div className="flex items-center  gap-4">
-                  <img
-                    src="https://png.pngtree.com/thumb_back/fh260/background/20200714/pngtree-modern-double-color-futuristic-neon-background-image_351866.jpg"
-                    className="rounded-md h-[50px] w-[50px]"
-                  />
-                  <div>
-                    <h3 className="mb-1 text-xl font-bold ">Leo Messy </h3>
-                    <h5 className="text-xs">Football Coach</h5>
-                  </div>{" "}
-                  <h5 className="text-xs text-primary-green">Start $50</h5>
-                </div>
-                <div className="flex items-center  gap-4">
-                  <img
-                    src="https://png.pngtree.com/thumb_back/fh260/background/20200714/pngtree-modern-double-color-futuristic-neon-background-image_351866.jpg"
-                    className="rounded-md h-[50px] w-[50px]"
-                  />
-                  <div>
-                    <h3 className="mb-1 text-xl font-bold ">Leo Messy </h3>
-                    <h5 className="text-xs">Football Coach</h5>
-                  </div>{" "}
-                  <h5 className="text-xs text-primary-green">Start $50</h5>
-                </div>
-                <div className="flex items-center  gap-4">
-                  <img
-                    src="https://png.pngtree.com/thumb_back/fh260/background/20200714/pngtree-modern-double-color-futuristic-neon-background-image_351866.jpg"
-                    className="rounded-md h-[50px] w-[50px]"
-                  />
-                  <div>
-                    <h3 className="mb-1 text-xl font-bold ">Leo Messy </h3>
-                    <h5 className="text-xs">Football Coach</h5>
-                  </div>{" "}
-                  <h5 className="text-xs text-primary-green">Start $50</h5>
-                </div>
+                {Reviews?.getTop4Reviews?.map((value, index) => (
+                  <div className="flex items-center  gap-4" key={index}>
+                    <img
+                      src={value.profilePicture}
+                      alt={value.firstName}
+                      className="rounded-md object-cover h-[50px] w-[50px]"
+                    />
+                    <div>
+                      <div>
+                        <h3 className="mb-1 text-xl font-bold ">
+                          {value.firstName + " " + value.lastName}
+                        </h3>
+                        <div className="flex ">
+                          {Array(parseInt(value.averageRating)).fill(
+                            <span>
+                              <AiFillStar
+                                size={15}
+                                className="text-yellow-400"
+                              />
+                            </span>
+                          )}
+                          {Array(5 - parseInt(value.averageRating)).fill(
+                            <span>
+                              <AiFillStar size={15} className="text-gray-200" />
+                            </span>
+                          )}
+                        </div>
+                      </div>{" "}
+                      <Link to={"/coach/" + value.id}>
+                        <span className="text-primary-green">Book Now</span>
+                      </Link>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
-          <div className="flex-[0.6] mt-6">
+          <div className="flex-[0.6] mt-6 ">
             {/* //Message  */}
             {getFeeds?.getFeeds.map((feed, index) => (
               <div

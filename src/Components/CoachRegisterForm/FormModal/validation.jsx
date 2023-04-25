@@ -6,8 +6,11 @@ const {
     lastName,
     email,
     password,
-
-    traningCity,
+    coachingCity,
+    coachingState,
+    coachingCountry,
+    coachingPinCode,
+    coachingStreet1,
     experience,
     faqQuestions,
   },
@@ -23,9 +26,21 @@ export default [
   }),
 
   Yup.object().shape({
-    [traningCity.name]: Yup.string().required(
-      `${traningCity.requiredErrorMsg}`
+    [coachingCity.name]: Yup.string().required(
+      `${coachingCity.requiredErrorMsg}`
     ),
+    [coachingState.name]: Yup.string().required(
+      `${coachingState.requiredErrorMsg}`
+    ),
+    [coachingCountry.name]: Yup.string().required(
+      `${coachingCountry.requiredErrorMsg}`
+    ),
+    [coachingStreet1.name]: Yup.string().required(
+      `${coachingStreet1.requiredErrorMsg}`
+    ),
+    [coachingPinCode.name]: Yup.number()
+      .min(5)
+      .required(`${coachingPinCode.requiredErrorMsg}`),
 
     [experience.name]: Yup.number()
       .positive()
@@ -33,7 +48,6 @@ export default [
       .max(100)
       .required(`${experience.requiredErrorMsg}`),
   }),
-  Yup.object().shape({}),
   Yup.object().shape({
     [faqQuestions[0].name]: Yup.string().oneOf(["yes", "no"]).required(),
     [faqQuestions[1].name]: Yup.string().oneOf(["yes", "no"]).required(),

@@ -50,7 +50,7 @@ function PaymentForm(props) {
                   id={value.name}
                   className="peer peer-checked:bg-sky-500 hidden "
                 />
-                <div className=" text-center text-sm w-full bg-[#cacec9] peer-checked:bg-primary-green peer-checked:text-white  px-2 py-2   rounded">
+                <div className="cursor-pointer text-center text-sm w-full bg-[#cacec9] peer-checked:bg-primary-green peer-checked:text-white  px-2 py-2   rounded">
                   ${plans[index]?.amount} a month
                 </div>
               </label>

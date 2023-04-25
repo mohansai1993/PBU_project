@@ -12,8 +12,11 @@ import BackgroundInfoForm from "./BackgroundInfoForm";
 import FaqQuestionsForm from "./FaqQuestionsForm";
 import PaymentForm from "./PaymentForm";
 import { GetSubscriptionPlans } from "../../graphql/query/Query";
-import { useQuery } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
+import { RegisterCoach } from "../../graphql/mutations/mutations";
 import AvaibilityForm from "./AvaibilityForm";
+import Toast from "../Toast/Toast";
+import { useNavigate } from "react-router-dom";
 const steps = [
   {
     title: "Basic Information",
@@ -24,12 +27,8 @@ const steps = [
     icon: <TbUserSearch size={30} color="#FFF" />,
   },
   {
-    title: "Shipping details",
+    title: "Questions",
     icon: <GiReceiveMoney size={30} color="#FFF" />,
-  },
-  {
-    title: "Availability",
-    icon: <MdOutlineMoreTime size={30} color="#FFF" />,
   },
   {
     title: "Payment details",
@@ -41,12 +40,16 @@ let formInitialValues = {
   firstName: "Ritik ",
   lastName: "Chhipa",
   email: "ritik@gmail.com",
-  password: 123456789,
+  password: "123456789",
   countryCode: 91,
   number: 91001586400,
   //Form 2
   skillLevel: "level1",
-  traningCity: "asdasd",
+  coachingCity: "Jaipur",
+  coachingState: "Rajasthan",
+  coachingCountry: "India",
+  coachingPinCode: 312001,
+  coachingStreet1: "ashok nagar",
   experience: 21,
   document: "",
   //Form 3
@@ -62,6 +65,8 @@ const { formId, formField } = coachRegisterFormModel;
 
 function CoachRegister() {
   const [activeStep, setActiveStep] = useState(0);
+  const navigate = useNavigate();
+  const [registerCoach, { error }] = useMutation(RegisterCoach);
   const currentValidationSchema = validationSchema[activeStep];
   const isLastStep = activeStep === steps.length - 1;
   const { data: getSubscriptionPlans } = useQuery(GetSubscriptionPlans);
@@ -74,11 +79,8 @@ function CoachRegister() {
       case 1:
         return <BackgroundInfoForm formField={formField} />;
       case 2:
-        // return <AvaibilityForm formField={formField} />;
-        return <BackgroundInfoForm formField={formField} />;
-      case 3:
         return <FaqQuestionsForm formField={formField} />;
-      case 4:
+      case 3:
         return (
           <PaymentForm
             formField={formField}
@@ -96,8 +98,33 @@ function CoachRegister() {
   async function _submitForm(values, actions) {
     await _sleep(1000);
     alert(JSON.stringify(values, null, 2));
+    registerCoach({
+      variables: {
+        firstName: values.firstName,
+        lastName: values.lastName,
+        email: values.email,
+        password: values.password,
+
+        skillLevelId: "644117be660a4dbcc1b81adc",
+        coachingCity: values.coachingCity,
+        coachingState: values.coachingState,
+        coachingCountry: values.coachingCountry,
+        coachingPinCode: values.coachingPinCode.toString(),
+        document: values.document,
+        coachingStreet1: values.coachingStreet1,
+
+        subscriptionPlanId: values.paymentpaln,
+      },
+    })
+      .then((res) => {
+        alert("Now,You are the coach");
+        navigate("/coach/" + res.id);
+      })
+      .catch(() => {
+        alert(error.graphQLErrors[0].message);
+      });
+
     actions.setSubmitting(false);
-    // setActiveStep(activeStep + 1);
   }
 
   function _handleSubmit(values, actions) {

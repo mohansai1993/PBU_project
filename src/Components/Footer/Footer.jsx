@@ -31,7 +31,7 @@ function Footer() {
                       </Link>
                     </li>
                     <li className="mb-4">
-                      <Link to="/feeds" className="hover:underline">
+                      <Link to="/feed" className="hover:underline">
                         PBU Feeds
                       </Link>
                     </li>{" "}
