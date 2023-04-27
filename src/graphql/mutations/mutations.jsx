@@ -79,5 +79,13 @@ const EditCoach = gql`
     }
   }
 `;
+const SetSlot = gql`
+  mutation SetSlot($coachId: ID, $openingHours: OpeningHoursInput) {
+    setSlot(coachId: $coachId, openingHours: $openingHours) {
+      createdAt
+      about
+    }
+  }
+`;
 
-export { PostFeed, RegisterCoach, EditCoach };
+export { PostFeed, RegisterCoach, EditCoach, SetSlot };

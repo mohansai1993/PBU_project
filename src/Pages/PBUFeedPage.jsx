@@ -8,8 +8,14 @@ import { useParams } from "react-router-dom";
 import { useMutation, useQuery } from "@apollo/client";
 import { Couch } from "../graphql/query/Query";
 import moment from "moment";
-import { PostFeed, EditCoach } from "../graphql/mutations/mutations";
+import {
+  PostFeed,
+  EditCoach,
+  setSlot,
+  SetSlot,
+} from "../graphql/mutations/mutations";
 import { AiFillDelete } from "react-icons/ai";
+import * as Yup from "yup";
 
 function PBUFeedPage() {
   let { id } = useParams();
@@ -21,14 +27,22 @@ function PBUFeedPage() {
   });
   let [postFeed] = useMutation(PostFeed);
   let [editCoach] = useMutation(EditCoach);
-  console.log(couch);
   let Tabs = [
     {
       title: "Your Profile",
     },
 
     {
-      title: "Setting",
+      title: "Profile Setting",
+    },
+    {
+      title: "Availability",
+    },
+    {
+      title: "Transaction History",
+    },
+    {
+      title: "About",
     },
   ];
   return (
@@ -63,7 +77,7 @@ function PBUFeedPage() {
               <Tab.List className=" text-white  divide-x divide-[#B8B8B8]">
                 {Tabs.map((value, index) => (
                   <>
-                    <Tab as={Fragment}>
+                    <Tab as={Fragment} className="cursor-pointer" index={index}>
                       {({ selected }) => (
                         /* Use the `selected` state to conditionally style the selected tab. */
                         <span
@@ -89,6 +103,15 @@ function PBUFeedPage() {
 
               <Tab.Panel>
                 <SettingPanel editCoach={editCoach} coachId={id} />
+              </Tab.Panel>
+              <Tab.Panel>
+                <AvaibilityPanel
+                  coachId={id}
+                  openingHours={couch?.getCoach?.openingHours}
+                />
+              </Tab.Panel>
+              <Tab.Panel>
+                <AboutPanel coachId={id} />
               </Tab.Panel>
             </Tab.Panels>
           </Tab.Group>
@@ -535,6 +558,252 @@ const SettingPanel = ({ editCoach, coachId }) => {
           </button>
         </div>
       </form>
+    </>
+  );
+};
+
+const AvaibilityPanel = ({ coachId, openingHours }) => {
+  const [slot] = useMutation(SetSlot);
+  const initialValues = {
+    sunday: {
+      start: openingHours.Sunday.startTime,
+      end: openingHours.Sunday.endTime,
+    },
+    monday: {
+      start: openingHours.Monday.startTime,
+      end: openingHours.Monday.endTime,
+    },
+    tuesday: {
+      start: openingHours.Tuesday.startTime,
+      end: openingHours.Tuesday.endTime,
+    },
+    wednesday: {
+      start: openingHours.Wednesday.startTime,
+      end: openingHours.Wednesday.endTime,
+    },
+    thursday: {
+      start: openingHours.Thursday.startTime,
+      end: openingHours.Thursday.endTime,
+    },
+    friday: {
+      start: openingHours.Friday.startTime,
+      end: openingHours.Friday.endTime,
+    },
+    saturday: {
+      start: openingHours.Saturday.startTime,
+      end: openingHours.Saturday.endTime,
+    },
+  };
+  const validation = Yup.object().shape({
+    sunday: Yup.object().shape({
+      start: Yup.number()
+        .min(6, "not be less than 6")
+        .max(24, "not be greater than 24"),
+      end: Yup.number()
+        .min(6, "not be less than 6")
+        .max(24, "not be greater than 24"),
+    }),
+    // add validation for other days here
+  });
+
+  return (
+    <>
+      {" "}
+      <Formik
+        initialValues={initialValues}
+        validationSchema={validation}
+        onSubmit={(values, actions) => {
+          slot({
+            variables: {
+              coachId: coachId,
+              openingHours: {
+                Sunday: {
+                  endTime: values.sunday.start,
+                  startTime: values.sunday.start,
+                },
+                Friday: {
+                  startTime: values.friday.start,
+                  endTime: values.friday.start,
+                },
+                Monday: {
+                  startTime: values.monday.start,
+                  endTime: values.monday.start,
+                },
+                Saturday: {
+                  endTime: values.saturday.start,
+                  startTime: values.saturday.start,
+                },
+                Thursday: {
+                  endTime: values.thursday.start,
+                  startTime: values.thursday.start,
+                },
+                Tuesday: {
+                  endTime: values.tuesday.start,
+                  startTime: values.tuesday.start,
+                },
+                Wednesday: {
+                  endTime: values.wednesday.start,
+                  startTime: values.wednesday.start,
+                },
+              },
+            },
+          }).then((res) => console.log(res));
+        }}
+        enableReinitialize={true}
+      >
+        {({ values, handleSubmit }) => (
+          <Form onSubmit={handleSubmit}>
+            <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+              <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                <tr>
+                  <th scope="col" class="px-6 py-3">
+                    Day
+                  </th>
+                  <th scope="col" class="px-6 py-3">
+                    Start Time
+                  </th>
+                  <th scope="col" class="px-6 py-3">
+                    End Time
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {Object.entries(values).map(([day, { start, end }]) => (
+                  <tr
+                    key={day}
+                    className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+                  >
+                    <td scope="row" class="px-6 py-4 capitalize">
+                      {day}
+                    </td>
+                    <td scope="row" class="px-6 py-4">
+                      <Field
+                        type="number"
+                        name={`${day}.start`}
+                        value={start}
+                        className="p-3 rounded-md w-full  text-sm  rounded-md focus:outline-none 
+                        placeholder:text-primary-gray "
+                        placeholder="Start Time"
+                      />
+                      <ErrorMessage
+                        name={`${day}.start`}
+                        component="div"
+                        className="text-red-500"
+                      />
+                    </td>
+                    <td scope="row" class="px-6 py-4 ">
+                      <Field
+                        type="number"
+                        name={`${day}.end`}
+                        value={end}
+                        className="p-3 rounded-md w-full  text-sm  rounded-md focus:outline-none 
+                        placeholder:text-primary-gray "
+                        placeholder="End Time"
+                      />
+                      <ErrorMessage
+                        name={`${day}.end`}
+                        component="div"
+                        className="text-red-500"
+                      />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            <button
+              type="submit"
+              className="bg-primary-green text-white py-1  rounded-md min-w-[150px]  mt-5"
+            >
+              Submit
+            </button>
+          </Form>
+        )}
+      </Formik>
+    </>
+  );
+};
+
+const AboutPanel = ({ couchId }) => {
+  return (
+    <>
+      <div>
+        <div>
+          <h2 className="text-2xl text-white font-semibold">
+            Coaching Experience
+          </h2>
+          <form
+            className="my-5"
+            onSubmit={(e) => {
+              e.preventDefault();
+            }}
+          >
+            <textarea
+              className="w-full text-black p-3 placeholder:text-black rounded-md"
+              placeholder="Write Your coaching Experience "
+            />{" "}
+            <div className="flex justify-end">
+              <button
+                type="submit"
+                variant="contained"
+                color="primary"
+                className="bg-primary-green text-white py-1  rounded-md min-w-[150px]"
+              >
+                Submit
+              </button>
+            </div>
+          </form>
+        </div>
+        <div>
+          <h2 className="text-2xl text-white font-semibold">
+            Athlete Highlighting
+          </h2>
+          <form
+            className="my-5"
+            onSubmit={(e) => {
+              e.preventDefault();
+            }}
+          >
+            <textarea
+              className="w-full text-black p-3 placeholder:text-black rounded-md"
+              placeholder="Tell us about your athlete "
+            />{" "}
+            <div className="flex justify-end">
+              <button
+                type="submit"
+                variant="contained"
+                color="primary"
+                className="bg-primary-green text-white py-1  rounded-md min-w-[150px]"
+              >
+                Submit
+              </button>
+            </div>
+          </form>
+        </div>
+        <div>
+          <h2 className="text-2xl text-white font-semibold">Session Plan </h2>
+          <form
+            className="my-5"
+            onSubmit={(e) => {
+              e.preventDefault();
+            }}
+          >
+            <textarea
+              className="w-full text-black p-3 placeholder:text-black rounded-md"
+              placeholder="Write about your session plans "
+            />
+            <div className="flex justify-end">
+              <button
+                type="submit"
+                variant="contained"
+                color="primary"
+                className="bg-primary-green text-white py-1  rounded-md min-w-[150px]"
+              >
+                Submit
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
     </>
   );
 };

@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import logo from "./../../assets/logo.png";
 import { RxHamburgerMenu } from "react-icons/rx";
 function Header() {
+  const [Open, setOpen] = useState(false);
   const ROUTER = [
     {
       link: "/",
@@ -37,9 +38,13 @@ function Header() {
             <div className=" container relative  py-4 flex justify-end ">
               <img className="left-0 max-w-[100px] top-0 absolute" src={logo} />
 
-              <span className="flex  md:hidden">
+              <span
+                className="flex cursor-pointer  md:hidden"
+                onClick={() => setOpen(!Open)}
+              >
                 <RxHamburgerMenu size={30} color="#fff" />
               </span>
+
               <div className=" hidden md:flex gap-3  ">
                 <Link to="/login">
                   <button className="bg-primary-green text-white py-1  rounded-md min-w-[150px]">
@@ -64,8 +69,56 @@ function Header() {
                 >
                   {links.title}
                 </Link>
-              ))}
+              ))}{" "}
+              <Link
+                onClick={() => setOpen(false)}
+                className="px-4 text-white py-2 hover:text-[#4BFD00]"
+                to={"/profile/644129f99e58ce207b4272e8"}
+              >
+                Profile
+              </Link>
             </nav>
+          </div>
+          <div
+            className={`bg-black  w-full absolute ${Open ? "block" : "hidden"}`}
+          >
+            <div>
+              <nav className="">
+                {ROUTER.map((links, index) => (
+                  <div className="py-3">
+                    <Link
+                      onClick={() => setOpen(false)}
+                      className="px-4 hover:text-primary-green  text-white py-2 hover:text-[#4BFD00]"
+                      to={links.link}
+                      key={index}
+                    >
+                      {links.title}
+                    </Link>
+                  </div>
+                ))}
+                <div className="py-3">
+                  <Link
+                    onClick={() => setOpen(false)}
+                    className="px-4 hover:text-primary-green  text-white py-2 hover:text-[#4BFD00]"
+                    to={"/coach"}
+                  >
+                    Profile
+                  </Link>
+                </div>
+              </nav>
+            </div>{" "}
+            <div className=" px-4 pb-10 flex gap-4">
+              <Link to="/login">
+                <button className="bg-primary-green text-white py-1  rounded-md min-w-[150px]">
+                  Login
+                </button>
+              </Link>
+              <Link to={"/register"}>
+                <button className="bg-primary-green text-white py-1  rounded-md min-w-[150px]">
+                  Register
+                </button>
+              </Link>
+            </div>
           </div>
         </div>
       </div>

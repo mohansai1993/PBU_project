@@ -27,7 +27,7 @@ function CoachDetails() {
             </h3>
             <div className="md:flex gap-4">
               <div className="flex-1 mb-4">
-                <CoachCard couch={couch} />
+                {couch?.getCoach && <CoachCard couch={couch} />}
 
                 <div>
                   <h3 className="font-semibold text-3xl text-white py-10 ">
@@ -176,23 +176,20 @@ const CoachCard = ({ couch }) => {
             <h5 className="text-primary-green capitalize font-semibold ">
               ready to complete training
             </h5>
+
             <div className="flex ">
-              <span>
-                <AiFillStar size={25} className="text-yellow-400" />
-              </span>
-              <span>
-                <AiFillStar size={25} className="text-yellow-400" />
-              </span>
-              <span>
-                <AiFillStar size={25} className="text-yellow-400" />
-              </span>
-              <span>
-                <AiFillStar size={25} className="text-yellow-400" />
-              </span>
-              <span>
-                <AiFillStar size={25} className="text-yellow-400" />
-              </span>
+              {Array(parseInt(couch?.getCoach?.averageRating)).fill(
+                <span>
+                  <AiFillStar size={25} className="text-yellow-400" />
+                </span>
+              )}
+              {Array(5 - parseInt(couch?.getCoach?.averageRating)).fill(
+                <span>
+                  <AiFillStar size={25} className="text-gray-200" />
+                </span>
+              )}
             </div>
+
             <p>{couch?.getCoach?.about}</p>
           </div>
         </div>

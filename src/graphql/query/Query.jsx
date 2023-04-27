@@ -33,6 +33,7 @@ const Couch = gql`
       firstName
       id
       profilePicture
+      averageRating
       lastName
       skillLevel {
         name
@@ -44,6 +45,36 @@ const Couch = gql`
         post
         postBy
         updatedAt
+      }
+      openingHours {
+        Sunday {
+          endTime
+          startTime
+        }
+        Monday {
+          endTime
+          startTime
+        }
+        Tuesday {
+          endTime
+          startTime
+        }
+        Wednesday {
+          endTime
+          startTime
+        }
+        Thursday {
+          endTime
+          startTime
+        }
+        Friday {
+          endTime
+          startTime
+        }
+        Saturday {
+          endTime
+          startTime
+        }
       }
     }
   }
