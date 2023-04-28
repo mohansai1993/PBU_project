@@ -35,6 +35,16 @@ const Couch = gql`
       profilePicture
       averageRating
       lastName
+      sessionPlans {
+        id
+        duration
+        forPeople
+        price
+        stripeProductId
+        stripePriceId
+        createdAt
+        updatedAt
+      }
       skillLevel {
         name
       }

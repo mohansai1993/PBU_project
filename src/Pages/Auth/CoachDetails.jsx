@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { AiFillStar } from "react-icons/ai";
 import bg_01 from "../../assets/bg-01.png";
 import { IoIosArrowDroprightCircle } from "react-icons/io";
@@ -6,6 +6,8 @@ import { Tab } from "@headlessui/react";
 import { useQuery } from "@apollo/client";
 import { Couch } from "../../graphql/query/Query";
 import { useParams } from "react-router-dom";
+import SessionPurchaseModal from "../../Components/Modal/SessionPurchaseModal";
+import AppoitmentBooking from "../../Components/AppoitmentBooking/AppoitmentBooking";
 
 function CoachDetails() {
   let { id } = useParams();
@@ -31,11 +33,12 @@ function CoachDetails() {
 
                 <div>
                   <h3 className="font-semibold text-3xl text-white py-10 ">
-                    Packages
+                    Session Plans
                   </h3>
                   <div className="grid grid-cols-2 gap-3">
-                    <PackageCard />
-                    <PackageCard />
+                    {couch?.getCoach?.sessionPlans.map((value, index) => (
+                      <PackageCard value={value} key={index} />
+                    ))}
                   </div>
                 </div>
               </div>
@@ -80,20 +83,11 @@ function CoachDetails() {
             </Tab.List>
             <Tab.Panels className="my-6 leading-loose">
               <Tab.Panel>
-                I recently just moved to Joplin, MO after finishing two years of
+                {/* I recently just moved to Joplin, MO after finishing two years of
                 coaching at Poudre High School in Fort Collins, CO, coaching the
                 varsity quarterbacks. I am also actively coaching athletes in
-                individual sessions, as well as coaching multiple flag football
-                teams in the offseason. At Lehigh, I helped younger quarterbacks
-                and teammates transition from the high school game to Division 1
-                competition (e.g. learning new offensive schemes/game plans,
-                reading defenses, fundamentals, and more). I coached a family
-                friend who played quarterback at the high school level while at
-                Lehigh. I have had over 10 years of experience playing the
-                position under top tier quarterback coaches (currently a
-                Division 1AA head coach & Division 1AA OC, both with excellent
-                careers themselves). I am really excited to coach football
-                players of all ages!
+                 */}
+                <AppoitmentBooking />
               </Tab.Panel>
               <Tab.Panel>
                 me to Division 1 competition (e.g. learning new offensive
@@ -120,11 +114,13 @@ function CoachDetails() {
   );
 }
 
-const PackageCard = ({ couch }) => {
+const PackageCard = ({ value }) => {
+  let [isOpen, setIsOpen] = useState(false);
   return (
     <div className="bg-white p-4 rounded-md">
       <h3 className="text-2xl font-bold  py-5">
-        <span className="text-primary-green">PBU</span> Beginner
+        <span className="text-primary-green">Session</span> for{" "}
+        {value.forPeople} pepole
       </h3>
       <div>
         <ol className="flex flex-col gap-3">
@@ -133,26 +129,34 @@ const PackageCard = ({ couch }) => {
               className="text-primary-green "
               size={20}
             />{" "}
-            You Keep 78% of Session Rate
+            You will take {value.duration} Hour.
           </li>
           <li className="flex items-center gap-2 ">
             <IoIosArrowDroprightCircle
               className="text-primary-green "
               size={20}
             />{" "}
-            You Keep 78% of Session Rate
+            {value.forPeople} people can join.
           </li>
           <li className="flex items-center gap-2 ">
             <IoIosArrowDroprightCircle
               className="text-primary-green "
               size={20}
             />{" "}
-            You Keep 78% of Session Rate
+            You can discuss with the coach.
           </li>
         </ol>
       </div>
-      <button className="border border-black   text-black  py-2  rounded-md w-full my-5 ">
-        $9.99 a Month
+      <SessionPurchaseModal
+        value={value}
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+      />{" "}
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="border border-black hover:bg-primary-green hover:text-white hover:border-white font-semibold   text-black  py-2  rounded-md w-full my-5 "
+      >
+        ${value.price} for session
       </button>
     </div>
   );
