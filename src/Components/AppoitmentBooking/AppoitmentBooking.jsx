@@ -172,25 +172,18 @@ function AppoitmentBooking() {
             </div>
           </div>
           <section className="mt-12 md:mt-0 md:pl-14">
-            <h2 className="font-semibold text-gray-900">
-              Booking Slots for{" "}
-              <time dateTime={format(selectedDay, "yyyy-MM-dd")}>
-                {format(selectedDay, "MMM dd, yyy")}
-              </time>
-            </h2>
-            <div className="flex gap-3 flex-wrap">
-              {console.log(bookedSlot)}
-              {Object.keys(slots).map((value, i) => (
-                <AvailSlots
-                  slots={slots[value]}
-                  key={i}
-                  day={value}
-                  selectedDay={selectedDay}
-                  setBookedSlot={setBookedSlot}
-                  bookedSlot={bookedSlot}
-                />
-              ))}
-            </div>
+            {console.log(bookedSlot)}
+            {Object.keys(slots).map((value, i) => (
+              <AvailSlots
+                slots={slots[value]}
+                key={i}
+                day={value}
+                selectedDay={selectedDay}
+                setBookedSlot={setBookedSlot}
+                bookedSlot={bookedSlot}
+              />
+            ))}
+
             {/* <ol className="mt-4 space-y-1 text-sm leading-6 text-gray-500">
               {selectedDayMeetings.length > 0 ? (
                 selectedDayMeetings.map((meeting) => (
@@ -215,20 +208,8 @@ function AvailSlots({ slots, day, selectedDay, setBookedSlot, bookedSlot }) {
     const dayOfMonth = moment(selectedDay).date();
 
     setBookedSlot((prevState) => {
-      const newState = { ...prevState };
-      if (
-        newState[year] &&
-        newState[year][month] &&
-        newState[year][month][day] &&
-        newState[year][month][day][dayOfMonth]
-      ) {
-        if (newState[year][month][day].length == 1) {
-          delete newState[year][month][day][dayOfMonth];
-        } else {
-          delete newState[year][month][day][dayOfMonth].startTime;
-          delete newState[year][month][day][dayOfMonth].endTime;
-        }
-      }
+      const newState = {};
+
       return newState;
     });
   }
@@ -268,27 +249,55 @@ function AvailSlots({ slots, day, selectedDay, setBookedSlot, bookedSlot }) {
   ) {
     return (
       <>
-        {res.map((index, idx) => (
-          <span
-            key={idx}
-            onClick={() => {
-              bookedSlot?.[moment(selectedDay).year()]?.[
-                moment(selectedDay).format("MMMM").toLowerCase()
-              ]?.[day]?.[moment(selectedDay).date()]?.startTime != index
-                ? addTimeSlot(day, selectedDay, index)
-                : removeTimeSlot(day, selectedDay);
-            }}
-            className={`hover:bg-red-500 cursor-pointer bg-black text-white font-semibold  px-5 py-1 rounded-md ${
-              bookedSlot?.[moment(selectedDay).year()]?.[
-                moment(selectedDay).format("MMMM").toLowerCase()
-              ]?.[day]?.[moment(selectedDay).date()]?.startTime != index
-                ? ""
-                : "bg-red-500"
-            }`}
-          >
-            {index}:00
-          </span>
-        ))}
+        {" "}
+        {res.length ? (
+          <>
+            <h2 className="font-semibold text-gray-900">
+              Booking Slots for{" "}
+              <time dateTime={format(selectedDay, "yyyy-MM-dd")}>
+                {format(selectedDay, "MMM dd, yyy")}
+              </time>
+            </h2>
+            <div className="flex gap-3 flex-wrap">
+              {res.map((index, idx) => (
+                <span
+                  key={idx}
+                  onClick={() => {
+                    bookedSlot?.[moment(selectedDay).year()]?.[
+                      moment(selectedDay).format("MMMM").toLowerCase()
+                    ]?.[day]?.[moment(selectedDay).date()]?.startTime != index
+                      ? addTimeSlot(day, selectedDay, index)
+                      : removeTimeSlot(day, selectedDay);
+                  }}
+                  className={`hover:bg-red-500 cursor-pointer bg-black text-white font-semibold  px-5 py-1 rounded-md ${
+                    bookedSlot?.[moment(selectedDay).year()]?.[
+                      moment(selectedDay).format("MMMM").toLowerCase()
+                    ]?.[day]?.[moment(selectedDay).date()]?.startTime != index
+                      ? ""
+                      : "bg-red-500"
+                  }`}
+                >
+                  {index}:00
+                </span>
+              ))}
+            </div>
+          </>
+        ) : (
+          <div className="flex flex-col justify-center items-center text-black text-xl text-semibold h-full">
+            {" "}
+            Booking slots are not available
+          </div>
+        )}
+      </>
+    );
+  }
+  if (day === moment(selectedDay).format("dddd").toLowerCase()) {
+    return (
+      <>
+        <div className="flex flex-col justify-center  text-center items-center text-black text-xl text-semibold h-full">
+          {" "}
+          Booking slots are not available if you select a previous date.
+        </div>
       </>
     );
   }
