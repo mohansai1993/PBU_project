@@ -73,7 +73,7 @@ function Header() {
               <Link
                 onClick={() => setOpen(false)}
                 className="px-4 text-white py-2 hover:text-[#4BFD00]"
-                to={"/profile/644129f99e58ce207b4272e8"}
+                to={"/profile/644fb37fb7de2f1c18f52458"}
               >
                 Profile
               </Link>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { BsInfoCircle } from "react-icons/bs";
 import { TbUserSearch } from "react-icons/tb";
 import { GiReceiveMoney } from "react-icons/gi";
@@ -17,6 +17,7 @@ import { RegisterCoach } from "../../graphql/mutations/mutations";
 import AvaibilityForm from "./AvaibilityForm";
 import Toast from "../Toast/Toast";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../../module/context/AuthContext";
 const steps = [
   {
     title: "Basic Information",
@@ -71,7 +72,7 @@ function CoachRegister() {
   const isLastStep = activeStep === steps.length - 1;
   const { data: getSubscriptionPlans } = useQuery(GetSubscriptionPlans);
   console.log(getSubscriptionPlans);
-
+  const { handleRegister } = useContext(AuthContext);
   function _renderStepContent(step) {
     switch (step) {
       case 0:
@@ -98,31 +99,15 @@ function CoachRegister() {
   async function _submitForm(values, actions) {
     await _sleep(1000);
     alert(JSON.stringify(values, null, 2));
-    registerCoach({
-      variables: {
-        firstName: values.firstName,
-        lastName: values.lastName,
-        email: values.email,
-        password: values.password,
-
-        skillLevelId: "644117be660a4dbcc1b81adc",
-        coachingCity: values.coachingCity,
-        coachingState: values.coachingState,
-        coachingCountry: values.coachingCountry,
-        coachingPinCode: values.coachingPinCode.toString(),
-        document: values.document,
-        coachingStreet1: values.coachingStreet1,
-
-        subscriptionPlanId: values.paymentpaln,
-      },
-    })
-      .then((res) => {
-        alert("Now,You are the coach");
-        navigate("/coach/" + res.id);
-      })
-      .catch(() => {
-        alert(error.graphQLErrors[0].message);
-      });
+    handleRegister({ values });
+    // .then((res) => {
+    //   console.log(res);
+    //   alert("Now,You are the coach");
+    //   navigate("/coach/" + res.id);
+    // })
+    // .catch(() => {
+    //   alert(error.graphQLErrors[0].message);
+    // });
 
     actions.setSubmitting(false);
   }

@@ -8,6 +8,7 @@ import { Couch } from "../../graphql/query/Query";
 import { useParams } from "react-router-dom";
 import SessionPurchaseModal from "../../Components/Modal/SessionPurchaseModal";
 import AppoitmentBooking from "../../Components/AppoitmentBooking/AppoitmentBooking";
+import SingleChat from "../../module/pages/SingleChat";
 
 function CoachDetails() {
   let { id } = useParams();
@@ -24,6 +25,7 @@ function CoachDetails() {
       <div className="bg-[#152033]">
         <div className="container ">
           <div className="pb-16">
+            <SingleChat coachId={id} />
             <h3 className="font-semibold text-3xl text-white py-10 ">
               Coach <span className="text-primary-green">Near by You</span>
             </h3>
