@@ -3,7 +3,7 @@ import logo from "./../../assets/logo.png";
 import { Link } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { AuthContext } from "../../module/context/AuthContext";
+import { AuthContext } from "../../context/AuthContext";
 
 function LoginPage() {
   const { handleLogin } = useContext(AuthContext);

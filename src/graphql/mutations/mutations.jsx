@@ -89,4 +89,10 @@ const SetSlot = gql`
   }
 `;
 
-export { PostFeed, RegisterCoach, EditCoach, SetSlot };
+const AddChatRoom = gql`
+  mutation AddChatRoom($chatId: String!, $coachId: ID!, $athleteId: ID!) {
+    addChatRoom(chatId: $chatId, coachId: $coachId, athleteId: $athleteId)
+  }
+`;
+
+export { PostFeed, RegisterCoach, EditCoach, SetSlot, AddChatRoom };

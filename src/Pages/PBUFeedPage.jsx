@@ -118,7 +118,7 @@ function PBUFeedPage() {
                 <AboutPanel coachId={id} />
               </Tab.Panel>
               <Tab.Panel>
-                <MultiChat coachId={id} />
+                <MultiChat couch={couch} />
               </Tab.Panel>
             </Tab.Panels>
           </Tab.Group>

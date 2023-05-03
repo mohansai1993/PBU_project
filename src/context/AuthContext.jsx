@@ -1,10 +1,10 @@
 import { useLazyQuery, useMutation } from "@apollo/client";
 import { createContext, useEffect, useState } from "react";
-import { Login } from "../graphql/mutations/mutations";
+import { Login } from "../module/graphql/mutations/mutations";
 import { useNavigate } from "react-router-dom";
-import { RegisterCoach } from "../../graphql/mutations/mutations";
+import { RegisterCoach } from "../graphql/mutations/mutations";
 import { doc, setDoc } from "firebase/firestore";
-import { db } from "../firebase";
+import { db } from "../module/firebase";
 export const AuthContext = createContext();
 
 export const AuthContextProvider = ({ children }) => {
@@ -14,8 +14,8 @@ export const AuthContextProvider = ({ children }) => {
   const handleLogin = () => {
     login({
       variables: {
-        email: "ron.whesley@sgvsofttech.com",
-        password: "Ron@123",
+        email: "rose.gellern@gmail.com",
+        password: "Rose@123",
       },
     }).then((user) => {
       console.log(user.data.login);

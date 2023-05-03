@@ -17,7 +17,7 @@ import { RegisterCoach } from "../../graphql/mutations/mutations";
 import AvaibilityForm from "./AvaibilityForm";
 import Toast from "../Toast/Toast";
 import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../../module/context/AuthContext";
+import { AuthContext } from "../../context/AuthContext";
 const steps = [
   {
     title: "Basic Information",

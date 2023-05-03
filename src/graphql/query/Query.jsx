@@ -35,6 +35,15 @@ const Couch = gql`
       profilePicture
       averageRating
       lastName
+      chats {
+        athlete {
+          id
+          firstName
+          profilePicture
+          lastName
+        }
+        chatId
+      }
       sessionPlans {
         id
         duration
