@@ -11,14 +11,19 @@ export const AuthContextProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState({});
   const [login] = useMutation(Login);
   const [registerCoach] = useMutation(RegisterCoach);
+  const navigate = useNavigate();
   const handleLogin = () => {
     login({
       variables: {
+        //user
         email: "rose.gellern@gmail.com",
         password: "Rose@123",
+        //coach
+        // email: "ron.whesley@sgvsofttech.com",
+        // password: "Ron@123",
       },
     }).then((user) => {
-      console.log(user.data.login);
+      navigate("/");
       setCurrentUser(user.data.login);
     });
   };

@@ -15,13 +15,13 @@ const client = new ApolloClient({
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <ApolloProvider client={client}>
-      <AuthContextProvider>
-        <ChatContextProvider>
-          <BrowserRouter>
+      <BrowserRouter>
+        <AuthContextProvider>
+          <ChatContextProvider>
             <App />
-          </BrowserRouter>
-        </ChatContextProvider>
-      </AuthContextProvider>
+          </ChatContextProvider>
+        </AuthContextProvider>
+      </BrowserRouter>
     </ApolloProvider>
   </React.StrictMode>
 );

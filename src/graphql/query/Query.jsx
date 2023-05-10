@@ -23,6 +23,38 @@ const GetFeeds = gql`
   }
 `;
 
+const Athlete = gql`
+  query GetAthlete($email: String) {
+    getAthlete(email: $email) {
+      id
+      firstName
+      lastName
+      email
+      password
+      profilePicture
+      game
+      createdAt
+      updatedAt
+      feed {
+        post
+        postBy
+        updatedAt
+      }
+      contactDetails {
+        number
+      }
+      chats {
+        athlete {
+          id
+          firstName
+          profilePicture
+          lastName
+        }
+        chatId
+      }
+    }
+  }
+`;
 const Couch = gql`
   query GetCoach($coachId: ID) {
     getCoach(coachId: $coachId) {
@@ -138,4 +170,11 @@ const GetTop4Reviews = gql`
     }
   }
 `;
-export { GetFeeds, Couch, Couches, GetSubscriptionPlans, GetTop4Reviews };
+export {
+  GetFeeds,
+  Couch,
+  Couches,
+  Athlete,
+  GetSubscriptionPlans,
+  GetTop4Reviews,
+};

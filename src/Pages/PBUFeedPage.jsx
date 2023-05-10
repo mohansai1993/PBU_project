@@ -104,7 +104,6 @@ function PBUFeedPage() {
               <Tab.Panel>
                 <ProfilePanel postFeed={postFeed} couch={couch?.getCoach} />
               </Tab.Panel>
-
               <Tab.Panel>
                 <SettingPanel editCoach={editCoach} coachId={id} />
               </Tab.Panel>
@@ -114,6 +113,10 @@ function PBUFeedPage() {
                   openingHours={couch?.getCoach?.openingHours}
                 />
               </Tab.Panel>
+              {/* /Transaction */}
+              <Tab.Panel>
+                <AboutPanel coachId={id} />
+              </Tab.Panel>{" "}
               <Tab.Panel>
                 <AboutPanel coachId={id} />
               </Tab.Panel>

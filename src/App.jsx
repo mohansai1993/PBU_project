@@ -26,8 +26,11 @@ function App() {
         <Route path="/find/coach" element={<FindCoach />} />
         <Route path="/coach/:id" element={<CoachDetails />} />
         <Route path="/feed" element={<FeedPage />} />
-        <Route path="/profile/:id" element={<PBUFeedPage />} />
-        <Route path="/profile/user/:id" element={<UserProfile />} />
+        <Route path="/profile">
+          {/* <Route path=":id" element={<PBUFeedPage />} /> */}
+          <Route path="athlete/:id" element={<UserProfile />} />
+          <Route path="coach/:id" element={<PBUFeedPage />} />
+        </Route>
         <Route path="/courts" element={<CourtsPage />} />
         <Route path="/become/coach" element={<BecomeCoach />} />
         <Route path="/become/coach/apply" element={<ApplyBecomeCoach />} />

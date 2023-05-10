@@ -74,21 +74,21 @@ function Header() {
               ))}
               {console.log()}
               {Object.keys(currentUser).length ? (
-                currentUser.userType !== "athlete" ? (
+                currentUser.userType === "athlete" ? (
                   <Link
                     onClick={() => setOpen(false)}
                     className="px-4 text-white py-2 hover:text-[#4BFD00]"
-                    to={`/profile/${currentUser?.userId}`}
+                    to={`/profile/athlete/${currentUser?.userId}`}
                   >
-                    Coach Profile
+                    Athlete Profile
                   </Link>
                 ) : (
                   <Link
                     onClick={() => setOpen(false)}
                     className="px-4 text-white py-2 hover:text-[#4BFD00]"
-                    to={`/profile/user/${currentUser?.userId}`}
+                    to={`/profile/coach/${currentUser?.userId}`}
                   >
-                    User Profile
+                    Coach Profile
                   </Link>
                 )
               ) : null}
