@@ -42,7 +42,6 @@ const RegisterCoach = gql`
       email
       userType
       token
-      userId
     }
   }
 `;
@@ -89,10 +88,15 @@ const SetSlot = gql`
   }
 `;
 
-const AddChatRoom = gql`
-  mutation AddChatRoom($chatId: String!, $coachId: ID!, $athleteId: ID!) {
-    addChatRoom(chatId: $chatId, coachId: $coachId, athleteId: $athleteId)
+const Login = gql`
+  mutation Login($email: String, $password: String) {
+    login(email: $email, password: $password) {
+      userId
+      email
+      userType
+      token
+    }
   }
 `;
 
-export { PostFeed, RegisterCoach, EditCoach, SetSlot, AddChatRoom };
+export { PostFeed, RegisterCoach, EditCoach, SetSlot, Login };

@@ -1,26 +1,32 @@
-import React from "react";
+import React, { useContext } from "react";
 import logo from "./../../assets/logo.png";
 import { Link } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import { AuthContext } from "../../context/AuthContext";
 
 function LoginPage() {
+  const { handleLogin } = useContext(AuthContext);
   const formik = useFormik({
     initialValues: {
-      email: "ritik@gmail.com",
-      password: "123456789",
+      email: "ron.whesley@sgvsofttech.com",
+      password: "Ron@123",
       keepLogin: true,
     },
     validationSchema: Yup.object({
       email: Yup.string()
         .email("Invalid email address")
         .required("Email is required"),
-      password: Yup.string()
-        .required("Password is required")
-        .min(8, "Password must be at least 8 characters long"),
+      // password: Yup.string()
+      //   .required("Password is required")
+      //   .min(8, "Password must be at least 8 characters long"),
     }),
     onSubmit: (values) => {
       console.log(values);
+      handleLogin({
+        email: values.email,
+        password: values.password,
+      });
     },
   });
   return (

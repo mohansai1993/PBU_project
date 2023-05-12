@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import logo from "./../../assets/logo.png";
 import { RxHamburgerMenu } from "react-icons/rx";
+import { AuthContext } from "../../context/AuthContext";
 function Header() {
+  const { currentUser } = useContext(AuthContext);
   const [Open, setOpen] = useState(false);
   const ROUTER = [
     {
@@ -69,14 +71,27 @@ function Header() {
                 >
                   {links.title}
                 </Link>
-              ))}{" "}
-              <Link
-                onClick={() => setOpen(false)}
-                className="px-4 text-white py-2 hover:text-[#4BFD00]"
-                to={"/profile/644129f99e58ce207b4272e8"}
-              >
-                Profile
-              </Link>
+              ))}
+              {console.log()}
+              {Object.keys(currentUser).length ? (
+                currentUser.userType !== "athlete" ? (
+                  <Link
+                    onClick={() => setOpen(false)}
+                    className="px-4 text-white py-2 hover:text-[#4BFD00]"
+                    to={`/profile/${currentUser?.userId}`}
+                  >
+                    Coach Profile
+                  </Link>
+                ) : (
+                  <Link
+                    onClick={() => setOpen(false)}
+                    className="px-4 text-white py-2 hover:text-[#4BFD00]"
+                    to={`/profile/user/${currentUser?.userId}`}
+                  >
+                    User Profile
+                  </Link>
+                )
+              ) : null}
             </nav>
           </div>
           <div

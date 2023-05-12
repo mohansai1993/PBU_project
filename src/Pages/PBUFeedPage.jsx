@@ -16,6 +16,7 @@ import {
 } from "../graphql/mutations/mutations";
 import { AiFillDelete } from "react-icons/ai";
 import * as Yup from "yup";
+import MultiChat from "../module/pages/MultiChat";
 
 function PBUFeedPage() {
   let { id } = useParams();
@@ -43,6 +44,9 @@ function PBUFeedPage() {
     },
     {
       title: "About",
+    },
+    {
+      title: "Chats",
     },
   ];
   return (
@@ -112,6 +116,9 @@ function PBUFeedPage() {
               </Tab.Panel>
               <Tab.Panel>
                 <AboutPanel coachId={id} />
+              </Tab.Panel>
+              <Tab.Panel>
+                <MultiChat couch={couch} />
               </Tab.Panel>
             </Tab.Panels>
           </Tab.Group>
