@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import { AiFillStar } from "react-icons/ai";
 import bg_01 from "../../assets/bg-01.png";
 import { IoIosArrowDroprightCircle } from "react-icons/io";
@@ -8,11 +8,9 @@ import { Couch } from "../../graphql/query/Query";
 import { useParams } from "react-router-dom";
 import SessionPurchaseModal from "../../Components/Modal/SessionPurchaseModal";
 import AppoitmentBooking from "../../Components/AppoitmentBooking/AppoitmentBooking";
-import SingleChat from "../../module/pages/SingleChat";
 
 function CoachDetails() {
   let { id } = useParams();
-
   console.log(id);
   let { data: couch } = useQuery(Couch, {
     skip: !id,
@@ -20,6 +18,7 @@ function CoachDetails() {
       coachId: id,
     },
   });
+  console.log(couch);
   return (
     <>
       <div className="bg-[#152033]">
@@ -48,14 +47,14 @@ function CoachDetails() {
                   <h3 className="font-bold mb-3">
                     Questions For Joanne Dondero
                   </h3>
-
-                  <SingleChat couch={couch} />
+                  <button className="bg-primary-green text-white py-2  rounded-md min-w-[150px]">
+                    Message
+                  </button>
                   <h4 className="text-semibold my-3">Training Location</h4>
                 </div>
                 <iframe
                   id="gmap_canvas"
                   width={"100%"}
-                  title="canvas"
                   height={"70%"}
                   src="https://maps.google.com/maps?q=california&t=&z=10&ie=UTF8&iwloc=&output=embed"
                 />
