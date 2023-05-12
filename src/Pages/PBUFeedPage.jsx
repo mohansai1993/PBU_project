@@ -1,10 +1,10 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useContext, useEffect, useState } from "react";
 import { Tab } from "@headlessui/react";
 import { TfiPencil } from "react-icons/tfi";
 import { IoNavigate } from "react-icons/io5";
 import { useFormik } from "formik";
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useMutation, useQuery } from "@apollo/client";
 import { Couch } from "../graphql/query/Query";
 import moment from "moment";
@@ -17,10 +17,15 @@ import {
 import { AiFillDelete } from "react-icons/ai";
 import * as Yup from "yup";
 import MultiChat from "../module/pages/MultiChat";
+import { isCoach } from "../utils";
+import { AuthContext } from "../context/AuthContext";
+import LoadingSVG from "../Components/Loading/LoadingSvg";
 
 function PBUFeedPage() {
   let { id } = useParams();
-  let { data: couch } = useQuery(Couch, {
+  const { currentUser } = useContext(AuthContext);
+  const navigate = useNavigate();
+  let { data: couch, loading } = useQuery(Couch, {
     skip: !id,
     variables: {
       coachId: id,
@@ -49,6 +54,12 @@ function PBUFeedPage() {
       title: "Chats",
     },
   ];
+  useEffect(() => {
+    if (!isCoach(currentUser?.userType)) {
+      alert("You are not an Coach");
+      navigate("/");
+    }
+  }, []);
   return (
     <div className="bg-[#152033]">
       <div className="container">
@@ -56,49 +67,58 @@ function PBUFeedPage() {
           <Tab.Group>
             {" "}
             <div className="bg-[#212F48] p-6 rounded-2xl ">
-              <img />
-              <div className="text-white ">
-                <img
-                  src="https://png.pngtree.com/thumb_back/fh260/background/20200714/pngtree-modern-double-color-futuristic-neon-background-image_351866.jpg"
-                  alt=""
-                  className="object-cover h-[250px] rounded-2xl mb-8 w-full"
-                />
-                <div className="flex  items-center  justify-between">
-                  <div className="flex items-center  gap-4">
+              {loading ? (
+                <LoadingSVG />
+              ) : (
+                <>
+                  <div className="text-white ">
                     <img
+                      src="https://png.pngtree.com/thumb_back/fh260/background/20200714/pngtree-modern-double-color-futuristic-neon-background-image_351866.jpg"
                       alt=""
-                      src={couch?.getCoach?.profilePicture}
-                      className="rounded-md h-[100px] w-[100px] object-cover"
+                      className="object-cover h-[250px] rounded-2xl mb-8 w-full"
                     />
-                    <div>
-                      <h3 className="mb-2 text-3xl font-bold ">{`${couch?.getCoach?.firstName} ${couch?.getCoach?.lastName}`}</h3>
-                      <h5>Footballer </h5>
+                    <div className="flex  items-center  justify-between">
+                      <div className="flex items-center  gap-4">
+                        <img
+                          alt=""
+                          src={couch?.getCoach?.profilePicture}
+                          className="rounded-md h-[100px] w-[100px] object-cover"
+                        />
+                        <div>
+                          <h3 className="mb-2 text-3xl font-bold ">{`${couch?.getCoach?.firstName} ${couch?.getCoach?.lastName}`}</h3>
+                          <h5>Footballer </h5>
+                        </div>
+                      </div>
                     </div>
+                    <hr className="border-[#B8B8B8] my-6  "></hr>
                   </div>
-                </div>
-                <hr className="border-[#B8B8B8] my-6  "></hr>
-              </div>
-              <Tab.List className=" text-white  divide-x divide-[#B8B8B8]">
-                {Tabs.map((value, index) => (
-                  <>
-                    <Tab as={Fragment} className="cursor-pointer" index={index}>
-                      {({ selected }) => (
-                        /* Use the `selected` state to conditionally style the selected tab. */
-                        <span
-                          key={index}
-                          className={
-                            selected
-                              ? "outline-none text-primary-green px-3"
-                              : "px-3"
-                          }
+                  <Tab.List className=" text-white  divide-x divide-[#B8B8B8]">
+                    {Tabs.map((value, index) => (
+                      <>
+                        <Tab
+                          as={Fragment}
+                          className="cursor-pointer"
+                          index={index}
                         >
-                          {value.title}
-                        </span>
-                      )}
-                    </Tab>
-                  </>
-                ))}
-              </Tab.List>
+                          {({ selected }) => (
+                            /* Use the `selected` state to conditionally style the selected tab. */
+                            <span
+                              key={index}
+                              className={
+                                selected
+                                  ? "outline-none text-primary-green px-3"
+                                  : "px-3"
+                              }
+                            >
+                              {value.title}
+                            </span>
+                          )}
+                        </Tab>
+                      </>
+                    ))}
+                  </Tab.List>
+                </>
+              )}
             </div>
             <Tab.Panels className=" mt-6 pb-6">
               <Tab.Panel>

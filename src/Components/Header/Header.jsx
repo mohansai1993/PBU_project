@@ -4,7 +4,7 @@ import logo from "./../../assets/logo.png";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { AuthContext } from "../../context/AuthContext";
 function Header() {
-  const { currentUser } = useContext(AuthContext);
+  const { currentUser, handleLogout } = useContext(AuthContext);
   const [Open, setOpen] = useState(false);
   const ROUTER = [
     {
@@ -48,16 +48,27 @@ function Header() {
               </span>
 
               <div className=" hidden md:flex gap-3  ">
-                <Link to="/login">
-                  <button className="bg-primary-green text-white py-1  rounded-md min-w-[150px]">
-                    Login
+                {!currentUser ? (
+                  <>
+                    <Link to="/login">
+                      <button className="bg-primary-green text-white py-1  rounded-md min-w-[150px]">
+                        Login
+                      </button>
+                    </Link>
+                    <Link to={"/register"}>
+                      <button className="bg-primary-green text-white py-1  rounded-md min-w-[150px]">
+                        Register
+                      </button>
+                    </Link>
+                  </>
+                ) : (
+                  <button
+                    onClick={handleLogout}
+                    className="bg-primary-green text-white py-1  rounded-md min-w-[150px]"
+                  >
+                    Log Out
                   </button>
-                </Link>
-                <Link to={"/register"}>
-                  <button className="bg-primary-green text-white py-1  rounded-md min-w-[150px]">
-                    Register
-                  </button>
-                </Link>
+                )}
               </div>
             </div>
           </div>
@@ -72,8 +83,8 @@ function Header() {
                   {links.title}
                 </Link>
               ))}
-              {console.log()}
-              {Object.keys(currentUser).length ? (
+
+              {currentUser ? (
                 currentUser.userType === "athlete" ? (
                   <Link
                     onClick={() => setOpen(false)}
@@ -123,16 +134,27 @@ function Header() {
               </nav>
             </div>{" "}
             <div className=" px-4 pb-10 flex gap-4">
-              <Link to="/login">
-                <button className="bg-primary-green text-white py-1  rounded-md min-w-[150px]">
-                  Login
+              {!currentUser ? (
+                <>
+                  <Link to="/login">
+                    <button className="bg-primary-green text-white py-1  rounded-md min-w-[150px]">
+                      Login
+                    </button>
+                  </Link>
+                  <Link to={"/register"}>
+                    <button className="bg-primary-green text-white py-1  rounded-md min-w-[150px]">
+                      Register
+                    </button>
+                  </Link>
+                </>
+              ) : (
+                <button
+                  onClick={handleLogout}
+                  className="bg-primary-green text-white py-1  rounded-md min-w-[150px]"
+                >
+                  Log Out
                 </button>
-              </Link>
-              <Link to={"/register"}>
-                <button className="bg-primary-green text-white py-1  rounded-md min-w-[150px]">
-                  Register
-                </button>
-              </Link>
+              )}
             </div>
           </div>
         </div>

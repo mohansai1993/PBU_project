@@ -15,6 +15,7 @@ import ApplyBecomeCoach from "./Pages/ApplyBecomeCoach";
 import CourtsPage from "./Pages/CourtsPage";
 import FeedPage from "./Pages/FeedPage";
 import UserProfile from "./Pages/UserProfile";
+import ProtectedRoute from "./ProtectedRoute";
 
 function App() {
   return (
@@ -24,18 +25,29 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/find/coach" element={<FindCoach />} />
-        <Route path="/coach/:id" element={<CoachDetails />} />
         <Route path="/feed" element={<FeedPage />} />
-        <Route path="/profile">
-          {/* <Route path=":id" element={<PBUFeedPage />} /> */}
-          <Route path="athlete/:id" element={<UserProfile />} />
-          <Route path="coach/:id" element={<PBUFeedPage />} />
-        </Route>
         <Route path="/courts" element={<CourtsPage />} />
         <Route path="/become/coach" element={<BecomeCoach />} />
         <Route path="/become/coach/apply" element={<ApplyBecomeCoach />} />
+        <Route path="/coach/:id" element={<CoachDetails />} />
+        <Route element={<ProtectedRoute />}>
+          <Route path="/profile">
+            {/* <Route path=":id" element={<PBUFeedPage />} /> */}
+
+            <Route path="athlete/:id" element={<UserProfile />} />
+            <Route path="coach/:id" element={<PBUFeedPage />} />
+          </Route>
+        </Route>
         <Route path="/register" element={<SignUpPage />} />
         <Route path="/login" element={<LoginPage />} />
+        <Route
+          path="*"
+          element={
+            <>
+              <div>404 Page</div>
+            </>
+          }
+        />
       </Routes>
       <Footer />
     </div>

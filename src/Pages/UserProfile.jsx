@@ -12,6 +12,9 @@ import { ErrorMessage, Field, Form, Formik, useFormik } from "formik";
 import { EditAthlete, PostFeed } from "../graphql/mutations/mutations";
 import { IoNavigate } from "react-icons/io5";
 import MultiChat from "../module/pages/MultiChat";
+import Loading from "../Components/Loading/Loading";
+import LoadingSVG from "../Components/Loading/LoadingSvg";
+import LoadingSvg from "../Components/Loading/LoadingSvg";
 
 function UserProfile() {
   let { id } = useParams();
@@ -25,12 +28,14 @@ function UserProfile() {
       navigate("/");
     }
   }, []);
-  let { data: athlete } = useQuery(Athlete, {
+  let { data: athlete, loading } = useQuery(Athlete, {
     skip: !id,
     variables: {
       email: currentUser?.email,
     },
   });
+
+  console.log(athlete);
 
   let Tabs = [
     {
@@ -50,50 +55,56 @@ function UserProfile() {
       {" "}
       <Tab.Group>
         <div className="bg-[#212F48] p-6 rounded-2xl ">
-          <img />
-          <div className="text-white ">
-            <img
-              src="https://png.pngtree.com/thumb_back/fh260/background/20200714/pngtree-modern-double-color-futuristic-neon-background-image_351866.jpg"
-              alt=""
-              className="object-cover h-[250px] rounded-2xl mb-8 w-full"
-            />
-            <div className="flex  items-center  justify-between">
-              <div className="flex items-center  gap-4">
+          {!loading ? (
+            <div>
+              <div className="text-white ">
                 <img
+                  src="https://png.pngtree.com/thumb_back/fh260/background/20200714/pngtree-modern-double-color-futuristic-neon-background-image_351866.jpg"
                   alt=""
-                  src={athlete?.getAthlete?.profilePicture}
-                  className="rounded-md h-[100px] w-[100px] object-cover"
+                  className="object-cover h-[250px] rounded-2xl mb-8 w-full"
                 />
-                <div>
-                  <h3 className="mb-2 text-3xl font-bold ">{`${athlete?.getAthlete?.firstName} ${athlete?.getAthlete?.lastName}`}</h3>
-                  <h5>Footballer </h5>
+                <div className="flex  items-center  justify-between">
+                  <div className="flex items-center  gap-4">
+                    <img
+                      alt=""
+                      src={athlete?.getAthlete?.profilePicture}
+                      className="rounded-md h-[100px] w-[100px] object-cover"
+                    />
+                    <div>
+                      <h3 className="mb-2 text-3xl font-bold ">{`${athlete?.getAthlete?.firstName} ${athlete?.getAthlete?.lastName}`}</h3>
+                      <h5>Footballer </h5>
+                    </div>
+                  </div>
                 </div>
+                <hr className="border-[#B8B8B8] my-6  "></hr>
               </div>
+              <Tab.List className=" text-white  divide-x divide-[#B8B8B8]">
+                {Tabs.map((value, index) => (
+                  <>
+                    <Tab as={Fragment} className="cursor-pointer" index={index}>
+                      {({ selected }) => (
+                        /* Use the `selected` state to conditionally style the selected tab. */
+                        <span
+                          key={index}
+                          className={
+                            selected
+                              ? "outline-none text-primary-green px-3"
+                              : "px-3"
+                          }
+                        >
+                          {value.title}
+                        </span>
+                      )}
+                    </Tab>
+                  </>
+                ))}
+              </Tab.List>
             </div>
-            <hr className="border-[#B8B8B8] my-6  "></hr>
-          </div>
-          <Tab.List className=" text-white  divide-x divide-[#B8B8B8]">
-            {Tabs.map((value, index) => (
-              <>
-                <Tab as={Fragment} className="cursor-pointer" index={index}>
-                  {({ selected }) => (
-                    /* Use the `selected` state to conditionally style the selected tab. */
-                    <span
-                      key={index}
-                      className={
-                        selected
-                          ? "outline-none text-primary-green px-3"
-                          : "px-3"
-                      }
-                    >
-                      {value.title}
-                    </span>
-                  )}
-                </Tab>
-              </>
-            ))}
-          </Tab.List>
+          ) : (
+            <LoadingSVG />
+          )}
         </div>
+
         <div></div>
         <Tab.Panels className=" mt-6 pb-6">
           <Tab.Panel>
@@ -119,71 +130,83 @@ const ProfilePanel = ({ athlete, postFeed }) => {
         <div className="md:flex text-white gap-5">
           <div className="flex-[0.4]">
             <div className="bg-[#212F48] p-6 rounded-2xl mt-6">
-              <div>
-                <h3 className="my-4  text-2xl font-bold  ">Info</h3>
-              </div>{" "}
-              <ol className="flex flex-col gap-3">
-                <li className="flex items-center gap-2 ">
-                  Skill Level:{" "}
-                  <span className="text-primary-green font-semibold">
-                    {athlete?.skillLevel?.name}
-                  </span>
-                </li>
-                <li className="flex items-center gap-2 ">
-                  Phone:{" "}
-                  <span className="text-primary-green font-semibold">
-                    {athlete?.contactDetails?.number}
-                  </span>
-                </li>{" "}
-                <li className="flex items-center gap-2 ">
-                  Email:
-                  <span className="text-primary-green font-semibold">
-                    {athlete?.email}
-                  </span>
-                </li>
-              </ol>
+              {athlete ? (
+                <div>
+                  <div>
+                    <h3 className="my-4  text-2xl font-bold  ">Info</h3>
+                  </div>{" "}
+                  <ol className="flex flex-col gap-3">
+                    <li className="flex items-center gap-2 ">
+                      Skill Level:{" "}
+                      <span className="text-primary-green font-semibold">
+                        {athlete?.skillLevel?.name}
+                      </span>
+                    </li>
+                    <li className="flex items-center gap-2 ">
+                      Phone:{" "}
+                      <span className="text-primary-green font-semibold">
+                        {athlete?.contactDetails?.number}
+                      </span>
+                    </li>{" "}
+                    <li className="flex items-center gap-2 ">
+                      Email:
+                      <span className="text-primary-green font-semibold">
+                        {athlete?.email}
+                      </span>
+                    </li>
+                  </ol>
+                </div>
+              ) : (
+                <LoadingSVG />
+              )}
             </div>
 
             <div className="bg-[#212F48] p-6 rounded-2xl mt-6">
               {" "}
-              <h3 className="my-3  text-2xl font-bold  ">Coach List </h3>
-              <div className="flex flex-col  gap-4">
-                {" "}
-                <div className="flex items-center  gap-4">
-                  <img
-                    src={athlete?.profilePicture}
-                    className="rounded-md h-[50px] w-[50px]"
-                    alt="picture"
-                  />
-                  <div>
-                    <h3 className="mb-1 text-xl font-bold ">Leo Messy </h3>
-                    <h5 className="text-xs">Football Coach</h5>
-                  </div>{" "}
-                  <h5 className="text-xs text-primary-green">Start $50</h5>
-                </div>
-                <div className="flex items-center  gap-4">
-                  <img
-                    src="https://png.pngtree.com/thumb_back/fh260/background/20200714/pngtree-modern-double-color-futuristic-neon-background-image_351866.jpg"
-                    className="rounded-md h-[50px] w-[50px]"
-                  />
-                  <div>
-                    <h3 className="mb-1 text-xl font-bold ">Leo Messy </h3>
-                    <h5 className="text-xs">Football Coach</h5>
-                  </div>{" "}
-                  <h5 className="text-xs text-primary-green">Start $50</h5>
-                </div>
-                <div className="flex items-center  gap-4">
-                  <img
-                    src="https://png.pngtree.com/thumb_back/fh260/background/20200714/pngtree-modern-double-color-futuristic-neon-background-image_351866.jpg"
-                    className="rounded-md h-[50px] w-[50px]"
-                  />
-                  <div>
-                    <h3 className="mb-1 text-xl font-bold ">Leo Messy </h3>
-                    <h5 className="text-xs">Football Coach</h5>
-                  </div>{" "}
-                  <h5 className="text-xs text-primary-green">Start $50</h5>
-                </div>
-              </div>
+              {athlete ? (
+                <>
+                  <h3 className="my-3  text-2xl font-bold  ">Coach List </h3>
+                  <div className="flex flex-col  gap-4">
+                    {" "}
+                    <div className="flex items-center  gap-4">
+                      <img
+                        src={athlete?.profilePicture}
+                        className="rounded-md h-[50px] w-[50px]"
+                        alt="picture"
+                      />
+                      <div>
+                        <h3 className="mb-1 text-xl font-bold ">Leo Messy </h3>
+                        <h5 className="text-xs">Football Coach</h5>
+                      </div>{" "}
+                      <h5 className="text-xs text-primary-green">Start $50</h5>
+                    </div>
+                    <div className="flex items-center  gap-4">
+                      <img
+                        src="https://png.pngtree.com/thumb_back/fh260/background/20200714/pngtree-modern-double-color-futuristic-neon-background-image_351866.jpg"
+                        className="rounded-md h-[50px] w-[50px]"
+                      />
+                      <div>
+                        <h3 className="mb-1 text-xl font-bold ">Leo Messy </h3>
+                        <h5 className="text-xs">Football Coach</h5>
+                      </div>{" "}
+                      <h5 className="text-xs text-primary-green">Start $50</h5>
+                    </div>
+                    <div className="flex items-center  gap-4">
+                      <img
+                        src="https://png.pngtree.com/thumb_back/fh260/background/20200714/pngtree-modern-double-color-futuristic-neon-background-image_351866.jpg"
+                        className="rounded-md h-[50px] w-[50px]"
+                      />
+                      <div>
+                        <h3 className="mb-1 text-xl font-bold ">Leo Messy </h3>
+                        <h5 className="text-xs">Football Coach</h5>
+                      </div>{" "}
+                      <h5 className="text-xs text-primary-green">Start $50</h5>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <LoadingSvg />
+              )}
             </div>
           </div>
           <div className="flex-[0.6] mt-6">
