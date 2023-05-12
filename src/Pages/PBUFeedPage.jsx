@@ -8,6 +8,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useMutation, useQuery } from "@apollo/client";
 import { Couch } from "../graphql/query/Query";
 import moment from "moment";
+import _ from "lodash";
 import {
   PostFeed,
   EditCoach,
@@ -20,6 +21,7 @@ import MultiChat from "../module/pages/MultiChat";
 import { isCoach } from "../utils";
 import { AuthContext } from "../context/AuthContext";
 import LoadingSVG from "../Components/Loading/LoadingSvg";
+import Swal from "sweetalert2";
 
 function PBUFeedPage() {
   let { id } = useParams();
@@ -54,12 +56,12 @@ function PBUFeedPage() {
       title: "Chats",
     },
   ];
-  useEffect(() => {
-    if (!isCoach(currentUser?.userType)) {
-      alert("You are not an Coach");
-      navigate("/");
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (!isCoach(currentUser?.userType)) {
+  //     alert("You are not an Coach");
+  //     navigate("/");
+  //   }
+  // }, []);
   return (
     <div className="bg-[#152033]">
       <div className="container">
@@ -340,11 +342,34 @@ const ProfilePanel = ({ couch, postFeed }) => {
 
 const SettingPanel = ({ editCoach, coachId }) => {
   const [File, setFile] = useState(null);
-
+  const validationSchema = Yup.object({
+    firstName: Yup.string().required("First Name is required"),
+    lastName: Yup.string().required("Last Name is required"),
+    game: Yup.string().required("Game is required"),
+    coachingCity: Yup.string().required("Coaching City is required"),
+    coachingState: Yup.string().required("Coaching State is required"),
+    coachingCountry: Yup.string().required("Coaching Country is required"),
+    coachingPinCode: Yup.string()
+      .matches(/^\d+$/, "Coaching Pincode not correct")
+      .required("Coaching Pincode is required"),
+    coachingStreet1: Yup.string().required("Coaching Street is required"),
+    about: Yup.string().required("About is required"),
+  });
+  const ErrorPrint = ({ value }) => {
+    return (
+      <>
+        {formik.touched[value] && formik.errors[value] ? (
+          <div className="text-start text-red-600 text-sm ">
+            {formik.errors[value]}
+          </div>
+        ) : null}
+      </>
+    );
+  };
   const formik = useFormik({
     initialValues: {
       profilePicture: null,
-      about: "THis is about ",
+      about: "THis is about",
       game: "foostball",
       firstName: "new",
       lastName: "sfsdf",
@@ -354,17 +379,31 @@ const SettingPanel = ({ editCoach, coachId }) => {
       coachingCountry: "hgfhfghfg",
       coachingPinCode: "123456789",
     },
-
+    validationSchema: validationSchema,
     onSubmit: (values) => {
-      console.log(values, File);
       editCoach({
         variables: {
           coachId: coachId,
           profilePicture: null,
-          coachingPinCode: values.coachingPinCode.toString(),
           ...values,
         },
-      });
+        refetchQueries: [
+          {
+            query: Couch,
+            variables: {
+              coachId: coachId,
+            },
+          },
+        ],
+      })
+        .then(() => {
+          Swal.fire(
+            "Success!",
+            "Coach profile updated successfully",
+            "success"
+          );
+        })
+        .catch(() => {});
       // Your form submission logic goes here
     },
   });
@@ -383,13 +422,15 @@ const SettingPanel = ({ editCoach, coachId }) => {
             <div className="w-full">
               <input
                 type="text"
-                name="location"
+                name="firstName"
                 onChange={formik.handleChange}
+                value={formik.values.firstName}
                 onBlur={formik.handleBlur}
                 className={`p-3 rounded-md w-full  text-sm  rounded-md focus:outline-none 
               placeholder:text-primary-gray `}
                 placeholder="First name"
-              />
+              />{" "}
+              <ErrorPrint value={"firstName"} />
             </div>
           </div>
         </div>
@@ -401,13 +442,15 @@ const SettingPanel = ({ editCoach, coachId }) => {
             <div className="w-full">
               <input
                 type="text"
-                name="location"
+                name="lastName"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
+                value={formik.values.lastName}
                 className={`p-3 rounded-md w-full  text-sm  rounded-md  focus:outline-none 
               placeholder:text-primary-gray `}
                 placeholder="last name"
               />
+              <ErrorPrint value={"lastName"} />
             </div>
           </div>
         </div>{" "}
@@ -421,11 +464,13 @@ const SettingPanel = ({ editCoach, coachId }) => {
                 type="text"
                 name="game"
                 onChange={formik.handleChange}
+                value={formik.values.game}
                 onBlur={formik.handleBlur}
                 className={`p-3 rounded-md w-full  text-sm  rounded-md  focus:outline-none 
               placeholder:text-primary-gray `}
                 placeholder="Game"
               />
+              <ErrorPrint value={"game"} />
             </div>
           </div>
         </div>
@@ -443,11 +488,13 @@ const SettingPanel = ({ editCoach, coachId }) => {
                 name="coachingCity"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
+                value={formik.values.coachingCity}
                 className={`p-3 rounded-md w-full  text-sm  rounded-md pl-10 focus:outline-none 
               placeholder:text-primary-gray `}
                 placeholder="Coaching City"
                 autoComplete="off"
               />
+              <ErrorPrint value={"coachingCity"} />
             </div>
           </div>
         </div>
@@ -465,11 +512,13 @@ const SettingPanel = ({ editCoach, coachId }) => {
                 name="coachingState"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
+                value={formik.values.coachingState}
                 className={`p-3 rounded-md w-full  text-sm  rounded-md pl-10 focus:outline-none 
               placeholder:text-primary-gray `}
                 placeholder="Coaching State"
               />
             </div>
+            <ErrorPrint value={"coachingState"} />
           </div>
         </div>{" "}
         <div className="flex flex-col gap-3">
@@ -486,10 +535,12 @@ const SettingPanel = ({ editCoach, coachId }) => {
                 name="coachingCountry"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
+                value={formik.values.coachingCountry}
                 className={`p-3 rounded-md w-full  text-sm  rounded-md pl-10 focus:outline-none 
               placeholder:text-primary-gray `}
                 placeholder="Coaching Country"
               />
+              <ErrorPrint value={"coachingCountry"} />
             </div>
           </div>
         </div>
@@ -503,14 +554,16 @@ const SettingPanel = ({ editCoach, coachId }) => {
             </span>
             <div className="w-full">
               <input
-                type="number"
+                type="text"
                 name="coachingPinCode"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
+                value={formik.values.coachingPinCode}
                 className={`p-3 rounded-md w-full  text-sm  rounded-md pl-10 focus:outline-none 
               placeholder:text-primary-gray `}
                 placeholder="Coaching Pincode"
               />
+              <ErrorPrint value={"coachingPinCode"} />
             </div>
           </div>
         </div>{" "}
@@ -528,10 +581,12 @@ const SettingPanel = ({ editCoach, coachId }) => {
                 name="coachingStreet1"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
+                value={formik.values.coachingStreet1}
                 className={`p-3 rounded-md w-full  text-sm  rounded-md pl-10 focus:outline-none 
               placeholder:text-primary-gray `}
                 placeholder="Coaching Street"
               />
+              <ErrorPrint value={"coachingStreet1"} />
             </div>
           </div>
         </div>
@@ -556,6 +611,7 @@ const SettingPanel = ({ editCoach, coachId }) => {
               placeholder:text-primary-gray `}
                 placeholder="Select Profile image"
               />
+              <ErrorPrint value={"profilePicture"} />
             </div>
           </div>
         </div>{" "}
@@ -570,10 +626,12 @@ const SettingPanel = ({ editCoach, coachId }) => {
                 name="about"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
+                value={formik.values.about}
                 className={`p-3 rounded-md w-full  text-sm  rounded-md focus:outline-none 
               placeholder:text-primary-gray `}
                 placeholder="Write about you"
               />
+              <ErrorPrint value={"about"} />
             </div>
           </div>
         </div>

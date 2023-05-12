@@ -127,6 +127,14 @@ const Couch = gql`
           startTime
         }
       }
+      game
+      coachingLocation {
+        city
+        state
+        country
+        pinCode
+        street1
+      }
     }
   }
 `;
