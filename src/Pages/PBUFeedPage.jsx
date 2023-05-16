@@ -133,6 +133,7 @@ function PBUFeedPage() {
                 <AvaibilityPanel
                   coachId={id}
                   openingHours={couch?.getCoach?.openingHours}
+                  loading={loading}
                 />
               </Tab.Panel>
               {/* /Transaction */}
@@ -650,36 +651,37 @@ const SettingPanel = ({ editCoach, coachId }) => {
   );
 };
 
-const AvaibilityPanel = ({ coachId, openingHours }) => {
-  const [slot] = useMutation(SetSlot);
+const AvaibilityPanel = ({ coachId, openingHours, loading }) => {
+  const [slot, { loading: slotLoading }] = useMutation(SetSlot);
+  console.log(openingHours);
   const initialValues = {
     sunday: {
-      start: openingHours.Sunday.startTime,
-      end: openingHours.Sunday.endTime,
+      start: openingHours?.Sunday.startTime,
+      end: openingHours?.Sunday.endTime,
     },
     monday: {
-      start: openingHours.Monday.startTime,
-      end: openingHours.Monday.endTime,
+      start: openingHours?.Monday.startTime,
+      end: openingHours?.Monday.endTime,
     },
     tuesday: {
-      start: openingHours.Tuesday.startTime,
-      end: openingHours.Tuesday.endTime,
+      start: openingHours?.Tuesday.startTime,
+      end: openingHours?.Tuesday.endTime,
     },
     wednesday: {
-      start: openingHours.Wednesday.startTime,
-      end: openingHours.Wednesday.endTime,
+      start: openingHours?.Wednesday.startTime,
+      end: openingHours?.Wednesday.endTime,
     },
     thursday: {
-      start: openingHours.Thursday.startTime,
-      end: openingHours.Thursday.endTime,
+      start: openingHours?.Thursday.startTime,
+      end: openingHours?.Thursday.endTime,
     },
     friday: {
-      start: openingHours.Friday.startTime,
-      end: openingHours.Friday.endTime,
+      start: openingHours?.Friday.startTime,
+      end: openingHours?.Friday.endTime,
     },
     saturday: {
-      start: openingHours.Saturday.startTime,
-      end: openingHours.Saturday.endTime,
+      start: openingHours?.Saturday.startTime,
+      end: openingHours?.Saturday.endTime,
     },
   };
   const validation = Yup.object().shape({
@@ -696,117 +698,131 @@ const AvaibilityPanel = ({ coachId, openingHours }) => {
 
   return (
     <>
-      {" "}
-      <Formik
-        initialValues={initialValues}
-        validationSchema={validation}
-        onSubmit={(values, actions) => {
-          slot({
-            variables: {
-              coachId: coachId,
-              openingHours: {
-                Sunday: {
-                  endTime: values.sunday.start,
-                  startTime: values.sunday.start,
-                },
-                Friday: {
-                  startTime: values.friday.start,
-                  endTime: values.friday.start,
-                },
-                Monday: {
-                  startTime: values.monday.start,
-                  endTime: values.monday.start,
-                },
-                Saturday: {
-                  endTime: values.saturday.start,
-                  startTime: values.saturday.start,
-                },
-                Thursday: {
-                  endTime: values.thursday.start,
-                  startTime: values.thursday.start,
-                },
-                Tuesday: {
-                  endTime: values.tuesday.start,
-                  startTime: values.tuesday.start,
-                },
-                Wednesday: {
-                  endTime: values.wednesday.start,
-                  startTime: values.wednesday.start,
+      {loading || slotLoading ? (
+        <LoadingSVG />
+      ) : (
+        <Formik
+          initialValues={initialValues}
+          validationSchema={validation}
+          onSubmit={(values, actions) => {
+            slot({
+              variables: {
+                coachId: coachId,
+                openingHours: {
+                  Sunday: {
+                    endTime: values.sunday.start,
+                    startTime: values.sunday.start,
+                  },
+                  Friday: {
+                    startTime: values.friday.start,
+                    endTime: values.friday.start,
+                  },
+                  Monday: {
+                    startTime: values.monday.start,
+                    endTime: values.monday.start,
+                  },
+                  Saturday: {
+                    endTime: values.saturday.start,
+                    startTime: values.saturday.start,
+                  },
+                  Thursday: {
+                    endTime: values.thursday.start,
+                    startTime: values.thursday.start,
+                  },
+                  Tuesday: {
+                    endTime: values.tuesday.start,
+                    startTime: values.tuesday.start,
+                  },
+                  Wednesday: {
+                    endTime: values.wednesday.start,
+                    startTime: values.wednesday.start,
+                  },
                 },
               },
-            },
-          }).then((res) => console.log(res));
-        }}
-        enableReinitialize={true}
-      >
-        {({ values, handleSubmit }) => (
-          <Form onSubmit={handleSubmit}>
-            <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-              <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                <tr>
-                  <th scope="col" class="px-6 py-3">
-                    Day
-                  </th>
-                  <th scope="col" class="px-6 py-3">
-                    Start Time
-                  </th>
-                  <th scope="col" class="px-6 py-3">
-                    End Time
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {Object.entries(values).map(([day, { start, end }]) => (
-                  <tr
-                    key={day}
-                    className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
-                  >
-                    <td scope="row" class="px-6 py-4 capitalize">
-                      {day}
-                    </td>
-                    <td scope="row" class="px-6 py-4">
-                      <Field
-                        type="number"
-                        name={`${day}.start`}
-                        value={start}
-                        className="p-3 rounded-md w-full  text-sm  rounded-md focus:outline-none 
-                        placeholder:text-primary-gray "
-                        placeholder="Start Time"
-                      />
-                      <ErrorMessage
-                        name={`${day}.start`}
-                        component="div"
-                        className="text-red-500"
-                      />
-                    </td>
-                    <td scope="row" class="px-6 py-4 ">
-                      <Field
-                        type="number"
-                        name={`${day}.end`}
-                        value={end}
-                        className="p-3 rounded-md w-full  text-sm  rounded-md focus:outline-none 
-                        placeholder:text-primary-gray "
-                        placeholder="End Time"
-                      />
-                      <ErrorMessage
-                        name={`${day}.end`}
-                        component="div"
-                        className="text-red-500"
-                      />
-                    </td>
+              refetchQueries: [
+                {
+                  query: Couch,
+                  variables: {
+                    coachId: coachId,
+                  },
+                },
+              ],
+            }).then((res) => console.log(res));
+          }}
+          enableReinitialize={true}
+        >
+          {({ values, handleSubmit }) => (
+            <Form onSubmit={handleSubmit}>
+              <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400 rounded-md">
+                <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                  <tr>
+                    <th scope="col" class="px-6 py-3">
+                      Day
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                      Start Time
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                      End Time
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-            <button
-              type="submit"
-              className="bg-primary-green text-white py-1  rounded-md min-w-[150px]  mt-5"
-            >
-              Submit
-            </button>
-          </Form>
-        )}
-      </Formik>
+                </thead>
+                <tbody>
+                  {Object.entries(values).map(([day, { start, end }]) => (
+                    <tr
+                      key={day}
+                      className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+                    >
+                      <td
+                        scope="row"
+                        className="px-6 py-4 capitalize text-[#212f48]  text-bold   "
+                      >
+                        {day}
+                      </td>
+                      <td scope="row" class="px-6 py-4">
+                        <Field
+                          type="number"
+                          name={`${day}.start`}
+                          value={start}
+                          className="p-3 rounded-md w-full  text-sm rounded-md focus:outline-none 
+                        placeholder:text-primary-gray bg-[#212f48] text-white text-semibold "
+                          placeholder="Start Time"
+                        />
+                        <ErrorMessage
+                          name={`${day}.start`}
+                          component="div"
+                          className="text-red-500"
+                        />
+                      </td>
+                      <td scope="row" class="px-6 py-4 ">
+                        <Field
+                          type="number"
+                          name={`${day}.end`}
+                          value={end}
+                          className="p-3 rounded-md w-full  text-sm  rounded-md focus:outline-none 
+                        placeholder:text-primary-gray bg-[#212f48] text-white text-semibold "
+                          placeholder="End Time"
+                        />
+                        <ErrorMessage
+                          name={`${day}.end`}
+                          component="div"
+                          className="text-red-500"
+                        />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <button
+                type="submit"
+                className="bg-primary-green text-white py-1  rounded-md min-w-[150px]  mt-5"
+              >
+                Submit
+              </button>
+            </Form>
+          )}
+        </Formik>
+      )}
     </>
   );
 };

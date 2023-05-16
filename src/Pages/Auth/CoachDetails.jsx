@@ -9,8 +9,9 @@ import { useParams } from "react-router-dom";
 import SessionPurchaseModal from "../../Components/Modal/SessionPurchaseModal";
 import AppoitmentBooking from "../../Components/AppoitmentBooking/AppoitmentBooking";
 import SingleChat from "../../module/pages/SingleChat";
+import Map from "../../Components/Maps/Map";
 
-function CoachDetails() {
+function CoachDetails(props) {
   let { id } = useParams();
 
   console.log(id);
@@ -52,13 +53,8 @@ function CoachDetails() {
                   <SingleChat couch={couch} />
                   <h4 className="text-semibold my-3">Training Location</h4>
                 </div>
-                <iframe
-                  id="gmap_canvas"
-                  width={"100%"}
-                  title="canvas"
-                  height={"70%"}
-                  src="https://maps.google.com/maps?q=california&t=&z=10&ie=UTF8&iwloc=&output=embed"
-                />
+
+                <Map />
               </div>
             </div>
           </div>
