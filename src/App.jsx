@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import "./App.css";
 import Header from "./Components/Header/Header";
 import { Route, Router, Routes } from "react-router-dom";
@@ -16,8 +16,10 @@ import CourtsPage from "./Pages/CourtsPage";
 import FeedPage from "./Pages/FeedPage";
 import UserProfile from "./Pages/UserProfile";
 import ProtectedRoute from "./ProtectedRoute";
+import { AuthContext } from "./context/AuthContext";
 
 function App() {
+  const { currentUser } = useContext(AuthContext);
   return (
     <div className="App">
       <Header />
@@ -28,7 +30,9 @@ function App() {
         <Route path="/feed" element={<FeedPage />} />
         <Route path="/courts" element={<CourtsPage />} />
         <Route path="/become/coach" element={<BecomeCoach />} />
-        <Route path="/become/coach/apply" element={<ApplyBecomeCoach />} />
+        {!currentUser && (
+          <Route path="/become/coach/apply" element={<ApplyBecomeCoach />} />
+        )}
         <Route path="/coach/:id" element={<CoachDetails />} />
         <Route element={<ProtectedRoute />}>
           <Route path="/profile">

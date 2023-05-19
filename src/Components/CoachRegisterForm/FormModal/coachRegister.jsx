@@ -45,7 +45,7 @@ export default {
       requiredErrorMsg: "Training Pincode is required",
     },
 
-    coachingStreet1: {
+    coachingStreet: {
       name: "coachingStreet",
       label: "Training Street where you train athlete*",
       requiredErrorMsg: "Training Street is required",
@@ -121,5 +121,11 @@ export default {
         name: "Pro",
       },
     ],
+
+    //Form 4
+    loginOption: {
+      name: "loginOption",
+      requiredErrorMsg: "Please select a login option",
+    },
   },
 };

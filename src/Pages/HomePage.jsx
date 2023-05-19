@@ -14,6 +14,7 @@ import { useFormik } from "formik";
 import { useLazyQuery, useQuery } from "@apollo/client";
 import { Couches, GetTop4Reviews } from "../graphql/query/Query";
 import { Link } from "react-router-dom";
+import Swal from "sweetalert2";
 function HomePage() {
   const [Coaches, setCoaches] = useState([]);
   const { data: Reviews } = useQuery(GetTop4Reviews);
@@ -26,16 +27,33 @@ function HomePage() {
     },
     onSubmit: (values) => {
       console.log(values);
-      getCoaches({
-        variables: {
-          coachName: values.name,
-          pinCode: values.location == "" ? null : values.location,
-        },
-      }).then((res) => {
-        console.log(res.data);
-        setCoaches(res.data?.getCoaches);
-      });
-      // Here you can perform the search with the values submitted by the form
+      if (values.name.trim() !== "") {
+        getCoaches({
+          variables: {
+            coachName: values.name.trim(),
+            pinCode: values.location === "" ? null : values.location.trim(),
+          },
+        }).then((res) => {
+          console.log(res.data);
+          setCoaches(res.data?.getCoaches);
+          if (!res.data?.getCoaches.length) {
+            Swal.fire({
+              title: "Warning",
+              text: "No Coach Found ",
+              icon: "warning",
+              confirmButtonText: "Cancel",
+            });
+          }
+        });
+        // Here you can perform the search with the values submitted by the form
+      } else {
+        Swal.fire({
+          title: "Warning",
+          text: "Please Enter Coach Name",
+          icon: "warning",
+          confirmButtonText: "Cancel",
+        });
+      }
     },
   });
   return (
@@ -82,7 +100,7 @@ function HomePage() {
                   </div>
                   <div>
                     <div className="flex justify-between  items-center flex-wrap ">
-                      <label>Search Coach by Location:</label>
+                      <label>Search Coach by Pin Code:</label>
                       <div className="relative text-gray-600 rounded-md ">
                         <span className="absolute bg-primary-gray-light inset-y-0 left-0 flex items-center px-1 ">
                           <IoNavigate
@@ -97,7 +115,7 @@ function HomePage() {
                           value={formik.values.location}
                           onChange={formik.handleChange}
                           className="py-2 text-sm rounded-md pl-10 focus:outline-none placeholder:text-primary-gray"
-                          placeholder="Search Coach by Location"
+                          placeholder="Search Coach by Pin Code"
                           autoComplete="off"
                         />
                       </div>
@@ -114,12 +132,9 @@ function HomePage() {
                 </form>
               </div>
               <div className="absolute w-full">
-                {Coaches.map((value, index) => (
-                  <div className="grid grid-cols-2">
-                    <div
-                      key={index}
-                      className="bg-white rounded-lg col-start-2 col-end-3 w-full  mr-auto px-4 py-2 mb-2"
-                    >
+                {Coaches?.map((value, index) => (
+                  <div className="md:max-w-md md:ml-[33%]" key={index}>
+                    <div className="bg-white rounded-lg col-start-2 col-end-3 w-full  mr-auto px-4 py-2 mb-2">
                       {" "}
                       <Link to={"/coach/" + value.id}>
                         <div className="text-black  font-semibold flex  items-center justify-between">

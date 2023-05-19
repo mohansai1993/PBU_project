@@ -22,7 +22,7 @@ const RegisterCoach = gql`
     $coachingCountry: String
     $coachingPinCode: String
     $document: String
-    $coachingStreet1: String
+    $coachingStreet: String
     $subscriptionPlanId: ID
   ) {
     registerCoach(
@@ -36,7 +36,7 @@ const RegisterCoach = gql`
       coachingCountry: $coachingCountry
       coachingPinCode: $coachingPinCode
       document: $document
-      coachingStreet1: $coachingStreet1
+      coachingStreet: $coachingStreet
       subscriptionPlanId: $subscriptionPlanId
     ) {
       email
@@ -46,39 +46,6 @@ const RegisterCoach = gql`
   }
 `;
 
-const EditCoach = gql`
-  mutation EditCoach(
-    $profilePicture: String
-    $about: String
-    $game: String
-    $firstName: String
-    $lastName: String
-    $coachingStreet1: String
-    $coachingStreet2: String
-    $coachingCity: String
-    $coachingState: String
-    $coachingCountry: String
-    $coachingPinCode: String
-    $coachId: ID
-  ) {
-    editCoach(
-      profilePicture: $profilePicture
-      about: $about
-      game: $game
-      firstName: $firstName
-      lastName: $lastName
-      coachingStreet1: $coachingStreet1
-      coachingStreet2: $coachingStreet2
-      coachingCity: $coachingCity
-      coachingState: $coachingState
-      coachingCountry: $coachingCountry
-      coachingPinCode: $coachingPinCode
-      coachId: $coachId
-    ) {
-      about
-    }
-  }
-`;
 const SetSlot = gql`
   mutation SetSlot($coachId: ID, $openingHours: OpeningHoursInput) {
     setSlot(coachId: $coachId, openingHours: $openingHours) {
@@ -88,15 +55,4 @@ const SetSlot = gql`
   }
 `;
 
-const Login = gql`
-  mutation Login($email: String, $password: String) {
-    login(email: $email, password: $password) {
-      userId
-      email
-      userType
-      token
-    }
-  }
-`;
-
-export { PostFeed, RegisterCoach, EditCoach, SetSlot, Login };
+export { PostFeed, RegisterCoach, SetSlot };

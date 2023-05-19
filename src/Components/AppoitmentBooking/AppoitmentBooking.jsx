@@ -25,7 +25,7 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 let duration = 2;
-function AppoitmentBooking() {
+function AppoitmentBooking({ BookingSlots }) {
   let today = startOfToday();
 
   let [selectedDay, setSelectedDay] = useState(today);
@@ -54,32 +54,32 @@ function AppoitmentBooking() {
   // );
   const slots = {
     sunday: {
-      startTime: 9,
-      endTime: 18,
+      startTime: BookingSlots?.Sunday?.startTime,
+      endTime: BookingSlots?.Sunday?.endTime,
     },
     monday: {
-      startTime: 6,
-      endTime: 10,
+      startTime: BookingSlots?.Monday?.startTime,
+      endTime: BookingSlots?.Monday?.endTime,
     },
     tuesday: {
-      startTime: 9,
-      endTime: 18,
+      startTime: BookingSlots?.Tuesday?.startTime,
+      endTime: BookingSlots?.Tuesday?.endTime,
     },
     wednesday: {
-      startTime: 6,
-      endTime: 10,
+      startTime: BookingSlots?.Wednesday?.startTime,
+      endTime: BookingSlots?.Wednesday?.endTime,
     },
     thursday: {
-      startTime: 9,
-      endTime: 18,
+      startTime: BookingSlots?.Thursday?.startTime,
+      endTime: BookingSlots?.Thursday?.endTime,
     },
     friday: {
-      startTime: 6,
-      endTime: 18,
+      startTime: BookingSlots?.Friday?.startTime,
+      endTime: BookingSlots?.Friday?.endTime,
     },
     saturday: {
-      startTime: 6,
-      endTime: 18,
+      startTime: BookingSlots?.Saturday?.startTime,
+      endTime: BookingSlots?.Saturday?.endTime,
     },
   };
 
@@ -172,7 +172,6 @@ function AppoitmentBooking() {
             </div>
           </div>
           <section className="mt-12 md:mt-0 md:pl-14">
-            {console.log(bookedSlot)}
             {Object.keys(slots).map((value, i) => (
               <AvailSlots
                 slots={slots[value]}

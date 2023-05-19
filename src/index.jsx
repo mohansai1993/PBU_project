@@ -34,7 +34,7 @@ const client = new ApolloClient({
   cache: new InMemoryCache(),
 });
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <React.StrictMode>
+  <>
     <ApolloProvider client={client}>
       <BrowserRouter>
         <AuthContextProvider>
@@ -44,5 +44,5 @@ ReactDOM.createRoot(document.getElementById("root")).render(
         </AuthContextProvider>
       </BrowserRouter>
     </ApolloProvider>
-  </React.StrictMode>
+  </>
 );

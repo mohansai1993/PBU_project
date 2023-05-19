@@ -10,9 +10,10 @@ const {
     coachingState,
     coachingCountry,
     coachingPinCode,
-    coachingStreet1,
+    coachingStreet,
     experience,
     faqQuestions,
+    loginOption,
   },
 } = coachRegisterFormModel;
 
@@ -22,7 +23,6 @@ export default [
     [firstName.name]: Yup.string().required(`${firstName.requiredErrorMsg}`),
     [lastName.name]: Yup.string().required(`${lastName.requiredErrorMsg}`),
     [email.name]: Yup.string().email().required(`${email.requiredErrorMsg}`),
-    [password.name]: Yup.string().required(`${password.requiredErrorMsg}`),
   }),
 
   Yup.object().shape({
@@ -35,8 +35,8 @@ export default [
     [coachingCountry.name]: Yup.string().required(
       `${coachingCountry.requiredErrorMsg}`
     ),
-    [coachingStreet1.name]: Yup.string().required(
-      `${coachingStreet1.requiredErrorMsg}`
+    [coachingStreet.name]: Yup.string().required(
+      `${coachingStreet.requiredErrorMsg}`
     ),
     [coachingPinCode.name]: Yup.number()
       .min(5)
@@ -58,5 +58,8 @@ export default [
 
   Yup.object().shape({
     paymentpaln: Yup.string().required(),
+  }),
+  Yup.object().shape({
+    [loginOption.name]: Yup.string().required("Please select a login option"),
   }),
 ];

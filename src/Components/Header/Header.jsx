@@ -5,6 +5,7 @@ import { RxHamburgerMenu } from "react-icons/rx";
 import { AuthContext } from "../../context/AuthContext";
 function Header() {
   const { currentUser, handleLogout } = useContext(AuthContext);
+  console.log(currentUser);
   const [Open, setOpen] = useState(false);
   const ROUTER = [
     {
@@ -18,6 +19,7 @@ function Header() {
     {
       link: "/become/coach",
       title: "Become a Coach",
+      isShow: currentUser,
     },
     {
       link: "/courts",
@@ -74,15 +76,18 @@ function Header() {
           </div>
           <div className="h-10  bg-primary-green ">
             <nav className=" hidden   container md:flex divide-x  justify-center ">
-              {ROUTER.map((links, index) => (
-                <Link
-                  className="px-4 text-white py-2 hover:text-[#4BFD00]"
-                  to={links.link}
-                  key={index}
-                >
-                  {links.title}
-                </Link>
-              ))}
+              {ROUTER.map(
+                (links, index) =>
+                  !links.isShow && (
+                    <Link
+                      className="px-4 text-white py-2 hover:text-[#4BFD00]"
+                      to={links.link}
+                      key={index}
+                    >
+                      {links.title}
+                    </Link>
+                  )
+              )}
 
               {currentUser ? (
                 currentUser.userType === "athlete" ? (
@@ -106,7 +111,9 @@ function Header() {
             </nav>
           </div>
           <div
-            className={`bg-black  w-full absolute ${Open ? "block" : "hidden"}`}
+            className={`bg-black  w-full absolute z-20 ${
+              Open ? "block" : "hidden"
+            }`}
           >
             <div>
               <nav className="">

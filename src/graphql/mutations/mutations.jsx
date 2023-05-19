@@ -34,8 +34,10 @@ const RegisterCoach = gql`
     $coachingCountry: String
     $coachingPinCode: String
     $document: String
-    $coachingStreet1: String
+    $coachingStreet: String
     $subscriptionPlanId: ID
+    $googleId: String
+    $facebookId: String
   ) {
     registerCoach(
       firstName: $firstName
@@ -48,8 +50,10 @@ const RegisterCoach = gql`
       coachingCountry: $coachingCountry
       coachingPinCode: $coachingPinCode
       document: $document
-      coachingStreet1: $coachingStreet1
+      coachingStreet: $coachingStreet
       subscriptionPlanId: $subscriptionPlanId
+      googleId: $googleId
+      facebookId: $facebookId
     ) {
       email
       userType
@@ -67,8 +71,7 @@ const EditAthlete = gql`
     $countryCode: Int
     $password: String
     $number: String
-    $street1: String
-    $street2: String
+    $street: String
     $city: String
     $state: String
     $country: String
@@ -83,8 +86,7 @@ const EditAthlete = gql`
       countryCode: $countryCode
       password: $password
       number: $number
-      street1: $street1
-      street2: $street2
+      street: $street
       city: $city
       state: $state
       country: $country
@@ -103,13 +105,14 @@ const EditCoach = gql`
     $game: String
     $firstName: String
     $lastName: String
-    $coachingStreet1: String
-    $coachingStreet2: String
-    $coachingCity: String
-    $coachingState: String
-    $coachingCountry: String
-    $coachingPinCode: String
     $coachId: ID
+    $street: String
+    $city: String
+    $state: String
+    $country: String
+    $pinCode: String
+    $coachingExperience: String
+    $highlights: String
   ) {
     editCoach(
       profilePicture: $profilePicture
@@ -117,13 +120,14 @@ const EditCoach = gql`
       game: $game
       firstName: $firstName
       lastName: $lastName
-      coachingStreet1: $coachingStreet1
-      coachingStreet2: $coachingStreet2
-      coachingCity: $coachingCity
-      coachingState: $coachingState
-      coachingCountry: $coachingCountry
-      coachingPinCode: $coachingPinCode
       coachId: $coachId
+      street: $street
+      city: $city
+      state: $state
+      country: $country
+      pinCode: $pinCode
+      coachingExperience: $coachingExperience
+      highlights: $highlights
     ) {
       about
     }
@@ -144,6 +148,93 @@ const AddChatRoom = gql`
   }
 `;
 
+const DeletePost = gql`
+  mutation DeletePost($postId: ID) {
+    deletePost(postId: $postId)
+  }
+`;
+
+const AddCoaching = gql`
+  mutation AddCoachingLocation(
+    $coachId: ID
+    $coachingStreet: String
+    $coachingCity: String
+    $coachingState: String
+    $coachingCountry: String
+    $coachingPinCode: String
+    $coachingLocation: LocationInput
+  ) {
+    addCoachingLocation(
+      coachId: $coachId
+      coachingStreet: $coachingStreet
+      coachingCity: $coachingCity
+      coachingState: $coachingState
+      coachingCountry: $coachingCountry
+      coachingPinCode: $coachingPinCode
+      coachingLocation: $coachingLocation
+    ) {
+      about
+    }
+  }
+`;
+
+const RemoveCoachingLocation = gql`
+  mutation RemoveCoachingLocation($coachId: ID, $coachingLocationId: ID) {
+    removeCoachingLocation(
+      coachId: $coachId
+      coachingLocationId: $coachingLocationId
+    ) {
+      about
+    }
+  }
+`;
+const RegisterAthlete = gql`
+  mutation RegisterAthlete(
+    $firstName: String
+    $lastName: String
+    $email: String
+    $googleId: String
+    $password: String
+    $facebookId: String
+    $game: String
+  ) {
+    registerAthlete(
+      firstName: $firstName
+      lastName: $lastName
+      email: $email
+      googleId: $googleId
+      password: $password
+      facebookId: $facebookId
+      game: $game
+    ) {
+      email
+      userType
+      token
+      userId
+    }
+  }
+`;
+
+const Login = gql`
+  mutation Login(
+    $email: String
+    $password: String
+    $googleId: String
+    $facebookId: String
+  ) {
+    login(
+      email: $email
+      password: $password
+      googleId: $googleId
+      facebookId: $facebookId
+    ) {
+      email
+      userType
+      token
+      userId
+    }
+  }
+`;
 export {
   PostFeed,
   RegisterCoach,
@@ -151,4 +242,9 @@ export {
   EditAthlete,
   SetSlot,
   AddChatRoom,
+  DeletePost,
+  AddCoaching,
+  RegisterAthlete,
+  RemoveCoachingLocation,
+  Login,
 };

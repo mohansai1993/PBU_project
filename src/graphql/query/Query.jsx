@@ -1,8 +1,8 @@
 import { gql } from "@apollo/client";
 
 const GetFeeds = gql`
-  query GetFeeds {
-    getFeeds {
+  query GetFeeds($pageNumber: Int) {
+    getFeeds(pageNumber: $pageNumber) {
       createdAt
       id
       post
@@ -40,9 +40,7 @@ const Athlete = gql`
         postBy
         updatedAt
       }
-      contactDetails {
-        number
-      }
+
       chats {
         athlete {
           id
@@ -93,6 +91,7 @@ const Couch = gql`
         number
       }
       feed {
+        id
         post
         postBy
         updatedAt
@@ -129,11 +128,18 @@ const Couch = gql`
       }
       game
       coachingLocation {
+        id
+        street
         city
         state
         country
         pinCode
-        street1
+        location {
+          latitude
+          longitude
+        }
+        createdAt
+        updatedAt
       }
     }
   }

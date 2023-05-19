@@ -328,7 +328,7 @@ const SettingPanel = ({ editAthlete, athleteId }) => {
       game: "foostball",
       firstName: "new",
       lastName: "sfsdf",
-      street1: "ghjgjgh",
+      street: "ghjgjgh",
       city: "fghfghfg",
       state: "fghfghfg",
       country: "hgfhfghfg",
@@ -502,7 +502,7 @@ const SettingPanel = ({ editAthlete, athleteId }) => {
             <div className="w-full">
               <input
                 type="text"
-                name="street1"
+                name="street"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 className={`p-3 rounded-md w-full  text-sm  rounded-md pl-10 focus:outline-none 

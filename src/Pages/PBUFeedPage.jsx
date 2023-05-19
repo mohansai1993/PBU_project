@@ -2,7 +2,7 @@ import React, { Fragment, useContext, useEffect, useState } from "react";
 import { Tab } from "@headlessui/react";
 import { TfiPencil } from "react-icons/tfi";
 import { IoNavigate } from "react-icons/io5";
-import { useFormik } from "formik";
+import { FieldArray, useFormik } from "formik";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { useNavigate, useParams } from "react-router-dom";
 import { useMutation, useQuery } from "@apollo/client";
@@ -12,16 +12,18 @@ import _ from "lodash";
 import {
   PostFeed,
   EditCoach,
-  setSlot,
   SetSlot,
+  DeletePost,
+  AddCoaching,
+  RemoveCoachingLocation,
 } from "../graphql/mutations/mutations";
 import { AiFillDelete } from "react-icons/ai";
 import * as Yup from "yup";
 import MultiChat from "../module/pages/MultiChat";
-import { isCoach } from "../utils";
 import { AuthContext } from "../context/AuthContext";
 import LoadingSVG from "../Components/Loading/LoadingSvg";
 import Swal from "sweetalert2";
+import PBUGoogleMap from "../Components/Maps/Map";
 
 function PBUFeedPage() {
   let { id } = useParams();
@@ -47,7 +49,7 @@ function PBUFeedPage() {
       title: "Availability",
     },
     {
-      title: "Transaction History",
+      title: "Coaching",
     },
     {
       title: "About",
@@ -138,7 +140,10 @@ function PBUFeedPage() {
               </Tab.Panel>
               {/* /Transaction */}
               <Tab.Panel>
-                <AboutPanel coachId={id} />
+                <CoachingPanel
+                  coachId={id}
+                  coachings={couch?.getCoach?.coachingLocation}
+                />
               </Tab.Panel>{" "}
               <Tab.Panel>
                 <AboutPanel coachId={id} />
@@ -155,6 +160,7 @@ function PBUFeedPage() {
 }
 
 const ProfilePanel = ({ couch, postFeed }) => {
+  const [deletePost] = useMutation(DeletePost);
   return (
     <>
       <div>
@@ -197,6 +203,7 @@ const ProfilePanel = ({ couch, postFeed }) => {
                   <img
                     src={couch?.profilePicture}
                     className="rounded-md h-[50px] w-[50px]"
+                    alt="img"
                   />
                   <div>
                     <h3 className="mb-1 text-xl font-bold ">Leo Messy </h3>
@@ -208,6 +215,7 @@ const ProfilePanel = ({ couch, postFeed }) => {
                   <img
                     src="https://png.pngtree.com/thumb_back/fh260/background/20200714/pngtree-modern-double-color-futuristic-neon-background-image_351866.jpg"
                     className="rounded-md h-[50px] w-[50px]"
+                    alt="img"
                   />
                   <div>
                     <h3 className="mb-1 text-xl font-bold ">Leo Messy </h3>
@@ -219,6 +227,7 @@ const ProfilePanel = ({ couch, postFeed }) => {
                   <img
                     src="https://png.pngtree.com/thumb_back/fh260/background/20200714/pngtree-modern-double-color-futuristic-neon-background-image_351866.jpg"
                     className="rounded-md h-[50px] w-[50px]"
+                    alt="img"
                   />
                   <div>
                     <h3 className="mb-1 text-xl font-bold ">Leo Messy </h3>
@@ -304,12 +313,13 @@ const ProfilePanel = ({ couch, postFeed }) => {
             {/* //Message  */}
             <div className="grid gap-4">
               {couch?.feed?.map((feed, index) => (
-                <div className="   bg-[#212F48] p-6 rounded-2xl ">
+                <div key={index} className="   bg-[#212F48] p-6 rounded-2xl ">
                   <div className="flex  justify-between w-full">
                     <div className="flex  gap-3">
                       <img
                         src={couch?.profilePicture}
                         className="rounded-md h-[50px] w-[50px] object-cover"
+                        alt=""
                       />
                       <div className="w-full">
                         <h3 className="text-xl">
@@ -322,6 +332,19 @@ const ProfilePanel = ({ couch, postFeed }) => {
                       size={24}
                       color={"#ed5e68"}
                       cursor={"pointer"}
+                      onClick={() =>
+                        deletePost({
+                          variables: { postId: feed.id },
+                          refetchQueries: [
+                            {
+                              query: Couch,
+                              variables: {
+                                coachId: couch?.id,
+                              },
+                            },
+                          ],
+                        })
+                      }
                     />
                   </div>
                   <div>
@@ -343,17 +366,18 @@ const ProfilePanel = ({ couch, postFeed }) => {
 
 const SettingPanel = ({ editCoach, coachId }) => {
   const [File, setFile] = useState(null);
+
   const validationSchema = Yup.object({
     firstName: Yup.string().required("First Name is required"),
     lastName: Yup.string().required("Last Name is required"),
     game: Yup.string().required("Game is required"),
-    coachingCity: Yup.string().required("Coaching City is required"),
-    coachingState: Yup.string().required("Coaching State is required"),
-    coachingCountry: Yup.string().required("Coaching Country is required"),
-    coachingPinCode: Yup.string()
-      .matches(/^\d+$/, "Coaching Pincode not correct")
-      .required("Coaching Pincode is required"),
-    coachingStreet1: Yup.string().required("Coaching Street is required"),
+    city: Yup.string().required(" City is required"),
+    state: Yup.string().required(" State is required"),
+    country: Yup.string().required(" Country is required"),
+    pinCode: Yup.string()
+      .matches(/^\d+$/, " Pincode not correct")
+      .required(" Pincode is required"),
+    street: Yup.string().required(" Street is required"),
     about: Yup.string().required("About is required"),
   });
   const ErrorPrint = ({ value }) => {
@@ -374,11 +398,11 @@ const SettingPanel = ({ editCoach, coachId }) => {
       game: "foostball",
       firstName: "new",
       lastName: "sfsdf",
-      coachingStreet1: "ghjgjgh",
-      coachingCity: "fghfghfg",
-      coachingState: "fghfghfg",
-      coachingCountry: "hgfhfghfg",
-      coachingPinCode: "123456789",
+      street: "ghjgjgh",
+      city: "fghfghfg",
+      state: "fghfghfg",
+      country: "hgfhfghfg",
+      pinCode: "123456789",
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
@@ -477,7 +501,7 @@ const SettingPanel = ({ editCoach, coachId }) => {
         </div>
         <div className="flex flex-col gap-3">
           <div>
-            <label>Coaching City </label>
+            <label>City </label>
           </div>
           <div className="relative text-gray-600 rounded-md ">
             <span className="absolute bg-primary-gray-light inset-y-0 left-0 flex items-center px-1 ">
@@ -486,22 +510,22 @@ const SettingPanel = ({ editCoach, coachId }) => {
             <div className="w-full">
               <input
                 type="text"
-                name="coachingCity"
+                name="city"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                value={formik.values.coachingCity}
+                value={formik.values.city}
                 className={`p-3 rounded-md w-full  text-sm  rounded-md pl-10 focus:outline-none 
               placeholder:text-primary-gray `}
-                placeholder="Coaching City"
+                placeholder="City"
                 autoComplete="off"
               />
-              <ErrorPrint value={"coachingCity"} />
+              <ErrorPrint value={"city"} />
             </div>
           </div>
         </div>
         <div className="flex flex-col gap-3">
           <div>
-            <label>Coaching State </label>
+            <label> State </label>
           </div>
           <div className="relative text-gray-600 rounded-md ">
             <span className="absolute bg-primary-gray-light inset-y-0 left-0 flex items-center px-1 ">
@@ -510,21 +534,21 @@ const SettingPanel = ({ editCoach, coachId }) => {
             <div className="w-full">
               <input
                 type="text"
-                name="coachingState"
+                name="state"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                value={formik.values.coachingState}
+                value={formik.values.state}
                 className={`p-3 rounded-md w-full  text-sm  rounded-md pl-10 focus:outline-none 
               placeholder:text-primary-gray `}
-                placeholder="Coaching State"
+                placeholder=" State"
               />
             </div>
-            <ErrorPrint value={"coachingState"} />
+            <ErrorPrint value={"state"} />
           </div>
         </div>{" "}
         <div className="flex flex-col gap-3">
           <div>
-            <label>Coaching Country </label>
+            <label> Country </label>
           </div>
           <div className="relative text-gray-600 rounded-md ">
             <span className="absolute bg-primary-gray-light inset-y-0 left-0 flex items-center px-1 ">
@@ -533,21 +557,21 @@ const SettingPanel = ({ editCoach, coachId }) => {
             <div className="w-full">
               <input
                 type="text"
-                name="coachingCountry"
+                name="country"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                value={formik.values.coachingCountry}
+                value={formik.values.country}
                 className={`p-3 rounded-md w-full  text-sm  rounded-md pl-10 focus:outline-none 
               placeholder:text-primary-gray `}
-                placeholder="Coaching Country"
+                placeholder=" Country"
               />
-              <ErrorPrint value={"coachingCountry"} />
+              <ErrorPrint value={"country"} />
             </div>
           </div>
         </div>
         <div className="flex flex-col gap-3">
           <div>
-            <label>Coaching Pincode </label>
+            <label> Pincode </label>
           </div>
           <div className="relative text-gray-600 rounded-md ">
             <span className="absolute bg-primary-gray-light inset-y-0 left-0 flex items-center px-1 ">
@@ -556,21 +580,21 @@ const SettingPanel = ({ editCoach, coachId }) => {
             <div className="w-full">
               <input
                 type="text"
-                name="coachingPinCode"
+                name="pinCode"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                value={formik.values.coachingPinCode}
+                value={formik.values.pinCode}
                 className={`p-3 rounded-md w-full  text-sm  rounded-md pl-10 focus:outline-none 
               placeholder:text-primary-gray `}
-                placeholder="Coaching Pincode"
+                placeholder=" Pincode"
               />
-              <ErrorPrint value={"coachingPinCode"} />
+              <ErrorPrint value={"pinCode"} />
             </div>
           </div>
         </div>{" "}
         <div className="flex flex-col gap-3">
           <div>
-            <label>Coaching Street </label>
+            <label> Street </label>
           </div>
           <div className="relative text-gray-600 rounded-md ">
             <span className="absolute bg-primary-gray-light inset-y-0 left-0 flex items-center px-1 ">
@@ -579,15 +603,15 @@ const SettingPanel = ({ editCoach, coachId }) => {
             <div className="w-full">
               <input
                 type="text"
-                name="coachingStreet1"
+                name="street"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                value={formik.values.coachingStreet1}
+                value={formik.values.street}
                 className={`p-3 rounded-md w-full  text-sm  rounded-md pl-10 focus:outline-none 
               placeholder:text-primary-gray `}
-                placeholder="Coaching Street"
+                placeholder=" Street"
               />
-              <ErrorPrint value={"coachingStreet1"} />
+              <ErrorPrint value={"street"} />
             </div>
           </div>
         </div>
@@ -636,6 +660,16 @@ const SettingPanel = ({ editCoach, coachId }) => {
             </div>
           </div>
         </div>
+        {/* <div>
+          <div>
+            <label> Location </label>
+          </div>
+          {render({
+            marker: {
+              draggable: true,
+            },
+          })}
+        </div> */}
         <div>
           <button
             type="submit"
@@ -705,37 +739,38 @@ const AvaibilityPanel = ({ coachId, openingHours, loading }) => {
           initialValues={initialValues}
           validationSchema={validation}
           onSubmit={(values, actions) => {
+            console.log(values);
             slot({
               variables: {
                 coachId: coachId,
                 openingHours: {
                   Sunday: {
-                    endTime: values.sunday.start,
                     startTime: values.sunday.start,
-                  },
-                  Friday: {
-                    startTime: values.friday.start,
-                    endTime: values.friday.start,
+                    endTime: values.sunday.end,
                   },
                   Monday: {
                     startTime: values.monday.start,
-                    endTime: values.monday.start,
-                  },
-                  Saturday: {
-                    endTime: values.saturday.start,
-                    startTime: values.saturday.start,
-                  },
-                  Thursday: {
-                    endTime: values.thursday.start,
-                    startTime: values.thursday.start,
+                    endTime: values.monday.end,
                   },
                   Tuesday: {
-                    endTime: values.tuesday.start,
                     startTime: values.tuesday.start,
+                    endTime: values.tuesday.end,
                   },
                   Wednesday: {
-                    endTime: values.wednesday.start,
                     startTime: values.wednesday.start,
+                    endTime: values.wednesday.end,
+                  },
+                  Thursday: {
+                    startTime: values.thursday.start,
+                    endTime: values.thursday.end,
+                  },
+                  Friday: {
+                    startTime: values.friday.start,
+                    endTime: values.friday.end,
+                  },
+                  Saturday: {
+                    startTime: values.saturday.start,
+                    endTime: values.saturday.end,
                   },
                 },
               },
@@ -747,7 +782,17 @@ const AvaibilityPanel = ({ coachId, openingHours, loading }) => {
                   },
                 },
               ],
-            }).then((res) => console.log(res));
+            })
+              .then((res) => {
+                Swal.fire(
+                  "Success",
+                  "Availability Update Successfully",
+                  "success"
+                );
+              })
+              .catch((err) => {
+                Swal.fire("Error", "Something went wrong", "error");
+              });
           }}
           enableReinitialize={true}
         >
@@ -827,23 +872,314 @@ const AvaibilityPanel = ({ coachId, openingHours, loading }) => {
   );
 };
 
+const CoachingPanel = ({ coachId, coachings }) => {
+  const [addCoaching, { loading: addLoading }] = useMutation(AddCoaching);
+  const [removeCoachingLocation, { loading }] = useMutation(
+    RemoveCoachingLocation
+  );
+  const { render, latLong } = PBUGoogleMap();
+
+  const locationValidation = Yup.object().shape({
+    location: Yup.array().of(
+      Yup.object().shape({
+        coachingCity: Yup.string().required(
+          "Coaching City is a required field."
+        ),
+        coachingStreet: Yup.string().required("Street is required"),
+        coachingState: Yup.string().required("State is required"),
+        coachingCountry: Yup.string().required("Country is required"),
+        coachingPinCode: Yup.string()
+          .matches(/^\d+$/, "Pincode not correct")
+          .required("Pincode is required"),
+      })
+    ),
+  });
+  return (
+    <>
+      {loading || addLoading ? (
+        <LoadingSVG />
+      ) : (
+        <div>
+          {coachings.map((value, index) => (
+            <>
+              <div className=" bg-[#212F48]  text-white p-4 rounded-lg my-5">
+                <AiFillDelete
+                  size={24}
+                  color={"#ed5e68"}
+                  cursor={"pointer"}
+                  onClick={() =>
+                    removeCoachingLocation({
+                      variables: {
+                        coachId: coachId,
+                        coachingLocationId: value.id,
+                      },
+                      refetchQueries: [
+                        {
+                          query: Couch,
+                          variables: {
+                            coachId: coachId,
+                          },
+                        },
+                      ],
+                    })
+                  }
+                />
+                <h3 className="font-bold text-2xl  my-2 text-green-500 ">
+                  Coaching {index + 1}
+                </h3>
+                <div className="text-white grid grid-cols-2 gap-3  ">
+                  <div className="flex flex-col gap-3">
+                    <div>
+                      <label>Coaching City </label>
+                      <input
+                        readOnly
+                        value={value.city}
+                        className={`p-3 rounded-md w-full  text-black  text-sm  rounded-md pl-10 focus:outline-none 
+              placeholder:text-primary-gray `}
+                      />
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-3">
+                    <div>
+                      <label>Coaching Country </label>
+                      <input
+                        readOnly
+                        value={value.country}
+                        className={`p-3 rounded-md w-full text-black  text-sm  rounded-md pl-10 focus:outline-none 
+              placeholder:text-primary-gray `}
+                      />
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-3">
+                    <div>
+                      <label>Coaching Street </label>
+                      <input
+                        readOnly
+                        value={value.street}
+                        className={`p-3 rounded-md w-full text-black  text-sm  rounded-md pl-10 focus:outline-none 
+              placeholder:text-primary-gray `}
+                      />
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-3">
+                    <div>
+                      <label>Coaching State </label>
+                      <input
+                        readOnly
+                        value={value.state}
+                        className={`p-3 rounded-md w-full text-black  text-sm  rounded-md pl-10 focus:outline-none 
+              placeholder:text-primary-gray `}
+                      />
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-3">
+                    <div>
+                      <label>Coaching Pincode </label>
+                      <input
+                        readOnly
+                        value={value.pinCode}
+                        className={`p-3 rounded-md w-full text-black  text-sm  rounded-md pl-10 focus:outline-none 
+              placeholder:text-primary-gray `}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </>
+          ))}
+        </div>
+      )}
+      <Formik
+        initialValues={{
+          coachingCity: "Bill",
+          coachingStreet: "Ashibb ",
+          coachingState: "State",
+          coachingCountry: "coachingCountry",
+          coachingPinCode: "123456",
+        }}
+        validationSchema={locationValidation}
+        onSubmit={(values) =>
+          addCoaching({
+            variables: {
+              coachId: coachId,
+              coachingLocation: latLong,
+              ...values,
+            },
+            refetchQueries: [
+              {
+                query: Couch,
+                variables: {
+                  coachId: coachId,
+                },
+              },
+            ],
+          })
+            .then((values) => {
+              console.log(values);
+            })
+            .catch((err) => {
+              console.log(err);
+            })
+        }
+      >
+        {({ values, handleSubmit }) => (
+          <>
+            <Form>
+              <Fragment>
+                <div className="text-white grid grid-cols-2 gap-3 ">
+                  <div className="flex flex-col gap-3">
+                    <div>
+                      <label>Coaching City </label>
+                    </div>
+                    <div className="relative text-gray-600 rounded-md ">
+                      <div className="w-full">
+                        <Field
+                          name={`coachingCity`}
+                          className={`p-3 rounded-md w-full  text-sm  rounded-md  focus:outline-none 
+                                    placeholder:text-primary-gray `}
+                        />
+                        <ErrorMessage name={`coachingCity`} />
+                      </div>{" "}
+                    </div>{" "}
+                  </div>{" "}
+                  <div className="flex flex-col gap-3">
+                    <div>
+                      <label>Coaching Street </label>
+                    </div>
+                    <div className="relative text-gray-600 rounded-md ">
+                      <div className="w-full">
+                        <Field
+                          name={`coachingStreet`}
+                          className={`p-3 rounded-md w-full  text-sm  rounded-md  focus:outline-none 
+                                    placeholder:text-primary-gray `}
+                        />
+                        <ErrorMessage name={`coachingStreet`} />
+                      </div>{" "}
+                    </div>{" "}
+                  </div>{" "}
+                  <div className="flex flex-col gap-3">
+                    <div>
+                      <label>Coaching State </label>
+                    </div>
+                    <div className="relative text-gray-600 rounded-md ">
+                      <div className="w-full">
+                        <Field
+                          name={`coachingState`}
+                          className={`p-3 rounded-md w-full  text-sm  rounded-md  focus:outline-none 
+                                    placeholder:text-primary-gray `}
+                        />
+                        <ErrorMessage name={`coachingState`} />
+                      </div>{" "}
+                    </div>{" "}
+                  </div>{" "}
+                  <div className="flex flex-col gap-3">
+                    <div>
+                      <label>Coaching Country </label>
+                    </div>
+                    <div className="relative text-gray-600 rounded-md ">
+                      <div className="w-full">
+                        <Field
+                          name={`coachingCountry`}
+                          className={`p-3 rounded-md w-full  text-sm  rounded-md  focus:outline-none 
+                                    placeholder:text-primary-gray `}
+                        />
+                        <ErrorMessage name={`coachingCountry`} />
+                      </div>{" "}
+                    </div>{" "}
+                  </div>{" "}
+                  <div className="flex flex-col gap-3">
+                    <div>
+                      <label>Coaching PinCode</label>
+                    </div>
+                    <div className="relative text-gray-600 rounded-md ">
+                      <div className="w-full">
+                        <Field
+                          name={`coachingPinCode`}
+                          className={`p-3 rounded-md w-full  text-sm  rounded-md  focus:outline-none 
+                                    placeholder:text-primary-gray `}
+                        />
+                        <ErrorMessage name={`coachingPinCode`} />
+                      </div>{" "}
+                    </div>{" "}
+                  </div>{" "}
+                  <div className="flex flex-col gap-3">
+                    <div>
+                      <label>Coaching Location</label>
+                    </div>
+                    <div className="h-[30vh]">
+                      {render({
+                        marker: {
+                          draggable: true,
+                          position: {
+                            lat: latLong.latitude,
+                            lng: latLong.longitude,
+                          },
+                        },
+                      })}
+                    </div>
+                  </div>
+                </div>
+              </Fragment>
+
+              <div>
+                <button
+                  onClick={handleSubmit}
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  className=" my-10 bg-primary-green text-white py-1  rounded-md min-w-[150px]"
+                >
+                  Submit
+                </button>
+              </div>
+            </Form>
+          </>
+        )}
+      </Formik>
+    </>
+  );
+};
 const AboutPanel = ({ couchId }) => {
+  let [editCoach] = useMutation(EditCoach);
   return (
     <>
       <div>
         <div>
-          <h2 className="text-2xl text-white font-semibold">
-            Coaching Experience
-          </h2>
+          <h2 className="text-2xl text-white font-semibold">Experience</h2>
           <form
             className="my-5"
             onSubmit={(e) => {
               e.preventDefault();
+
+              editCoach({
+                variables: {
+                  coachId: couchId,
+                  coachingExperience:
+                    document.getElementById("experience").value,
+                },
+                refetchQueries: [
+                  {
+                    query: Couch,
+                    variables: {
+                      coachId: couchId,
+                    },
+                  },
+                ],
+              })
+                .then(() => {
+                  Swal.fire(
+                    "Success!",
+                    "Experience updated successfully",
+                    "success"
+                  );
+                })
+                .catch(() => {});
             }}
           >
             <textarea
               className="w-full text-black p-3 placeholder:text-black rounded-md"
               placeholder="Write Your coaching Experience "
+              id="experience"
             />{" "}
             <div className="flex justify-end">
               <button
@@ -865,36 +1201,35 @@ const AboutPanel = ({ couchId }) => {
             className="my-5"
             onSubmit={(e) => {
               e.preventDefault();
+              editCoach({
+                variables: {
+                  coachId: couchId,
+                  highlights: document.getElementById("highlighting").value,
+                },
+                refetchQueries: [
+                  {
+                    query: Couch,
+                    variables: {
+                      coachId: couchId,
+                    },
+                  },
+                ],
+              })
+                .then(() => {
+                  Swal.fire(
+                    "Success!",
+                    "Highlights updated successfully",
+                    "success"
+                  );
+                })
+                .catch(() => {});
             }}
           >
             <textarea
               className="w-full text-black p-3 placeholder:text-black rounded-md"
               placeholder="Tell us about your athlete "
+              id="highlighting"
             />{" "}
-            <div className="flex justify-end">
-              <button
-                type="submit"
-                variant="contained"
-                color="primary"
-                className="bg-primary-green text-white py-1  rounded-md min-w-[150px]"
-              >
-                Submit
-              </button>
-            </div>
-          </form>
-        </div>
-        <div>
-          <h2 className="text-2xl text-white font-semibold">Session Plan </h2>
-          <form
-            className="my-5"
-            onSubmit={(e) => {
-              e.preventDefault();
-            }}
-          >
-            <textarea
-              className="w-full text-black p-3 placeholder:text-black rounded-md"
-              placeholder="Write about your session plans "
-            />
             <div className="flex justify-end">
               <button
                 type="submit"
