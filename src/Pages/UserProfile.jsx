@@ -1,7 +1,7 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { isCoach } from "../utils";
 import { useMutation, useQuery } from "@apollo/client";
 import { Athlete } from "../graphql/query/Query";
@@ -35,7 +35,7 @@ function UserProfile() {
     },
   });
 
-  console.log(athlete);
+  console.log(athlete?.getAthlete?.sessions);
 
   let Tabs = [
     {
@@ -48,6 +48,9 @@ function UserProfile() {
 
     {
       title: "Transaction History",
+    },
+    {
+      title: "Booking",
     },
   ];
   return (
@@ -115,7 +118,11 @@ function UserProfile() {
               editAthlete={editAthlete}
               athleteId={currentUser?.userId}
             />
-          </Tab.Panel>{" "}
+          </Tab.Panel>
+          <Tab.Panel>Transaction</Tab.Panel>
+          <Tab.Panel>
+            <BookingPanel bookings={athlete?.getAthlete?.sessions} />
+          </Tab.Panel>
         </Tab.Panels>
       </Tab.Group>
     </div>
@@ -551,4 +558,120 @@ const SettingPanel = ({ editAthlete, athleteId }) => {
   );
 };
 
+const BookingPanel = ({ bookings }) => {
+  return (
+    <div className="">
+      <div className="container mx-auto px-4 sm:px-8">
+        <div className="py-8">
+          <div>
+            <h2 className="text-2xl text-primary-green  font-semibold leading-tight">
+              Booking
+            </h2>
+          </div>
+          <div className="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
+            <div className="inline-block min-w-full shadow-md rounded-lg overflow-hidden">
+              <table className="min-w-full leading-normal">
+                <thead>
+                  <tr className="bg-[#212F48]">
+                    <th className="px-5 py-3 border-b-2 border-gray-200 text-left text-xs font-semibold  text-white  uppercase tracking-wider">
+                      Coach
+                    </th>
+                    <th className="px-5 py-3 border-b-2 border-gray-200  text-left text-xs font-semibold  uppercase text-white tracking-wider">
+                      Plan
+                    </th>
+                    <th className="px-5 py-3 border-b-2 border-gray-200 text-white  text-left text-xs font-semibold  uppercase tracking-wider">
+                      Booking Date
+                    </th>
+                    <th className="px-5 py-3 border-b-2 border-gray-200 text-white  text-left text-xs font-semibold  uppercase tracking-wider">
+                      Appointment Time
+                    </th>{" "}
+                    <th className="px-5 py-3 border-b-2 border-gray-200 text-white  text-left text-xs font-semibold  uppercase tracking-wider">
+                      Appointment Date
+                    </th>
+                    <th className="px-5 py-3 border-b-2 border-gray-200 text-white " />
+                  </tr>
+                </thead>
+                <tbody>
+                  {bookings?.map((value, index) => (
+                    <tr key={index}>
+                      <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                        <Link className="flex" to={"/coach/" + value.coach.id}>
+                          <div className="flex-shrink-0 w-10 h-10">
+                            <img
+                              className="w-full h-full rounded-full object-cover "
+                              src={value.coach.profilePicture}
+                              alt=""
+                            />
+                          </div>
+                          <div className="ml-3">
+                            <p className="text-gray-900 whitespace-no-wrap">
+                              {value.coach.firstName +
+                                " " +
+                                value.coach.lastName}
+                            </p>
+                            <p className="text-gray-600 whitespace-no-wrap"></p>
+                          </div>
+                        </Link>
+                      </td>
+                      <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                        <p className="text-gray-900 whitespace-no-wrap">
+                          ${value.sessionPlan?.price}
+                        </p>
+                        <p className="text-gray-600 whitespace-no-wrap">USD</p>
+                      </td>
+                      <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                        <p className="text-gray-900 whitespace-no-wrap">
+                          {moment(value.sessionPlan?.createdAt).format("LL")}
+                        </p>
+                        <p className="text-gray-600 whitespace-no-wrap">
+                          Due in{" "}
+                          {moment(value.sessionPlan?.createdAt).diff(
+                            moment(value.sessionDate),
+                            "days"
+                          )}{" "}
+                          days
+                        </p>
+                      </td>
+                      <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                        <p className="text-gray-900 whitespace-no-wrap">
+                          {value.sessionPlan?.duration > 1
+                            ? moment(value.startTime, ["HH"]).format("hh A") +
+                              " - " +
+                              moment
+                                .utc(
+                                  value?.startTime +
+                                    value.sessionPlan?.duration,
+                                  ["HH"]
+                                )
+                                .format("hh A")
+                            : moment(value?.startTime, ["HH"]).format("hh A")}
+                        </p>
+                      </td>
+                      <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                        {moment.utc(value.sessionDate).format("LL")}
+                      </td>
+                      <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm text-right">
+                        <button
+                          type="button"
+                          className="inline-block text-gray-500 hover:"
+                        >
+                          <svg
+                            className="inline-block h-6 w-6 fill-current"
+                            viewBox="0 0 24 24"
+                          >
+                            <path d="M12 6a2 2 0 110-4 2 2 0 010 4zm0 8a2 2 0 110-4 2 2 0 010 4zm-2 6a2 2 0 104 0 2 2 0 00-4 0z" />
+                          </svg>
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 export default UserProfile;

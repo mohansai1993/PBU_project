@@ -40,6 +40,22 @@ const Athlete = gql`
         postBy
         updatedAt
       }
+      sessions {
+        startTime
+        sessionDate
+        id
+        coach {
+          id
+          firstName
+          lastName
+          profilePicture
+        }
+        sessionPlan {
+          duration
+          price
+          createdAt
+        }
+      }
 
       chats {
         athlete {
@@ -69,6 +85,16 @@ const Couch = gql`
         startTime
         sessionDate
         id
+        coach {
+          id
+          firstName
+          lastName
+          profilePicture
+        }
+        sessionPlan {
+          duration
+          price
+        }
       }
       sessionPlans {
         duration
