@@ -65,6 +65,17 @@ const Couch = gql`
       profilePicture
       averageRating
       lastName
+      sessions {
+        startTime
+        sessionDate
+        id
+      }
+      sessionPlans {
+        duration
+        forPeople
+        id
+        price
+      }
       chats {
         athlete {
           id
@@ -141,6 +152,8 @@ const Couch = gql`
         createdAt
         updatedAt
       }
+      coachingExperience
+      highlights
     }
   }
 `;

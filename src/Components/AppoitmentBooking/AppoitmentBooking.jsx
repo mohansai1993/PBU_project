@@ -18,19 +18,34 @@ import {
   parseISO,
   startOfToday,
 } from "date-fns";
-import { Fragment, useState } from "react";
+import { Fragment, useContext, useState } from "react";
 import { chunkify } from "./utils";
 import moment from "moment";
+import { useMutation } from "@apollo/client";
+import { BookSession } from "../../graphql/mutations/mutations";
+import { AuthContext } from "../../context/AuthContext";
+import { isCoach } from "../../utils";
+import Swal from "sweetalert2";
+import { Couch } from "../../graphql/query/Query";
+import LoadingSVG from "../Loading/LoadingSvg";
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
-let duration = 2;
-function AppoitmentBooking({ BookingSlots }) {
-  let today = startOfToday();
 
+function AppoitmentBooking({
+  BookingSlots,
+  coachId,
+  packageValue,
+  bookingSession,
+}) {
+  let today = startOfToday();
+  const [bookSession, { loading: bookSessionLoading }] =
+    useMutation(BookSession);
+  const { currentUser } = useContext(AuthContext);
   let [selectedDay, setSelectedDay] = useState(today);
   const [bookedSlot, setBookedSlot] = useState({});
-  // let [selectedDay, setSelectedDay] = useState(today);
+  const [bookSlot, setBookSlot] = useState(null);
+
   let [currentMonth, setCurrentMonth] = useState(format(today, "MMM-yyyy"));
   let firstDayCurrentMonth = parse(currentMonth, "MMM-yyyy", new Date());
 
@@ -49,9 +64,6 @@ function AppoitmentBooking({ BookingSlots }) {
     setCurrentMonth(format(firstDayNextMonth, "MMM-yyyy"));
   }
 
-  // let selectedDayMeetings = meetings.filter((meeting) =>
-  //   isSameDay(parseISO(meeting.startDatetime), selectedDay)
-  // );
   const slots = {
     sunday: {
       startTime: BookingSlots?.Sunday?.startTime,
@@ -84,10 +96,10 @@ function AppoitmentBooking({ BookingSlots }) {
   };
 
   return (
-    <div className="pt-16">
+    <div className="">
       <div className="max-w-md px-4 mx-auto sm:px-7 md:max-w-4xl md:px-6">
-        <div className="md:grid md:grid-cols-2 md:divide-x md:divide-gray-200">
-          <div className="md:pr-14">
+        <div className="">
+          <div className="">
             <div className="flex items-center">
               <h2 className="flex-auto font-semibold text-gray-900">
                 {format(firstDayCurrentMonth, "MMMM yyyy")}
@@ -159,47 +171,97 @@ function AppoitmentBooking({ BookingSlots }) {
                       {format(day, "d")}
                     </time>
                   </button>
-
-                  {/* <div className="w-1 h-1 mx-auto mt-1">
-                    {meetings.some((meeting) =>
-                      isSameDay(parseISO(meeting.startDatetime), day)
-                    ) && (
-                      <div className="w-1 h-1 rounded-full bg-sky-500"></div>
-                    )}
-                  </div> */}
                 </div>
               ))}
             </div>
           </div>
-          <section className="mt-12 md:mt-0 md:pl-14">
+
+          {/* //Slots  */}
+          <section className=" mt-10">
             {Object.keys(slots).map((value, i) => (
               <AvailSlots
                 slots={slots[value]}
                 key={i}
                 day={value}
+                duration={packageValue?.duration}
                 selectedDay={selectedDay}
                 setBookedSlot={setBookedSlot}
+                setBookSlot={setBookSlot}
                 bookedSlot={bookedSlot}
+                bookingSession={bookingSession}
               />
             ))}
-
-            {/* <ol className="mt-4 space-y-1 text-sm leading-6 text-gray-500">
-              {selectedDayMeetings.length > 0 ? (
-                selectedDayMeetings.map((meeting) => (
-                  <Meeting meeting={meeting} key={meeting.id} />
-                ))
-              ) : (
-                <p>No meetings for today.</p>
-              )}
-            </ol> */}
           </section>
         </div>
+      </div>
+      <div className="flex justify-center ">
+        {!bookSessionLoading ? (
+          <button
+            className="bg-primary-green text-white py-1  rounded-md w-[150px] mt-12 "
+            onClick={() => {
+              if (currentUser) {
+                if (isCoach(currentUser?.userType)) {
+                  Swal.fire({
+                    title: "Warning",
+                    text: "You have coach you can't book session.",
+                    icon: "warning",
+                    confirmButtonText: "Cancel",
+                  });
+                } else {
+                  bookSession({
+                    variables: {
+                      coachId: coachId,
+                      athleteId: currentUser.userId,
+                      sessionPlanId: packageValue.id,
+                      ...bookSlot,
+                      endTime: null,
+                    },
+                    refetchQueries: [
+                      {
+                        query: Couch,
+                        variables: {
+                          coachId: coachId,
+                        },
+                      },
+                    ],
+                  })
+                    .then(() => {
+                      Swal.fire("Success!", "Session Booked ", "success");
+                    })
+                    .catch((err) => {
+                      Swal.fire("Error!", err, "error");
+                    });
+                }
+              } else {
+                Swal.fire({
+                  title: "Warning",
+                  text: "You must be logged in",
+                  icon: "warning",
+                  confirmButtonText: "Cancel",
+                });
+              }
+            }}
+          >
+            Book Session
+          </button>
+        ) : (
+          <LoadingSVG />
+        )}
       </div>
     </div>
   );
 }
 
-function AvailSlots({ slots, day, selectedDay, setBookedSlot, bookedSlot }) {
+function AvailSlots({
+  slots,
+  day,
+  selectedDay,
+  setBookedSlot,
+  bookedSlot,
+  duration,
+  setBookSlot,
+  bookingSession,
+}) {
   let res = chunkify(slots, selectedDay, duration);
   function removeTimeSlot(day, selectedDay) {
     const year = moment(selectedDay).year();
@@ -242,6 +304,15 @@ function AvailSlots({ slots, day, selectedDay, setBookedSlot, bookedSlot }) {
     });
   }
 
+  const bookingSessionFilter = (date) =>
+    bookingSession
+      .filter((item) => {
+        const itemDate = moment.utc(item.sessionDate).format("YYYY-MM-DD");
+
+        return itemDate === moment(selectedDay).format("YYYY-MM-DD");
+      })
+      .find((e) => e.startTime === date);
+
   if (
     day === moment(selectedDay).format("dddd").toLowerCase() &&
     moment(selectedDay).isSameOrAfter(moment(), "day")
@@ -251,34 +322,51 @@ function AvailSlots({ slots, day, selectedDay, setBookedSlot, bookedSlot }) {
         {" "}
         {res.length ? (
           <>
-            <h2 className="font-semibold text-gray-900">
+            <h2 className="font-semibold text-gray-900 pb-5">
               Booking Slots for{" "}
               <time dateTime={format(selectedDay, "yyyy-MM-dd")}>
                 {format(selectedDay, "MMM dd, yyy")}
               </time>
             </h2>
             <div className="flex gap-3 flex-wrap">
-              {res.map((index, idx) => (
-                <span
-                  key={idx}
-                  onClick={() => {
-                    bookedSlot?.[moment(selectedDay).year()]?.[
-                      moment(selectedDay).format("MMMM").toLowerCase()
-                    ]?.[day]?.[moment(selectedDay).date()]?.startTime != index
-                      ? addTimeSlot(day, selectedDay, index)
-                      : removeTimeSlot(day, selectedDay);
-                  }}
-                  className={`hover:bg-red-500 cursor-pointer bg-black text-white font-semibold  px-5 py-1 rounded-md ${
-                    bookedSlot?.[moment(selectedDay).year()]?.[
-                      moment(selectedDay).format("MMMM").toLowerCase()
-                    ]?.[day]?.[moment(selectedDay).date()]?.startTime != index
-                      ? ""
-                      : "bg-red-500"
-                  }`}
-                >
-                  {index}:00
-                </span>
-              ))}
+              {res.map((index, idx) =>
+                bookingSessionFilter(index) ? null : (
+                  <span
+                    key={idx}
+                    onClick={() => {
+                      // bookedSlot?.[moment(selectedDay).year()]?.[
+                      //   moment(selectedDay).format("MMMM").toLowerCase()
+                      // ]?.[day]?.[moment(selectedDay).date()]?.startTime != index
+                      //   ? addTimeSlot(day, selectedDay, index)
+                      //   : removeTimeSlot(day, selectedDay);
+                      if (
+                        bookedSlot?.[moment(selectedDay).year()]?.[
+                          moment(selectedDay).format("MMMM").toLowerCase()
+                        ]?.[day]?.[moment(selectedDay).date()]?.startTime !=
+                        index
+                      ) {
+                        setBookSlot({
+                          startTime: index,
+                          sessionDate: moment(selectedDay).format("YYYY-MM-DD"),
+                        });
+                      } else {
+                        console.log(day);
+                      }
+                    }}
+                    className={`hover:bg-red-500 cursor-pointer bg-black text-white font-semibold  px-5 py-1 rounded-md ${
+                      bookedSlot?.[moment(selectedDay).year()]?.[
+                        moment(selectedDay).format("MMMM").toLowerCase()
+                      ]?.[day]?.[moment(selectedDay).date()]?.startTime != index
+                        ? ""
+                        : "bg-red-500"
+                    }`}
+                  >
+                    {index}:00
+                    {/* //moment(bookingSession).format("LLL"), //
+                  moment(selectedDay).format("LLL") */}
+                  </span>
+                )
+              )}
             </div>
           </>
         ) : (

@@ -45,7 +45,13 @@ function CoachDetails() {
                     </h3>
                     <div className="grid grid-cols-2 gap-3">
                       {couch?.getCoach?.sessionPlans.map((value, index) => (
-                        <PackageCard value={value} key={index} />
+                        <PackageCard
+                          openingHours={couch?.getCoach?.openingHours}
+                          coachId={couch?.getCoach?.id}
+                          bookingSession={couch?.getCoach?.sessions}
+                          value={value}
+                          key={index}
+                        />
                       ))}
                     </div>
                   </div>
@@ -97,25 +103,8 @@ function CoachDetails() {
               </Tab>
             </Tab.List>
             <Tab.Panels className="my-6 leading-loose">
-              <Tab.Panel>
-                {/* I recently just moved to Joplin, MO after finishing two years of
-                coaching at Poudre High School in Fort Collins, CO, coaching the
-                varsity quarterbacks. I am also actively coaching athletes in
-                 */}
-                <AppoitmentBooking
-                  BookingSlots={couch?.getCoach?.openingHours}
-                />
-              </Tab.Panel>
-              <Tab.Panel>
-                me to Division 1 competition (e.g. learning new offensive
-                schemes/game plans, reading defenses, fundamentals, and more). I
-                coached a family friend who played quarterback at the high
-                school level while at Lehigh. I have had over 10 years of
-                experience playing the position under top tier quarterback
-                coaches (currently a Division 1AA head coach & Division 1AA OC,
-                both with excellent careers themselves). I am really excited to
-                coach football players of all ages!
-              </Tab.Panel>
+              <Tab.Panel>{couch?.getCoach?.coachingExperience}</Tab.Panel>
+              <Tab.Panel>{couch?.getCoach?.highlights}</Tab.Panel>
             </Tab.Panels>
           </Tab.Group>
         </div>
@@ -124,7 +113,7 @@ function CoachDetails() {
   );
 }
 
-const PackageCard = ({ value }) => {
+const PackageCard = ({ value, openingHours, coachId, bookingSession }) => {
   let [isOpen, setIsOpen] = useState(false);
   return (
     <div className="bg-white p-4 rounded-md">
@@ -158,8 +147,11 @@ const PackageCard = ({ value }) => {
         </ol>
       </div>
       <SessionPurchaseModal
-        value={value}
+        openingHours={openingHours}
+        packageValue={value}
+        coachId={coachId}
         isOpen={isOpen}
+        bookingSession={bookingSession}
         setIsOpen={setIsOpen}
       />{" "}
       <button

@@ -142,6 +142,23 @@ const SetSlot = gql`
   }
 `;
 
+const CreateSessionPlan = gql`
+  mutation CreateSessionPlan(
+    $forPeople: Int
+    $duration: Int
+    $price: Float
+    $coachId: ID
+  ) {
+    createSessionPlan(
+      forPeople: $forPeople
+      duration: $duration
+      price: $price
+      coachId: $coachId
+    ) {
+      about
+    }
+  }
+`;
 const AddChatRoom = gql`
   mutation AddChatRoom($chatId: String!, $coachId: ID!, $athleteId: ID!) {
     addChatRoom(chatId: $chatId, coachId: $coachId, athleteId: $athleteId)
@@ -235,6 +252,28 @@ const Login = gql`
     }
   }
 `;
+
+const BookSession = gql`
+  mutation BookSession(
+    $athleteId: ID
+    $coachId: ID
+    $sessionDate: Date
+    $sessionPlanId: ID
+    $startTime: Int
+    $endTime: Int
+  ) {
+    bookSession(
+      athleteId: $athleteId
+      coachId: $coachId
+      sessionDate: $sessionDate
+      sessionPlanId: $sessionPlanId
+      startTime: $startTime
+      endTime: $endTime
+    ) {
+      id
+    }
+  }
+`;
 export {
   PostFeed,
   RegisterCoach,
@@ -247,4 +286,6 @@ export {
   RegisterAthlete,
   RemoveCoachingLocation,
   Login,
+  CreateSessionPlan,
+  BookSession,
 };

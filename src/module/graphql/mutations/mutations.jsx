@@ -55,4 +55,12 @@ const SetSlot = gql`
   }
 `;
 
-export { PostFeed, RegisterCoach, SetSlot };
+const RemoveSessionPlan = gql`
+  mutation RemoveSessionPlan($coachId: ID, $planId: ID) {
+    removeSessionPlan(coachId: $coachId, planId: $planId) {
+      about
+    }
+  }
+`;
+
+export { PostFeed, RegisterCoach, SetSlot, RemoveSessionPlan };

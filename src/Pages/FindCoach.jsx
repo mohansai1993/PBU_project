@@ -46,6 +46,7 @@ const CoachCard = ({ value, index }) => {
           <img
             src={value.profilePicture}
             className="object-cover w-full rounded-xl  h-full  "
+            alt=""
           />
         </div>
         <div className="text-white flex flex-col gap-3 col-span-2 ">
@@ -56,11 +57,25 @@ const CoachCard = ({ value, index }) => {
             ready to complete training
           </h5>
           <div className="flex ">
-            {Array(value.totalReviews).fill(
-              <span>
-                <AiFillStar size={25} className="text-yellow-400" />
-              </span>
-            )}
+            <div className="flex  items-center  ">
+              {Array(parseInt(value.averageRating)).fill(
+                <span>
+                  <AiFillStar size={25} className="text-yellow-400" />
+                </span>
+              )}
+              {Array(5 - parseInt(value.averageRating)).fill(
+                <div>
+                  <AiFillStar
+                    size={25}
+                    className=" text-[#9d9d9d33] 
+                    "
+                  />
+                </div>
+              )}
+            </div>
+            <span className="text-[10px]  items-center flex ml-2">
+              ({value.totalReviews} Reviews)
+            </span>
           </div>
           <p className="line-clamp-3">{value.about}</p>
         </div>
