@@ -46,13 +46,10 @@ function LoginPage() {
                       onClick={handleGoogleSignIn}
                       className="rounded-md bg-white cursor-pointer  w-full text-primary-green text-center  py-3 my-4"
                     >
-                      Register With Google
+                      Login With Google
                     </div>
-                    <div
-                      onClick={() => handleGoogleSignIn(false)}
-                      className="rounded-md bg-white cursor-pointer w-full text-primary-green text-center  py-3"
-                    >
-                      Register With Facebook
+                    <div className="rounded-md bg-white cursor-pointer w-full text-primary-green text-center  py-3">
+                      Login With Facebook(Soon)
                     </div>
                   </div>
                 </div>
