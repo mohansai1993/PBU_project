@@ -28,6 +28,7 @@ import { isCoach } from "../../utils";
 import Swal from "sweetalert2";
 import { Couch } from "../../graphql/query/Query";
 import LoadingSVG from "../Loading/LoadingSvg";
+
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
@@ -214,7 +215,6 @@ function AppoitmentBooking({
                       athleteId: currentUser.userId,
                       sessionPlanId: packageValue.id,
                       ...bookSlot,
-                      endTime: null,
                     },
                     refetchQueries: [
                       {
@@ -225,8 +225,9 @@ function AppoitmentBooking({
                       },
                     ],
                   })
-                    .then(() => {
-                      Swal.fire("Success!", "Session Booked ", "success");
+                    .then((res) => {
+                      window.location.href = res.data?.bookSession;
+                      // Swal.fire("Success!", "Session Booked ", "success");
                     })
                     .catch((err) => {
                       Swal.fire("Error!", err, "error");

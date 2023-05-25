@@ -68,14 +68,7 @@ const EditAthlete = gql`
     $athleteId: ID
     $firstName: String
     $lastName: String
-    $countryCode: Int
     $password: String
-    $number: String
-    $street: String
-    $city: String
-    $state: String
-    $country: String
-    $pinCode: String
     $profilePicture: String
     $game: String
   ) {
@@ -83,14 +76,7 @@ const EditAthlete = gql`
       athleteId: $athleteId
       firstName: $firstName
       lastName: $lastName
-      countryCode: $countryCode
       password: $password
-      number: $number
-      street: $street
-      city: $city
-      state: $state
-      country: $country
-      pinCode: $pinCode
       profilePicture: $profilePicture
       game: $game
     ) {
@@ -98,6 +84,7 @@ const EditAthlete = gql`
     }
   }
 `;
+
 const EditCoach = gql`
   mutation EditCoach(
     $profilePicture: String
@@ -254,25 +241,9 @@ const Login = gql`
 `;
 
 const BookSession = gql`
-  mutation BookSession(
-    $athleteId: ID
-    $coachId: ID
-    $sessionDate: Date
-    $sessionPlanId: ID
-    $startTime: Int
-    $endTime: Int
-  ) {
-    bookSession(
-      athleteId: $athleteId
-      coachId: $coachId
-      sessionDate: $sessionDate
-      sessionPlanId: $sessionPlanId
-      startTime: $startTime
-      endTime: $endTime
-    ) {
-      id
-    }
-  }
+mutation BookSession($athleteId: ID, $coachId: ID, $sessionDate: Date, $sessionPlanId: ID, $startTime: Int) {
+  bookSession(athleteId: $athleteId, coachId: $coachId, sessionDate: $sessionDate, sessionPlanId: $sessionPlanId, startTime: $startTime)
+}
 `;
 export {
   PostFeed,

@@ -15,7 +15,8 @@ import MultiChat from "../module/pages/MultiChat";
 import Loading from "../Components/Loading/Loading";
 import LoadingSVG from "../Components/Loading/LoadingSvg";
 import LoadingSvg from "../Components/Loading/LoadingSvg";
-
+import * as Yup from "yup";
+import Swal from "sweetalert2";
 function UserProfile() {
   let { id } = useParams();
   const { currentUser } = useContext(AuthContext);
@@ -117,6 +118,7 @@ function UserProfile() {
             <SettingPanel
               editAthlete={editAthlete}
               athleteId={currentUser?.userId}
+              athlete={athlete?.getAthlete}
             />
           </Tab.Panel>
           <Tab.Panel>Transaction</Tab.Panel>
@@ -326,29 +328,57 @@ const ProfilePanel = ({ athlete, postFeed }) => {
   );
 };
 
-const SettingPanel = ({ editAthlete, athleteId }) => {
+const SettingPanel = ({ editAthlete, athleteId, athlete }) => {
   const [File, setFile] = useState(null);
 
+  const validationSchema = Yup.object({
+    firstName: Yup.string().required("First Name is required"),
+    lastName: Yup.string().required("Last Name is required"),
+    game: Yup.string().required("Game is required"),
+  });
+  const ErrorPrint = ({ value }) => {
+    return (
+      <>
+        {formik.touched[value] && formik.errors[value] ? (
+          <div className="text-start text-red-600 text-sm ">
+            {formik.errors[value]}
+          </div>
+        ) : null}
+      </>
+    );
+  };
+  console.log(athlete);
   const formik = useFormik({
     initialValues: {
       profilePicture: null,
-      game: "foostball",
-      firstName: "new",
-      lastName: "sfsdf",
-      street: "ghjgjgh",
-      city: "fghfghfg",
-      state: "fghfghfg",
-      country: "hgfhfghfg",
-      pinCode: "123456789",
+      game: athlete.game,
+      firstName: athlete.firstName,
+      lastName: athlete.lastName,
     },
-
+    validationSchema: validationSchema,
     onSubmit: (values) => {
       editAthlete({
         variables: {
           athleteId: athleteId,
           ...values,
         },
-      });
+        refetchQueries: [
+          {
+            query: Athlete,
+            variables: {
+              email: athlete.email,
+            },
+          },
+        ],
+      })
+        .then(() => {
+          Swal.fire(
+            "Success!",
+            "Athlete  profile updated successfully",
+            "success"
+          );
+        })
+        .catch(() => {});
       // Your form submission logic goes here
     },
   });
@@ -369,11 +399,13 @@ const SettingPanel = ({ editAthlete, athleteId }) => {
                 type="text"
                 name="firstName"
                 onChange={formik.handleChange}
+                value={formik.values.firstName}
                 onBlur={formik.handleBlur}
                 className={`p-3 rounded-md w-full  text-sm  rounded-md focus:outline-none 
               placeholder:text-primary-gray `}
                 placeholder="First name"
-              />
+              />{" "}
+              <ErrorPrint value={"firstName"} />
             </div>
           </div>
         </div>
@@ -388,10 +420,12 @@ const SettingPanel = ({ editAthlete, athleteId }) => {
                 name="lastName"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
+                value={formik.values.lastName}
                 className={`p-3 rounded-md w-full  text-sm  rounded-md  focus:outline-none 
               placeholder:text-primary-gray `}
                 placeholder="last name"
               />
+              <ErrorPrint value={"lastName"} />
             </div>
           </div>
         </div>{" "}
@@ -405,117 +439,13 @@ const SettingPanel = ({ editAthlete, athleteId }) => {
                 type="text"
                 name="game"
                 onChange={formik.handleChange}
+                value={formik.values.game}
                 onBlur={formik.handleBlur}
                 className={`p-3 rounded-md w-full  text-sm  rounded-md  focus:outline-none 
               placeholder:text-primary-gray `}
                 placeholder="Game"
               />
-            </div>
-          </div>
-        </div>
-        <div className="flex flex-col gap-3">
-          <div>
-            <label>Coaching City </label>
-          </div>
-          <div className="relative text-gray-600 rounded-md ">
-            <span className="absolute bg-primary-gray-light inset-y-0 left-0 flex items-center px-1 ">
-              <IoNavigate size={25} className="text-primary-green" />
-            </span>
-            <div className="w-full">
-              <input
-                type="text"
-                name="city"
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                className={`p-3 rounded-md w-full  text-sm  rounded-md pl-10 focus:outline-none 
-              placeholder:text-primary-gray `}
-                placeholder="Coaching City"
-                autoComplete="off"
-              />
-            </div>
-          </div>
-        </div>
-        <div className="flex flex-col gap-3">
-          <div>
-            <label>Coaching State </label>
-          </div>
-          <div className="relative text-gray-600 rounded-md ">
-            <span className="absolute bg-primary-gray-light inset-y-0 left-0 flex items-center px-1 ">
-              <IoNavigate size={25} className="text-primary-green" />
-            </span>
-            <div className="w-full">
-              <input
-                type="text"
-                name="state"
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                className={`p-3 rounded-md w-full  text-sm  rounded-md pl-10 focus:outline-none 
-              placeholder:text-primary-gray `}
-                placeholder="Coaching State"
-              />
-            </div>
-          </div>
-        </div>{" "}
-        <div className="flex flex-col gap-3">
-          <div>
-            <label>Coaching Country </label>
-          </div>
-          <div className="relative text-gray-600 rounded-md ">
-            <span className="absolute bg-primary-gray-light inset-y-0 left-0 flex items-center px-1 ">
-              <IoNavigate size={25} className="text-primary-green" />
-            </span>
-            <div className="w-full">
-              <input
-                type="text"
-                name="country"
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                className={`p-3 rounded-md w-full  text-sm  rounded-md pl-10 focus:outline-none 
-              placeholder:text-primary-gray `}
-                placeholder="Coaching Country"
-              />
-            </div>
-          </div>
-        </div>
-        <div className="flex flex-col gap-3">
-          <div>
-            <label>Coaching Pincode </label>
-          </div>
-          <div className="relative text-gray-600 rounded-md ">
-            <span className="absolute bg-primary-gray-light inset-y-0 left-0 flex items-center px-1 ">
-              <IoNavigate size={25} className="text-primary-green" />
-            </span>
-            <div className="w-full">
-              <input
-                type="number"
-                name="pinCode"
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                className={`p-3 rounded-md w-full  text-sm  rounded-md pl-10 focus:outline-none 
-              placeholder:text-primary-gray `}
-                placeholder="Coaching Pincode"
-              />
-            </div>
-          </div>
-        </div>{" "}
-        <div className="flex flex-col gap-3">
-          <div>
-            <label>Coaching Street </label>
-          </div>
-          <div className="relative text-gray-600 rounded-md ">
-            <span className="absolute bg-primary-gray-light inset-y-0 left-0 flex items-center px-1 ">
-              <IoNavigate size={25} className="text-primary-green" />
-            </span>
-            <div className="w-full">
-              <input
-                type="text"
-                name="street"
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                className={`p-3 rounded-md w-full  text-sm  rounded-md pl-10 focus:outline-none 
-              placeholder:text-primary-gray `}
-                placeholder="Coaching Street"
-              />
+              <ErrorPrint value={"game"} />
             </div>
           </div>
         </div>
@@ -540,6 +470,7 @@ const SettingPanel = ({ editAthlete, athleteId }) => {
               placeholder:text-primary-gray `}
                 placeholder="Select Profile image"
               />
+              <ErrorPrint value={"profilePicture"} />
             </div>
           </div>
         </div>{" "}
@@ -595,7 +526,10 @@ const BookingPanel = ({ bookings }) => {
                   {bookings?.map((value, index) => (
                     <tr key={index}>
                       <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                        <Link className="flex" to={"/coach/" + value.coach.id}>
+                        <Link
+                          className="flex items-center "
+                          to={"/coach/" + value.coach.id}
+                        >
                           <div className="flex-shrink-0 w-10 h-10">
                             <img
                               className="w-full h-full rounded-full object-cover "
@@ -603,13 +537,8 @@ const BookingPanel = ({ bookings }) => {
                               alt=""
                             />
                           </div>
-                          <div className="ml-3">
-                            <p className="text-gray-900 whitespace-no-wrap">
-                              {value.coach.firstName +
-                                " " +
-                                value.coach.lastName}
-                            </p>
-                            <p className="text-gray-600 whitespace-no-wrap"></p>
+                          <div className="ml-3 text-gray-900 ">
+                            {value.coach.firstName + " " + value.coach.lastName}
                           </div>
                         </Link>
                       </td>

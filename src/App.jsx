@@ -17,6 +17,8 @@ import FeedPage from "./Pages/FeedPage";
 import UserProfile from "./Pages/UserProfile";
 import ProtectedRoute from "./ProtectedRoute";
 import { AuthContext } from "./context/AuthContext";
+import Success from "./Pages/Checkout/Success";
+import Cancel from "./Pages/Checkout/Cancel";
 
 function App() {
   const { currentUser } = useContext(AuthContext);
@@ -34,6 +36,9 @@ function App() {
           <Route path="/become/coach/apply" element={<ApplyBecomeCoach />} />
         )}
         <Route path="/coach/:id" element={<CoachDetails />} />
+        <Route path="/success" element={<Success />} />
+        <Route path="/cancel" element={<Cancel />} />
+
         <Route element={<ProtectedRoute />}>
           <Route path="/profile">
             {/* <Route path=":id" element={<PBUFeedPage />} /> */}
