@@ -11,10 +11,10 @@ function BackgroundInfoForm(props) {
       coachingState,
       coachingCountry,
       coachingPinCode,
-      coachingStreet1,
+      coachingStreet,
     },
   } = props;
-  console.log(props.formField);
+
   return (
     <div>
       <div className="grid grid-cols-2 gap-3 ">
@@ -95,16 +95,16 @@ function BackgroundInfoForm(props) {
           />
         </div>{" "}
         <div className="w-full">
-          <label> {coachingStreet1.label}</label>
+          <label> {coachingStreet.label}</label>
           <Field
-            name={coachingStreet1.name}
-            placeholder={coachingStreet1.placeholder}
+            name={coachingStreet.name}
+            placeholder={coachingStreet.placeholder}
             // as={"input"}
             type="text"
             className="border border-black w-full px-3 py-2 rounded-md "
           />
           <ErrorMessage
-            name={coachingStreet1.name}
+            name={coachingStreet.name}
             component="div"
             className="text-red-500"
           />

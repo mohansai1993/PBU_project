@@ -9,17 +9,21 @@ import { useParams } from "react-router-dom";
 import SessionPurchaseModal from "../../Components/Modal/SessionPurchaseModal";
 import AppoitmentBooking from "../../Components/AppoitmentBooking/AppoitmentBooking";
 import SingleChat from "../../module/pages/SingleChat";
+import LoadingSVG from "../../Components/Loading/LoadingSvg";
+import PBUGoogleMap from "../../Components/Maps/Map";
 
 function CoachDetails() {
   let { id } = useParams();
+  const { render, latLong } = PBUGoogleMap();
 
   console.log(id);
-  let { data: couch } = useQuery(Couch, {
+  let { data: couch, loading } = useQuery(Couch, {
     skip: !id,
     variables: {
       coachId: id,
     },
   });
+
   return (
     <>
       <div className="bg-[#152033]">
@@ -28,46 +32,65 @@ function CoachDetails() {
             <h3 className="font-semibold text-3xl text-white py-10 ">
               Coach <span className="text-primary-green">Near by You</span>
             </h3>
-            <div className="md:flex gap-4">
-              <div className="flex-1 mb-4">
-                {couch?.getCoach && <CoachCard couch={couch} />}
+            {loading ? (
+              <LoadingSVG />
+            ) : (
+              <div className="md:flex gap-4">
+                <div className="flex-1 mb-4">
+                  {couch?.getCoach && <CoachCard couch={couch} />}
 
-                <div>
-                  <h3 className="font-semibold text-3xl text-white py-10 ">
-                    Session Plans
-                  </h3>
-                  <div className="grid grid-cols-2 gap-3">
-                    {couch?.getCoach?.sessionPlans.map((value, index) => (
-                      <PackageCard value={value} key={index} />
-                    ))}
+                  <div>
+                    <h3 className="font-semibold text-3xl text-white py-10 ">
+                      Session Plans
+                    </h3>
+                    <div className="grid grid-cols-2 gap-3">
+                      {couch?.getCoach?.sessionPlans.map((value, index) => (
+                        <PackageCard
+                          openingHours={couch?.getCoach?.openingHours}
+                          coachId={couch?.getCoach?.id}
+                          bookingSession={couch?.getCoach?.sessions}
+                          value={value}
+                          key={index}
+                        />
+                      ))}
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className="flex-1 bg-white p-3 rounded-md">
-                <div>
-                  <h3 className="font-bold mb-3">
-                    Questions For Joanne Dondero
-                  </h3>
+                <div className="flex-1 bg-white p-3 rounded-md">
+                  <div>
+                    <h3 className="font-bold mb-3">
+                      Questions For {couch?.getCoach?.firstName}{" "}
+                      {couch?.getCoach?.lastName}
+                    </h3>
 
-                  <SingleChat couch={couch} />
-                  <h4 className="text-semibold my-3">Training Location</h4>
+                    <SingleChat couch={couch} />
+                    <h4 className="text-semibold my-3">Training Location</h4>
+                  </div>
+
+                  {render({
+                    marker: {
+                      draggable: false,
+                      positions: couch?.getCoach?.coachingLocation.map(
+                        (marker) => ({
+                          __typename: marker.location.__typename,
+                          lat: marker.location.latitude,
+                          lng: marker.location.longitude,
+                        })
+                      ),
+                    },
+                  })}
                 </div>
-                <iframe
-                  id="gmap_canvas"
-                  width={"100%"}
-                  title="canvas"
-                  height={"70%"}
-                  src="https://maps.google.com/maps?q=california&t=&z=10&ie=UTF8&iwloc=&output=embed"
-                />
               </div>
-            </div>
+            )}
           </div>
         </div>
       </div>
       <div className="pb-16 bg-white container ">
         <h3 className="font-semibold text-3xl  py-10 ">
           More About Coach{" "}
-          <span className="text-primary-green">Joanne Dondero </span>
+          <span className="text-primary-green">
+            {couch?.getCoach?.firstName} {couch?.getCoach?.lastName}
+          </span>
         </h3>
         <div>
           <Tab.Group>
@@ -78,35 +101,10 @@ function CoachDetails() {
               <Tab className="bg-primary-green text-white  rounded-md p-5">
                 Athletic Highlights
               </Tab>
-              <Tab className="bg-primary-green text-white  rounded-md p-5">
-                Session Plan
-              </Tab>
             </Tab.List>
             <Tab.Panels className="my-6 leading-loose">
-              <Tab.Panel>
-                {/* I recently just moved to Joplin, MO after finishing two years of
-                coaching at Poudre High School in Fort Collins, CO, coaching the
-                varsity quarterbacks. I am also actively coaching athletes in
-                 */}
-                <AppoitmentBooking />
-              </Tab.Panel>
-              <Tab.Panel>
-                me to Division 1 competition (e.g. learning new offensive
-                schemes/game plans, reading defenses, fundamentals, and more). I
-                coached a family friend who played quarterback at the high
-                school level while at Lehigh. I have had over 10 years of
-                experience playing the position under top tier quarterback
-                coaches (currently a Division 1AA head coach & Division 1AA OC,
-                both with excellent careers themselves). I am really excited to
-                coach football players of all ages!
-              </Tab.Panel>
-              <Tab.Panel>
-                I recently just moved to Joplin, MO after finishing two years of
-                coaching at Poudre High School in Fort Collins, CO, coaching the
-                varsity quarterbacks. I am also actively coaching athletes in
-                individual sessions, as well as coaching multiple flag football
-                t players of all ages!
-              </Tab.Panel>
+              <Tab.Panel>{couch?.getCoach?.coachingExperience}</Tab.Panel>
+              <Tab.Panel>{couch?.getCoach?.highlights}</Tab.Panel>
             </Tab.Panels>
           </Tab.Group>
         </div>
@@ -115,7 +113,7 @@ function CoachDetails() {
   );
 }
 
-const PackageCard = ({ value }) => {
+const PackageCard = ({ value, openingHours, coachId, bookingSession }) => {
   let [isOpen, setIsOpen] = useState(false);
   return (
     <div className="bg-white p-4 rounded-md">
@@ -149,8 +147,11 @@ const PackageCard = ({ value }) => {
         </ol>
       </div>
       <SessionPurchaseModal
-        value={value}
+        openingHours={openingHours}
+        packageValue={value}
+        coachId={coachId}
         isOpen={isOpen}
+        bookingSession={bookingSession}
         setIsOpen={setIsOpen}
       />{" "}
       <button

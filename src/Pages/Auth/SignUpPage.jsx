@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useContext } from "react";
 import logo from "./../../assets/logo.png";
 import { Link } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import { AuthContext } from "../../context/AuthContext";
 function SignUpPage() {
+  const { handleGoogleSignIn } = useContext(AuthContext);
   const formik = useFormik({
     initialValues: {
       choice: "athlete",
@@ -43,11 +45,14 @@ function SignUpPage() {
                     <img src={logo} className="h-24 mx-auto" />
                   </div>
                   <div>
-                    <div className="rounded-md bg-white  w-full text-primary-green text-center  py-3 my-4">
+                    <div
+                      onClick={() => handleGoogleSignIn(false)}
+                      className="rounded-md bg-white cursor-pointer  w-full text-primary-green text-center  py-3 my-4"
+                    >
                       Register With Google
                     </div>
                     <div className="rounded-md bg-white  w-full text-primary-green text-center  py-3">
-                      Register With Facebook
+                      Register With Facebook(Soon)
                     </div>
                   </div>
                 </div>
@@ -78,7 +83,6 @@ function SignUpPage() {
                         onBlur={formik.handleBlur}
                       >
                         <option value="athlete">Athlete</option>
-                        <option value="coach">Coach</option>
                       </select>
                       <div className="flex gap-4">
                         <div className="w-full">

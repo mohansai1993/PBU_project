@@ -1,8 +1,8 @@
 import { gql } from "@apollo/client";
 
 const GetFeeds = gql`
-  query GetFeeds {
-    getFeeds {
+  query GetFeeds($pageNumber: Int) {
+    getFeeds(pageNumber: $pageNumber) {
       createdAt
       id
       post
@@ -23,6 +23,52 @@ const GetFeeds = gql`
   }
 `;
 
+const Athlete = gql`
+  query GetAthlete($email: String) {
+    getAthlete(email: $email) {
+      id
+      firstName
+      lastName
+      email
+      password
+      profilePicture
+      game
+      createdAt
+      updatedAt
+      feed {
+        post
+        postBy
+        updatedAt
+      }
+      sessions {
+        startTime
+        sessionDate
+        id
+        coach {
+          id
+          firstName
+          lastName
+          profilePicture
+        }
+        sessionPlan {
+          duration
+          price
+          createdAt
+        }
+      }
+
+      chats {
+        athlete {
+          id
+          firstName
+          profilePicture
+          lastName
+        }
+        chatId
+      }
+    }
+  }
+`;
 const Couch = gql`
   query GetCoach($coachId: ID) {
     getCoach(coachId: $coachId) {
@@ -35,6 +81,27 @@ const Couch = gql`
       profilePicture
       averageRating
       lastName
+      sessions {
+        startTime
+        sessionDate
+        id
+        coach {
+          id
+          firstName
+          lastName
+          profilePicture
+        }
+        sessionPlan {
+          duration
+          price
+        }
+      }
+      sessionPlans {
+        duration
+        forPeople
+        id
+        price
+      }
       chats {
         athlete {
           id
@@ -61,6 +128,7 @@ const Couch = gql`
         number
       }
       feed {
+        id
         post
         postBy
         updatedAt
@@ -95,6 +163,23 @@ const Couch = gql`
           startTime
         }
       }
+      game
+      coachingLocation {
+        id
+        street
+        city
+        state
+        country
+        pinCode
+        location {
+          latitude
+          longitude
+        }
+        createdAt
+        updatedAt
+      }
+      coachingExperience
+      highlights
     }
   }
 `;
@@ -138,4 +223,11 @@ const GetTop4Reviews = gql`
     }
   }
 `;
-export { GetFeeds, Couch, Couches, GetSubscriptionPlans, GetTop4Reviews };
+export {
+  GetFeeds,
+  Couch,
+  Couches,
+  Athlete,
+  GetSubscriptionPlans,
+  GetTop4Reviews,
+};

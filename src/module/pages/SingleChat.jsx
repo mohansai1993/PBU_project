@@ -18,6 +18,8 @@ import { db } from "../firebase";
 import { useMutation } from "@apollo/client";
 import { AddChatRoom } from "../../graphql/mutations/mutations";
 import { AuthContext } from "../../context/AuthContext";
+import Swal from "sweetalert2";
+import { isCoach } from "../../utils";
 
 function SingleChat({ couch }) {
   const { currentUser } = useContext(AuthContext);
@@ -157,8 +159,26 @@ function SingleChat({ couch }) {
         <button
           type="button"
           onClick={() => {
-            openModal();
-            handlePersonChat();
+            if (currentUser) {
+              if (isCoach(currentUser?.userType)) {
+                Swal.fire({
+                  title: "Warning",
+                  text: "You have coach you can send message to other coach ",
+                  icon: "warning",
+                  confirmButtonText: "Cancel",
+                });
+              } else {
+                openModal();
+                handlePersonChat();
+              }
+            } else {
+              Swal.fire({
+                title: "Warning",
+                text: "You must be logged in",
+                icon: "warning",
+                confirmButtonText: "Cancel",
+              });
+            }
           }}
           className="bg-primary-green text-white py-2  rounded-md min-w-[150px]"
         >

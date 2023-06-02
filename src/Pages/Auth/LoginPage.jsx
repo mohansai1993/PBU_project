@@ -6,7 +6,7 @@ import * as Yup from "yup";
 import { AuthContext } from "../../context/AuthContext";
 
 function LoginPage() {
-  const { handleLogin } = useContext(AuthContext);
+  const { handleLogin, handleGoogleSignIn } = useContext(AuthContext);
   const formik = useFormik({
     initialValues: {
       email: "ron.whesley@sgvsofttech.com",
@@ -39,14 +39,17 @@ function LoginPage() {
               <div className="hidden md:block flex-1 bg-primary-green py-16 ">
                 <div className="max-w-sm w-full mx-auto">
                   <div className="pb-16">
-                    <img src={logo} className="h-24 mx-auto" />
+                    <img src={logo} alt="google" className="h-24 mx-auto" />
                   </div>
                   <div>
-                    <div className="rounded-md bg-white  w-full text-primary-green text-center  py-3 my-4">
-                      Register With Google
+                    <div
+                      onClick={handleGoogleSignIn}
+                      className="rounded-md bg-white cursor-pointer  w-full text-primary-green text-center  py-3 my-4"
+                    >
+                      Login With Google
                     </div>
-                    <div className="rounded-md bg-white  w-full text-primary-green text-center  py-3">
-                      Register With Facebook
+                    <div className="rounded-md bg-white cursor-pointer w-full text-primary-green text-center  py-3">
+                      Login With Facebook(Soon)
                     </div>
                   </div>
                 </div>

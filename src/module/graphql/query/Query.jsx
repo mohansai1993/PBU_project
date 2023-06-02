@@ -56,6 +56,20 @@ const Couch = gql`
         postBy
         updatedAt
       }
+      coachingLocation {
+        id
+        street
+        city
+        state
+        country
+        pinCode
+        location {
+          latitude
+          longitude
+        }
+        createdAt
+        updatedAt
+      }
       openingHours {
         Sunday {
           endTime

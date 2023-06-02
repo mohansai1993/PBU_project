@@ -26,7 +26,7 @@ function MultiChat({ couch }) {
       coachId: couch?.getCoach?.id,
     },
   });
-  console.log();
+
   const RoomList = [
     {
       athlete: "64522604b36e0d952fc2fd7c",
@@ -152,6 +152,17 @@ function MultiChat({ couch }) {
   };
   return (
     <div>
+      <div className="px-5 py-5 bg-[#212f48] rounded-t-md flex text-white   justify-between items-center ">
+        <div className="font-semibold text-2xl">PBallu Chat</div>
+        <div className="w-1/2" />
+        <div className=" p-2   ">
+          <img
+            className="h-12 w-12 rounded-full object-cover"
+            src={couch?.getCoach?.profilePicture}
+          />
+        </div>
+      </div>
+
       <div className="flex">
         <Sidebar
           couch={couch}

@@ -7,7 +7,7 @@ import Stepper from "../Steper/Steper";
 import coachRegisterFormModel from "./FormModal/coachRegister";
 import validationSchema from "./FormModal/validation";
 import BasicInfoForm from "./BasicInfoForm";
-import { Form, Formik } from "formik";
+import { Form, Formik, useFormikContext } from "formik";
 import BackgroundInfoForm from "./BackgroundInfoForm";
 import FaqQuestionsForm from "./FaqQuestionsForm";
 import PaymentForm from "./PaymentForm";
@@ -18,6 +18,7 @@ import AvaibilityForm from "./AvaibilityForm";
 import Toast from "../Toast/Toast";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
+import AuthForm from "./FormModal/AuthForm";
 const steps = [
   {
     title: "Basic Information",
@@ -44,13 +45,15 @@ let formInitialValues = {
   password: "123456789",
   countryCode: 91,
   number: 91001586400,
+  googleId: null,
+  facebookId: null,
   //Form 2
   skillLevel: "level1",
   coachingCity: "Jaipur",
   coachingState: "Rajasthan",
   coachingCountry: "India",
   coachingPinCode: 312001,
-  coachingStreet1: "ashok nagar",
+  coachingStreet: "ashok nagar",
   experience: 21,
   document: "",
   //Form 3
@@ -71,12 +74,12 @@ function CoachRegister() {
   const currentValidationSchema = validationSchema[activeStep];
   const isLastStep = activeStep === steps.length - 1;
   const { data: getSubscriptionPlans } = useQuery(GetSubscriptionPlans);
-  console.log(getSubscriptionPlans);
-  const { handleRegister } = useContext(AuthContext);
-  function _renderStepContent(step) {
+
+  const { handleRegisterCoach, handleGoogleSignIn } = useContext(AuthContext);
+  function _renderStepContent(step, values) {
     switch (step) {
       case 0:
-        return <BasicInfoForm formField={formField} />;
+        return <BasicInfoForm formField={formField} values={values} />;
       case 1:
         return <BackgroundInfoForm formField={formField} />;
       case 2:
@@ -88,6 +91,7 @@ function CoachRegister() {
             plans={getSubscriptionPlans?.getSubscriptionPlans || []}
           />
         );
+
       default:
         return <div>Not Found</div>;
     }
@@ -99,7 +103,16 @@ function CoachRegister() {
   async function _submitForm(values, actions) {
     await _sleep(1000);
     alert(JSON.stringify(values, null, 2));
-    handleRegister({ values });
+    if (values.loginOption === "password") {
+      handleRegisterCoach({ values });
+    } else if (values.loginOption === "google") {
+      handleGoogleSignIn({
+        values: { ...values, password: null },
+        isCoach: true,
+      });
+    } else {
+      console.log(JSON.stringify(values, null, 2));
+    }
     // .then((res) => {
     //   console.log(res);
     //   alert("Now,You are the coach");
@@ -135,11 +148,11 @@ function CoachRegister() {
             validationSchema={currentValidationSchema}
             onSubmit={_handleSubmit}
           >
-            {({ isSubmitting }) => (
+            {({ isSubmitting, values }) => (
               <Form id={formId}>
-                {_renderStepContent(activeStep)}
+                {_renderStepContent(activeStep, values)}
 
-                <div className="flex justify-center gap-3">
+                <div className="flex justify-center gap-3 mt-5">
                   {activeStep !== 0 && (
                     <button
                       type="button"

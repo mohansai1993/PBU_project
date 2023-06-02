@@ -2,11 +2,11 @@ import React from "react";
 
 const Sidebar = ({ userList, handlePersonChat }) => {
   return (
-    <div className="bg-white min-w-[300px] p-5 border">
+    <div className="bg-transparent min-w-[300px] p-2 ">
       {userList?.chats?.map((user) => (
         <div
           onClick={() => handlePersonChat(user.chatId, user.athlete.id)}
-          className=" border-b-2 py-2  px-1 rounded-md hover:bg-primary-green hover:text-white cursor-pointer"
+          className="  py-2  px-1 bg-white  rounded-md hover:bg-primary-green hover:text-white cursor-pointer"
         >
           <div className="flex items-center gap-5">
             <img

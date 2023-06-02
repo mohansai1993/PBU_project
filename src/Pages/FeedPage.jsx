@@ -1,15 +1,34 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { GetFeeds, GetTop4Reviews } from "../graphql/query/Query";
-import { useQuery } from "@apollo/client";
+import { useLazyQuery, useQuery } from "@apollo/client";
 import moment from "moment/moment";
 import { Link } from "react-router-dom";
 import Loading from "../Components/Loading/Loading";
 import { AiFillStar } from "react-icons/ai";
 function FeedPage() {
-  const { data: getFeeds } = useQuery(GetFeeds);
+  const [getFeedsByPage] = useLazyQuery(GetFeeds);
+  const [Post, setPost] = useState([]);
   const { data: Reviews } = useQuery(GetTop4Reviews);
-  console.log(getFeeds);
-  if (!getFeeds) {
+  const [Page, setPage] = useState(1);
+
+  useEffect(() => {
+    handlePost();
+  }, [Page]);
+  const handlePost = () => {
+    console.log(Page);
+    getFeedsByPage({
+      variables: {
+        pageNumber: Page,
+      },
+    })
+      .then(({ data }) => {
+        setPost(data.getFeeds);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  };
+  if (!Post) {
     return <Loading />;
   }
   return (
@@ -62,7 +81,7 @@ function FeedPage() {
           </div>
           <div className="flex-[0.6] mt-6 ">
             {/* //Message  */}
-            {getFeeds?.getFeeds.map((feed, index) => (
+            {Post.map((feed, index) => (
               <div
                 key={index}
                 className="mb-4 gap-4 bg-[#212F48] p-6 rounded-2xl "
@@ -107,6 +126,18 @@ function FeedPage() {
                 </div>
               </div>
             ))}
+            <div className="py-10 flex justify-center ">
+              <button
+                className=" bg-primary-green rounded-md  px-10 text-white py-2"
+                onClick={() => {
+                  setPage(Page + 1);
+                  console.log(Page);
+                  handlePost();
+                }}
+              >
+                See More
+              </button>
+            </div>
           </div>
         </div>
       </div>{" "}
