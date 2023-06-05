@@ -1,17 +1,29 @@
-import React from "react";
+import React, { useState } from "react";
 import { useFormik } from "formik";
 import sunset from "../assets/sunset.jpg";
-import DialogModal from "../Components/Modal/DialogModal";
+import { useLazyQuery } from "@apollo/client";
+import { GetCourts } from "../graphql/query/Query";
+import PBUGoogleMap from "../Components/Maps/Map";
 function CourtsPage() {
+  const [getCourts] = useLazyQuery(GetCourts);
+  const { render, latLong } = PBUGoogleMap();
+  const [Courts, setCourts] = useState([]);
   const formik = useFormik({
     initialValues: {
-      search: "",
+      pincode: "",
+      city: "",
     },
     onSubmit: (values) => {
-      console.log(values);
+      getCourts({
+        variables: {
+          ...values,
+        },
+      }).then((values) => {
+        console.log(values.data);
+        setCourts(values.data.getCourts);
+      });
     },
   });
-
   return (
     <div>
       <div>
@@ -32,12 +44,18 @@ function CourtsPage() {
               >
                 <div className="flex justify-between  items-center  flex-wrap">
                   <input
-                    type="search"
-                    name="search"
+                    type="number"
+                    name="pincode"
                     className="py-2 text-sm w-full rounded-md pl-10 focus:outline-none placeholder:text-primary-gray"
-                    placeholder="Search Court by Name"
+                    placeholder="Search by pincode ..."
+                    onChange={formik.handleChange}
+                  />
+                  <input
+                    type="text"
+                    name="city"
+                    className="py-2 mt-2 text-sm w-full rounded-md pl-10 focus:outline-none placeholder:text-primary-gray"
+                    placeholder="Search by city ..."
                     autoComplete="off"
-                    value={formik.values.search}
                     onChange={formik.handleChange}
                   />
                 </div>
@@ -56,13 +74,26 @@ function CourtsPage() {
         </div>{" "}
         <div className="bg-primary-green">
           <div className="container py-10 ">
-            <iframe
+            {/* <iframe
               id="gmap_canvas"
               width={"100%"}
               height={"600px"}
               className="rounded-md"
               src="https://maps.google.com/maps?q=california&t=&z=10&ie=UTF8&iwloc=&output=embed"
-            />
+            /> */}
+
+            {render({
+              marker: {
+                draggable: false,
+                positions: Courts.map((marker) => ({
+                  __typename: marker.location.__typename,
+                  lat: marker.location.latitude,
+                  lng: marker.location.longitude,
+                  street: marker?.street,
+                })),
+              },
+              isCenter: true,
+            })}
           </div>
         </div>
       </div>

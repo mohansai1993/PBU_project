@@ -223,6 +223,22 @@ const GetTop4Reviews = gql`
     }
   }
 `;
+const GetCourts = gql`
+  query GetCourts($pinCode: String, $city: String) {
+    getCourts(pinCode: $pinCode, city: $city) {
+      id
+      street
+      city
+      state
+      country
+      pinCode
+      location {
+        latitude
+        longitude
+      }
+    }
+  }
+`;
 export {
   GetFeeds,
   Couch,
@@ -230,4 +246,5 @@ export {
   Athlete,
   GetSubscriptionPlans,
   GetTop4Reviews,
+  GetCourts,
 };

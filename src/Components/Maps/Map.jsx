@@ -1,13 +1,10 @@
 import React, { useState } from "react";
-import { createRoot } from "react-dom/client";
 import Geocode from "react-geocode";
-import {
-  useLoadScript,
-  GoogleMap,
-  Marker,
-  Autocomplete,
-} from "@react-google-maps/api";
+import tippy from "tippy.js";
+import "tippy.js/dist/tippy.css";
+import { useLoadScript, GoogleMap, Marker } from "@react-google-maps/api";
 import { FaAnchor } from "react-icons/fa";
+import Swal from "sweetalert2";
 Geocode.setApiKey("AIzaSyDp8i_SiNUXrpREuWYpTXpBys9-sdYLWro");
 export default function PBUGoogleMap() {
   const [searchResult, setSearchResult] = useState(null);
@@ -15,29 +12,39 @@ export default function PBUGoogleMap() {
     latitude: 39.09366,
     longitude: -94.5875,
   });
+  const showLabel = (text) => {
+    Swal.fire(text);
+    // console.log(text);
+  };
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: "AIzaSyDp8i_SiNUXrpREuWYpTXpBys9-sdYLWro",
     libraries: ["places"],
   });
 
   const onDargEndGetAddress = ({ latLng }) => {
-    console.log(latLng.lat(), latLng.lng());
     setlatLong({
       latitude: latLng.lat(),
       longitude: latLng.lng(),
     });
   };
 
-  const render = ({ marker = {} }) => {
+  const render = ({ marker = {}, isCenter = false }) => {
     return (
       <>
         {isLoaded ? (
           <GoogleMap
             zoom={8}
-            center={{
-              lat: latLong.latitude,
-              lng: latLong.longitude,
-            }}
+            center={
+              isCenter
+                ? {
+                    lat: marker?.positions[0]?.lat,
+                    lng: marker?.positions[0]?.lng,
+                  }
+                : {
+                    lat: latLong.latitude,
+                    lng: latLong.longitude,
+                  }
+            }
             // onBoundsChanged={(e) => console.log(e)}
             mapContainerStyle={{
               maxHeight: "100%",
@@ -54,6 +61,10 @@ export default function PBUGoogleMap() {
                     position={{
                       lat: value.lat,
                       lng: value.lng,
+                    }}
+                    onClick={() => {
+                      console.log(value);
+                      showLabel(value.street);
                     }}
                     onDragEnd={onDargEndGetAddress}
                   >

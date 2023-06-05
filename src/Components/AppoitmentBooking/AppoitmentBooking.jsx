@@ -188,6 +188,7 @@ function AppoitmentBooking({
                 selectedDay={selectedDay}
                 setBookedSlot={setBookedSlot}
                 setBookSlot={setBookSlot}
+                bookSlot={bookSlot}
                 bookedSlot={bookedSlot}
                 bookingSession={bookingSession}
               />
@@ -261,6 +262,7 @@ function AvailSlots({
   bookedSlot,
   duration,
   setBookSlot,
+  bookSlot,
   bookingSession,
 }) {
   let res = chunkify(slots, selectedDay, duration);
@@ -355,9 +357,14 @@ function AvailSlots({
                       }
                     }}
                     className={`hover:bg-red-500 cursor-pointer bg-black text-white font-semibold  px-5 py-1 rounded-md ${
-                      bookedSlot?.[moment(selectedDay).year()]?.[
-                        moment(selectedDay).format("MMMM").toLowerCase()
-                      ]?.[day]?.[moment(selectedDay).date()]?.startTime != index
+                      // bookedSlot?.[moment(selectedDay).year()]?.[
+                      //   moment(selectedDay).format("MMMM").toLowerCase()
+                      // ]?.[day]?.[moment(selectedDay).date()]?.startTime != index
+                      JSON.stringify(bookSlot) !==
+                      JSON.stringify({
+                        startTime: index,
+                        sessionDate: moment(selectedDay).format("YYYY-MM-DD"),
+                      })
                         ? ""
                         : "bg-red-500"
                     }`}
