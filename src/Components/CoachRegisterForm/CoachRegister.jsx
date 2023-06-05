@@ -69,8 +69,6 @@ const { formId, formField } = coachRegisterFormModel;
 
 function CoachRegister() {
   const [activeStep, setActiveStep] = useState(0);
-  const navigate = useNavigate();
-  const [registerCoach, { error }] = useMutation(RegisterCoach);
   const currentValidationSchema = validationSchema[activeStep];
   const isLastStep = activeStep === steps.length - 1;
   const { data: getSubscriptionPlans } = useQuery(GetSubscriptionPlans);
@@ -102,9 +100,10 @@ function CoachRegister() {
 
   async function _submitForm(values, actions) {
     await _sleep(1000);
-    alert(JSON.stringify(values, null, 2));
+    // alert(JSON.stringify(values, null, 2));
     if (values.loginOption === "password") {
-      handleRegisterCoach({ values });
+      let data = handleRegisterCoach({ values });
+      console.log(data);
     } else if (values.loginOption === "google") {
       handleGoogleSignIn({
         values: { ...values, password: null },

@@ -26,6 +26,7 @@ import LoadingSVG from "../Components/Loading/LoadingSvg";
 import Swal from "sweetalert2";
 import PBUGoogleMap from "../Components/Maps/Map";
 import { RemoveSessionPlan } from "../module/graphql/mutations/mutations";
+import { uploadImage } from "../config/api";
 
 function PBUFeedPage() {
   let { id } = useParams();
@@ -60,12 +61,7 @@ function PBUFeedPage() {
       title: "Chats",
     },
   ];
-  // useEffect(() => {
-  //   if (!isCoach(currentUser?.userType)) {
-  //     alert("You are not an Coach");
-  //     navigate("/");
-  //   }
-  // }, []);
+
   return (
     <div className="bg-[#152033]">
       <div className="container">
@@ -131,7 +127,11 @@ function PBUFeedPage() {
                 <ProfilePanel postFeed={postFeed} couch={couch?.getCoach} />
               </Tab.Panel>
               <Tab.Panel>
-                <SettingPanel editCoach={editCoach} coachId={id} />
+                <SettingPanel
+                  editCoach={editCoach}
+                  coachId={id}
+                  couch={couch?.getCoach}
+                />
               </Tab.Panel>
               <Tab.Panel>
                 <AvaibilityPanel
@@ -366,7 +366,7 @@ const ProfilePanel = ({ couch, postFeed }) => {
   );
 };
 
-const SettingPanel = ({ editCoach, coachId }) => {
+const SettingPanel = ({ editCoach, coachId, couch }) => {
   const [File, setFile] = useState(null);
 
   const validationSchema = Yup.object({
@@ -395,23 +395,26 @@ const SettingPanel = ({ editCoach, coachId }) => {
   };
   const formik = useFormik({
     initialValues: {
-      profilePicture: null,
-      about: "THis is about",
-      game: "foostball",
-      firstName: "new",
-      lastName: "sfsdf",
-      street: "ghjgjgh",
-      city: "fghfghfg",
-      state: "fghfghfg",
-      country: "hgfhfghfg",
-      pinCode: "123456789",
+      about: couch?.about,
+      game: couch?.game,
+      firstName: couch?.firstName,
+      lastName: couch?.lastName,
+      street: couch?.contactDetails?.street,
+      city: couch?.contactDetails?.city,
+      state: couch?.contactDetails?.state,
+      country: couch?.contactDetails?.country,
+      pinCode: couch?.contactDetails?.pinCode,
     },
     validationSchema: validationSchema,
-    onSubmit: (values) => {
-      editCoach({
+    onSubmit: async (values) => {
+      const formData = new FormData();
+      formData.append("file", File);
+      const path = await uploadImage(formData);
+      console.log(path.data?.fileName);
+      await editCoach({
         variables: {
           coachId: coachId,
-          profilePicture: null,
+          profilePicture: File ? path.data?.fileName : null,
           ...values,
         },
         refetchQueries: [
@@ -431,7 +434,6 @@ const SettingPanel = ({ editCoach, coachId }) => {
           );
         })
         .catch(() => {});
-      // Your form submission logic goes here
     },
   });
 
@@ -1299,8 +1301,7 @@ const AboutPanel = ({ coachId, values }) => {
                                 name={`duration`}
                                 type="number"
                                 min={1}
-                                className={`p-3 rounded-md w-full  text-sm  rounded-md  focus:outline-none 
-                                    placeholder:text-primary-gray `}
+                                className={`p-3 rounded-md w-full  text-sm  rounded-md  focus:outline-none placeholder:text-primary-gray`}
                               />
                               <ErrorMessage name={`coachingCity`} />
                             </div>{" "}

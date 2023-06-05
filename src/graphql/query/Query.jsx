@@ -126,6 +126,11 @@ const Couch = gql`
       }
       contactDetails {
         number
+        city
+        country
+        state
+        pinCode
+        street
       }
       feed {
         id
@@ -214,12 +219,25 @@ const GetSubscriptionPlans = gql`
 const GetTop4Reviews = gql`
   query GetTop4Reviews {
     getTop4Reviews {
-      about
-      averageRating
-      id
-      lastName
       firstName
+      lastName
+      id
+      averageRating
+      about
       profilePicture
+      experience
+      coachingLocation {
+        city
+        id
+        country
+        location {
+          latitude
+          longitude
+        }
+        pinCode
+        state
+        street
+      }
     }
   }
 `;

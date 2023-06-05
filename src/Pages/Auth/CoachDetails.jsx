@@ -67,6 +67,7 @@ function CoachDetails() {
                     <h4 className="text-semibold my-3">Training Location</h4>
                   </div>
 
+                  {console.log(couch?.getCoach?.coachingLocation)}
                   {render({
                     marker: {
                       draggable: false,
@@ -75,9 +76,11 @@ function CoachDetails() {
                           __typename: marker.location.__typename,
                           lat: marker.location.latitude,
                           lng: marker.location.longitude,
+                          street: marker.street,
                         })
                       ),
                     },
+                    isCenter: true,
                   })}
                 </div>
               </div>

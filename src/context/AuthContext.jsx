@@ -10,7 +10,11 @@ import { doc, setDoc } from "firebase/firestore";
 import { auth, db } from "../module/firebase";
 import jwtDecode from "jwt-decode";
 import Swal from "sweetalert2";
-import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import {
+  FacebookAuthProvider,
+  GoogleAuthProvider,
+  signInWithPopup,
+} from "firebase/auth";
 export const AuthContext = createContext();
 
 export const AuthContextProvider = ({ children }) => {
@@ -66,18 +70,22 @@ export const AuthContextProvider = ({ children }) => {
         coachingStreet: values.coachingStreet,
         subscriptionPlanId: values.paymentpaln,
       },
-    }).then(async (user) => {
-      console.log(user.data.registerCoach);
-      setCurrentUser(user.data.registerCoach);
-      await setDoc(doc(db, "users", user.data.registerCoach.userId), {
-        uid: user.data.registerCoach.userId,
-        displayName: values.firstName,
-        email: values.email,
-        photoURL:
-          "https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8dXNlcnxlbnwwfHwwfHw%3D&w=1000&q=80",
+    })
+      .then(async (user) => {
+        console.log(user.data.registerCoach);
+        setCurrentUser(user.data.registerCoach);
+        await setDoc(doc(db, "users", user.data.registerCoach.userId), {
+          uid: user.data.registerCoach.userId,
+          displayName: values.firstName,
+          email: values.email,
+          photoURL:
+            "https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8dXNlcnxlbnwwfHwwfHw%3D&w=1000&q=80",
+        });
+        await setDoc(doc(db, "userChats", user.data.registerCoach.userId), {});
+      })
+      .catch((err) => {
+        console.log(err);
       });
-      await setDoc(doc(db, "userChats", user.data.registerCoach.userId), {});
-    });
   };
   const handleLogout = () => {
     // client.onResetStore();
@@ -90,17 +98,29 @@ export const AuthContextProvider = ({ children }) => {
       variables: {
         ...values,
       },
-    }).then(async (user) => {
-      setCurrentUser(user.data.registerAthlete);
-      await setDoc(doc(db, "users", user.data.registerAthlete.userId), {
-        uid: user.data.registerAthlete.userId,
-        displayName: values.firstName,
-        email: values.email,
-        photoURL:
-          "https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8dXNlcnxlbnwwfHwwfHw%3D&w=1000&q=80",
+    })
+      .then(async (user) => {
+        setCurrentUser(user.data.registerAthlete);
+        await setDoc(doc(db, "users", user.data.registerAthlete.userId), {
+          uid: user.data.registerAthlete.userId,
+          displayName: values.firstName,
+          email: values.email,
+          photoURL:
+            "https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8dXNlcnxlbnwwfHwwfHw%3D&w=1000&q=80",
+        });
+        await setDoc(
+          doc(db, "userChats", user.data.registerAthlete.userId),
+          {}
+        );
+      })
+      .catch((err) => {
+        Swal.fire({
+          title: "Error",
+          text: err,
+          icon: "error",
+          confirmButtonText: "Cancel",
+        });
       });
-      await setDoc(doc(db, "userChats", user.data.registerAthlete.userId), {});
-    });
   };
 
   function handleGoogleSignIn({
@@ -143,6 +163,47 @@ export const AuthContextProvider = ({ children }) => {
     });
     // }
   }
+
+  function handleFacebookSignIn({
+    isLogin = true,
+    isCoach = false,
+    values = {},
+  }) {
+    const facebookProvider = new FacebookAuthProvider();
+    signInWithPopup(auth, facebookProvider).then((result) => {
+      // Get the user's Firebase user ID
+      const uid = result.user;
+      if (isLogin) {
+        handleLogin({
+          email: uid.email,
+          facebookId: uid.uid,
+        });
+      } else {
+        if (isCoach) {
+          handleRegisterAthlete({
+            values: {
+              ...values,
+              email: uid.email,
+              facebookId: uid.uid,
+              firstName: uid?.displayName?.split(" ")[0],
+              lastName: uid?.displayName?.split(" ")[1],
+            },
+          });
+        } else {
+          handleRegisterCoach({
+            values: {
+              email: uid.email,
+              facebookId: uid.uid,
+              firstName: uid?.displayName?.split(" ")[0],
+              lastName: uid?.displayName?.split(" ")[1],
+            },
+          });
+        }
+      }
+      // TODO: Send the user ID to your server to store it in the MySQL database
+    });
+    // }
+  }
   return (
     <AuthContext.Provider
       value={{
@@ -151,6 +212,8 @@ export const AuthContextProvider = ({ children }) => {
         handleRegisterCoach,
         handleLogout,
         handleGoogleSignIn,
+        handleFacebookSignIn,
+        handleRegisterAthlete,
       }}
     >
       {children}

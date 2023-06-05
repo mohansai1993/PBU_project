@@ -15,18 +15,17 @@ import { useLazyQuery, useQuery } from "@apollo/client";
 import { Couches, GetTop4Reviews } from "../graphql/query/Query";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
+import { SwiperSlide } from "swiper/react";
 function HomePage() {
   const [Coaches, setCoaches] = useState([]);
   const { data: Reviews } = useQuery(GetTop4Reviews);
   const [getCoaches] = useLazyQuery(Couches);
-
   const formik = useFormik({
     initialValues: {
       name: "",
       location: "",
     },
     onSubmit: (values) => {
-      console.log(values);
       if (values.name.trim() !== "") {
         getCoaches({
           variables: {
@@ -34,7 +33,6 @@ function HomePage() {
             pinCode: values.location === "" ? null : values.location.trim(),
           },
         }).then((res) => {
-          console.log(res.data);
           setCoaches(res.data?.getCoaches);
           if (!res.data?.getCoaches.length) {
             Swal.fire({
@@ -187,16 +185,14 @@ function HomePage() {
             <div>
               <div>
                 {" "}
-                <Slider
-                  data={[
-                    <CoachCard img={baseball} />,
-                    <CoachCard img={ball} />,
-                    <CoachCard img={hockey} />,
-                    <CoachCard img={baseball} />,
-                    <CoachCard img={ball} />,
-                    <CoachCard img={hockey} />,
-                  ]}
-                />{" "}
+                <Slider>
+                  {console.log(Reviews?.getTop4Reviews)}
+                  {Reviews?.getTop4Reviews?.map((value, index) => (
+                    <SwiperSlide key={index}>
+                      <CoachCard value={value} />
+                    </SwiperSlide>
+                  ))}
+                </Slider>
               </div>
             </div>
           </div>
@@ -244,7 +240,7 @@ function HomePage() {
           <div>
             <h1 className="text-6xl font-bold  pt-16 pb-5">Reviews</h1>{" "}
             <div className="  mt-10 grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-              {Reviews?.getTop4Reviews?.map((value, index) => (
+              {Reviews?.getTop4Reviews?.map((value) => (
                 <Link to={"/coach/" + value.id}>
                   <div className="bg-white  p-5 rounded-2xl ">
                     {" "}
@@ -292,31 +288,40 @@ function HomePage() {
   );
 }
 
-const CoachCard = ({ img }) => {
+const CoachCard = ({ value }) => {
   return (
     <>
       <div>
         <div className="">
           <div
-            className={`bg-[url(${img})] py-20  bg-cover h-[250px] bg-center 
+            className={`bg-[url(${value.profilePicture})] py-20  bg-cover  h-[250px]  
 `}
           ></div>
           <div className=" flex gap-3   items-center  bg-neutral-800 ">
             <div className="px-3 grow">
               <div className="mt-2 my-1 text-white flex justify-between ">
                 <h6 className="">
-                  Joanne <span className="text-primary-green">Dondero</span>
+                  {value.firstName}{" "}
+                  <span className="text-primary-green">{value.lastName}</span>
                 </h6>
                 <h6>(13 year experience) </h6>
               </div>
               <div className="flex text-white items-center gap-3">
                 <IoLocationSharp />{" "}
-                <span> white Plains, New Yourk ,1036879</span>
+                <span className="clamp-1">
+                  {" "}
+                  {value?.coachingLocation[0]?.street},{" "}
+                  {value?.coachingLocation[0]?.city},
+                  {value?.coachingLocation[0]?.pinCode}
+                </span>
               </div>
             </div>
-            <div className="text-white bg-primary-green hover:text-primary-green hover:bg-white cursor-pointer  py-5 px-5 ">
+            <Link
+              to={`/coach/${value.id}`}
+              className="text-white bg-primary-green hover:text-primary-green hover:bg-white cursor-pointer  py-5 px-5 "
+            >
               Appointment{" "}
-            </div>
+            </Link>
           </div>
         </div>
       </div>

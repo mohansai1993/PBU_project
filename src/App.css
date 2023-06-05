@@ -1,3 +1,11 @@
 .swal2-styled.swal2-confirm {
   background-color: #35a807 !important;
 }
+
+
+.clamp-1 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+}

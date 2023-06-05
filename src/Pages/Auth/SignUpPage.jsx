@@ -5,7 +5,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { AuthContext } from "../../context/AuthContext";
 function SignUpPage() {
-  const { handleGoogleSignIn } = useContext(AuthContext);
+  const { handleGoogleSignIn, handleRegisterAthlete } = useContext(AuthContext);
   const formik = useFormik({
     initialValues: {
       choice: "athlete",
@@ -30,6 +30,7 @@ function SignUpPage() {
     }),
     onSubmit: (values) => {
       console.log(values);
+      handleRegisterAthlete({ values });
     },
   });
   return (

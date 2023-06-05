@@ -9,7 +9,7 @@ import "swiper/css/pagination";
 // import required modules
 import { Pagination } from "swiper";
 
-export default function Slider({ data }) {
+export default function Slider({ children }) {
   return (
     <>
       <Swiper
@@ -35,9 +35,7 @@ export default function Slider({ data }) {
         modules={[Pagination]}
         className="mySwiper"
       >
-        {data.map((value, index) => (
-          <SwiperSlide key={index}>{value}</SwiperSlide>
-        ))}
+        {children}
       </Swiper>
     </>
   );
