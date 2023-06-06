@@ -1,13 +1,12 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import { AiFillStar } from "react-icons/ai";
-import bg_01 from "../../assets/bg-01.png";
+
 import { IoIosArrowDroprightCircle } from "react-icons/io";
 import { Tab } from "@headlessui/react";
 import { useQuery } from "@apollo/client";
 import { Couch } from "../../graphql/query/Query";
 import { useParams } from "react-router-dom";
 import SessionPurchaseModal from "../../Components/Modal/SessionPurchaseModal";
-import AppoitmentBooking from "../../Components/AppoitmentBooking/AppoitmentBooking";
 import SingleChat from "../../module/pages/SingleChat";
 import LoadingSVG from "../../Components/Loading/LoadingSvg";
 import PBUGoogleMap from "../../Components/Maps/Map";

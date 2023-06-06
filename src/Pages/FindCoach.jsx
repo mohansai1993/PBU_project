@@ -1,6 +1,5 @@
 import React from "react";
 import { AiFillStar } from "react-icons/ai";
-import bg_01 from "../assets/bg-01.png";
 import { useQuery } from "@apollo/client";
 import { Couches } from "../graphql/query/Query";
 import { Link } from "react-router-dom";

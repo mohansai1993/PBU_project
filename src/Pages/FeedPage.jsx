@@ -47,7 +47,7 @@ function FeedPage() {
                     <img
                       src={value.profilePicture}
                       alt={value.firstName}
-                      className="rounded-md object-cover h-[50px] w-[50px]"
+                      className="rounded-full  object-cover h-[50px] w-[50px]"
                     />
                     <div>
                       <div>
@@ -87,17 +87,18 @@ function FeedPage() {
                 className="mb-4 gap-4 bg-[#212F48] p-6 rounded-2xl "
               >
                 <div className="flex  justify-between w-full">
-                  <div className="flex  gap-3">
+                  <div className="flex  gap-2">
                     <img
                       src={
                         feed.postBy === "athlete"
                           ? feed?.athlete?.profilePicture
                           : feed?.coach?.profilePicture
                       }
-                      width={"50px"}
-                      className="bg-cover rounded-full"
+                      alt="dsf"
+                      className="rounded-full  object-cover h-[50px] w-[50px]"
                     />
-                    <div className="w-full">
+
+                    <div>
                       <h3 className="text-xl">
                         {feed.postBy === "athlete"
                           ? feed?.athlete?.firstName
@@ -108,9 +109,11 @@ function FeedPage() {
                   </div>
 
                   {feed.postBy === "coach" && (
-                    <button className="  gap-2 px-3 bg-primary-green text-white py-3 rounded-md min-w-[150px]">
-                      Message
-                    </button>
+                    <Link to={"/coach/" + feed.coach.id}>
+                      <button className="  gap-2 px-3 bg-primary-green text-white py-3 rounded-md min-w-[150px]">
+                        Message
+                      </button>
+                    </Link>
                   )}
                 </div>
                 <div>

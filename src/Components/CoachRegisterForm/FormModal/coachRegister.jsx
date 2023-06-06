@@ -4,56 +4,56 @@ export default {
   formField: {
     firstName: {
       name: "firstName",
-      label: "First name*",
+      label: "First name",
       requiredErrorMsg: "First name is required",
     },
     lastName: {
       name: "lastName",
-      label: "Last name*",
+      label: "Last name",
       requiredErrorMsg: "Last name is required",
     },
     password: {
       name: "password",
-      label: "Password*",
+      label: "Password",
       requiredErrorMsg: "Password is required",
     },
     email: {
       name: "email",
-      label: "Email*",
+      label: "Email",
       requiredErrorMsg: "email is required",
     },
 
     // Form 2
     coachingCity: {
       name: "coachingCity",
-      label: "Training City where you train athlete*",
-      requiredErrorMsg: "Training City is required",
+      label: "City",
+      requiredErrorMsg: " City is required",
     },
     coachingState: {
       name: "coachingState",
-      label: "Training State *",
-      requiredErrorMsg: "Training State is required",
+      label: "State ",
+      requiredErrorMsg: "State is required",
     },
     coachingCountry: {
       name: "coachingCountry",
-      label: "Training Country where you train athlete*",
-      requiredErrorMsg: "Training Country is required",
+      label: "Country",
+      requiredErrorMsg: "Country is required",
     },
     coachingPinCode: {
       name: "coachingPinCode",
-      label: "Training Pincode where you train athlete*",
-      requiredErrorMsg: "Training Pincode is required",
+      label: "Pincode",
+      requiredErrorMsg: "Pincode is required",
     },
 
     coachingStreet: {
       name: "coachingStreet",
-      label: "Training Street where you train athlete*",
-      requiredErrorMsg: "Training Street is required",
+      label: "Street",
+      requiredErrorMsg: "Street is required",
     },
 
     skillLevel: {
       name: "skillLevel",
-      label: "Skill Level*",
+      label: "Skill Level",
       value: [
         {
           name: "Level 1 ",
@@ -71,7 +71,7 @@ export default {
     },
     experience: {
       name: "experience",
-      label: "How many years of experience*",
+      label: "How many years of experience",
       requiredErrorMsg: "experience is required",
     },
     document: {

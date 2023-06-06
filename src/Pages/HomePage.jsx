@@ -26,28 +26,28 @@ function HomePage() {
       location: "",
     },
     onSubmit: (values) => {
-      if (values.name.trim() !== "") {
+      if (values.name.trim() !== values.location.trim()) {
         getCoaches({
           variables: {
-            coachName: values.name.trim(),
+            coachName: values?.name?.trim(),
             pinCode: values.location === "" ? null : values.location.trim(),
           },
         }).then((res) => {
           setCoaches(res.data?.getCoaches);
           if (!res.data?.getCoaches.length) {
             Swal.fire({
-              title: "Warning",
-              text: "No Coach Found ",
-              icon: "warning",
+              title: "No Coach Found ",
+              icon: "success",
               confirmButtonText: "Cancel",
             });
           }
         });
         // Here you can perform the search with the values submitted by the form
       } else {
+        setCoaches([]);
         Swal.fire({
           title: "Warning",
-          text: "Please Enter Coach Name",
+          text: "Please enter coach name or Zip code",
           icon: "warning",
           confirmButtonText: "Cancel",
         });
@@ -186,7 +186,6 @@ function HomePage() {
               <div>
                 {" "}
                 <Slider>
-                  {console.log(Reviews?.getTop4Reviews)}
                   {Reviews?.getTop4Reviews?.map((value, index) => (
                     <SwiperSlide key={index}>
                       <CoachCard value={value} />

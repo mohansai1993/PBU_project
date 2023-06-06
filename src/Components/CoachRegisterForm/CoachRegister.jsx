@@ -2,23 +2,21 @@ import React, { useContext, useState } from "react";
 import { BsInfoCircle } from "react-icons/bs";
 import { TbUserSearch } from "react-icons/tb";
 import { GiReceiveMoney } from "react-icons/gi";
-import { MdOutlineMoreTime, MdPayments } from "react-icons/md";
+import { MdPayments } from "react-icons/md";
 import Stepper from "../Steper/Steper";
 import coachRegisterFormModel from "./FormModal/coachRegister";
 import validationSchema from "./FormModal/validation";
 import BasicInfoForm from "./BasicInfoForm";
-import { Form, Formik, useFormikContext } from "formik";
+import { Form, Formik } from "formik";
 import BackgroundInfoForm from "./BackgroundInfoForm";
 import FaqQuestionsForm from "./FaqQuestionsForm";
 import PaymentForm from "./PaymentForm";
 import { GetSubscriptionPlans } from "../../graphql/query/Query";
-import { useMutation, useQuery } from "@apollo/client";
-import { RegisterCoach } from "../../graphql/mutations/mutations";
-import AvaibilityForm from "./AvaibilityForm";
-import Toast from "../Toast/Toast";
-import { useNavigate } from "react-router-dom";
+import { useQuery } from "@apollo/client";
 import { AuthContext } from "../../context/AuthContext";
-import AuthForm from "./FormModal/AuthForm";
+import { uploadImage } from "../../config/api";
+import axios from "axios";
+import { confirmPasswordReset } from "firebase/auth";
 const steps = [
   {
     title: "Basic Information",
@@ -49,9 +47,9 @@ let formInitialValues = {
   facebookId: null,
   //Form 2
   skillLevel: "level1",
-  coachingCity: "Jaipur",
-  coachingState: "Rajasthan",
-  coachingCountry: "India",
+  coachingCity: "",
+  coachingState: "",
+  coachingCountry: "",
   coachingPinCode: 312001,
   coachingStreet: "ashok nagar",
   experience: 21,
@@ -69,17 +67,25 @@ const { formId, formField } = coachRegisterFormModel;
 
 function CoachRegister() {
   const [activeStep, setActiveStep] = useState(0);
+  const [File, setFile] = useState(null);
   const currentValidationSchema = validationSchema[activeStep];
   const isLastStep = activeStep === steps.length - 1;
   const { data: getSubscriptionPlans } = useQuery(GetSubscriptionPlans);
 
   const { handleRegisterCoach, handleGoogleSignIn } = useContext(AuthContext);
-  function _renderStepContent(step, values) {
+  function _renderStepContent(step, values, setFieldValue) {
     switch (step) {
       case 0:
         return <BasicInfoForm formField={formField} values={values} />;
       case 1:
-        return <BackgroundInfoForm formField={formField} />;
+        return (
+          <BackgroundInfoForm
+            formField={formField}
+            values={values}
+            setFieldValue={setFieldValue}
+            setFile={setFile}
+          />
+        );
       case 2:
         return <FaqQuestionsForm formField={formField} />;
       case 3:
@@ -94,34 +100,45 @@ function CoachRegister() {
         return <div>Not Found</div>;
     }
   }
-  function _sleep(ms) {
-    return new Promise((resolve) => setTimeout(resolve, ms));
-  }
 
   async function _submitForm(values, actions) {
-    await _sleep(1000);
-    // alert(JSON.stringify(values, null, 2));
-    if (values.loginOption === "password") {
-      let data = handleRegisterCoach({ values });
-      console.log(data);
-    } else if (values.loginOption === "google") {
-      handleGoogleSignIn({
-        values: { ...values, password: null },
-        isCoach: true,
-      });
-    } else {
-      console.log(JSON.stringify(values, null, 2));
+    actions.setSubmitting(true);
+    const formData = new FormData();
+    formData.append("file", File);
+    try {
+      var path = await uploadImage(formData);
+      path = path.data?.fileName;
+    } catch (err) {
+      console.log(err);
+      path = null;
     }
-    // .then((res) => {
-    //   console.log(res);
-    //   alert("Now,You are the coach");
-    //   navigate("/coach/" + res.id);
-    // })
-    // .catch(() => {
-    //   alert(error.graphQLErrors[0].message);
-    // });
 
-    actions.setSubmitting(false);
+    if (!File) {
+      path = null;
+    }
+    try {
+      if (values.loginOption === "password") {
+        let data = await handleRegisterCoach({
+          values: { ...values, document: path },
+        });
+        console.log(data);
+      } else if (values.loginOption === "google") {
+        handleGoogleSignIn({
+          values: { ...values, password: null, document: path },
+          isCoach: true,
+          isLogin: false,
+        });
+      } else {
+        console.log(JSON.stringify(values, null, 2));
+      }
+
+      console.log(JSON.stringify(values, null, 2));
+
+      actions.setSubmitting(false);
+    } catch (err) {
+      console.log(err);
+      actions.setSubmitting(false);
+    }
   }
 
   function _handleSubmit(values, actions) {
@@ -139,7 +156,9 @@ function CoachRegister() {
   }
   return (
     <>
-      <Stepper step={steps} />
+      <div className="py-10">
+        <Stepper step={steps} />
+      </div>
       <div className="bg-white p-5">
         <div>
           <Formik
@@ -147,9 +166,9 @@ function CoachRegister() {
             validationSchema={currentValidationSchema}
             onSubmit={_handleSubmit}
           >
-            {({ isSubmitting, values }) => (
+            {({ isSubmitting, values, setFieldValue }) => (
               <Form id={formId}>
-                {_renderStepContent(activeStep, values)}
+                {_renderStepContent(activeStep, values, setFieldValue)}
 
                 <div className="flex justify-center gap-3 mt-5">
                   {activeStep !== 0 && (
@@ -169,7 +188,7 @@ function CoachRegister() {
                       color="primary"
                       className="bg-primary-green text-white py-1  rounded-md min-w-[150px]"
                     >
-                      {isLastStep ? "Place order" : "Next"}
+                      {isLastStep ? "Save" : "Next"}
                     </button>
                   </div>
                 </div>

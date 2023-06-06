@@ -12,7 +12,7 @@ function ApplyBecomeCoach() {
 `}
         >
           <h1 className="text-5xl capitalize mb-8 font-semibold leading-tight text-center  text-white  tracking-wide">
-            Apply to Become a<span className="text-primary-green">PBU</span>{" "}
+            Apply to Become a <span className="text-primary-green">PBU</span>{" "}
             Coach
           </h1>
         </div>{" "}

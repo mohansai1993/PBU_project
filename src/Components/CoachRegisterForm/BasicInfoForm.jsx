@@ -7,6 +7,7 @@ function BasicInfoForm(props) {
   } = props;
   return (
     <div>
+      <h1 className="font-semibold text-2xl ">Add Basic Information </h1>
       <div className="my-5 max-w-md max-auto">
         <Field
           as="select"
@@ -14,7 +15,7 @@ function BasicInfoForm(props) {
           name={loginOption.name}
           className="rounded-md bg-primary-green text-white cursor-pointer w-full  text-center  py-3"
         >
-          <option value="">Select an option</option>
+          <option value="">Select Register Option</option>
           <option value="google">Register With Google</option>
           <option value="facebook">Register With Facebook</option>
           <option value="password">Register With Password</option>

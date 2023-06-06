@@ -138,6 +138,7 @@ function SingleChat({ couch }) {
         receiver: couch?.getCoach?.id,
       };
       setMessages((oldArray) => [...oldArray, msgObj]);
+
       updateUnreadCount();
       setTimeout(() => {
         scrollToBottom();
@@ -271,6 +272,7 @@ function SingleChat({ couch }) {
                       <form onSubmit={sendMsg} className="relative flex">
                         <input
                           type="text"
+                          value={message}
                           onChange={(e) => setMessage(e.target.value)}
                           placeholder="Write your message!"
                           className="w-full focus:outline-none pl-3 focus:placeholder-gray-400 text-gray-600 placeholder-gray-600  bg-gray-200 rounded-br-md  rounded-bl-md py-3"

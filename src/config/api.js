@@ -1,11 +1,12 @@
 import axios from 'axios'
 
 export const uploadImage = async (formData) => {
-  return axios.post('http://192.168.1.49:5000/upload', formData, {
+  let data = await axios.post('http://192.168.1.49:5000/upload', formData, {
     headers: {
       'Access-Control-Allow-Origin': '*',
     },
   })
+  return data
   // .then((res) => {
   //   if (res.data.status) {
   //     return res.data
@@ -16,5 +17,6 @@ export const uploadImage = async (formData) => {
   // })
   // .catch((err) => {
   //   console.log(err)
+  //   return null
   // })
 }

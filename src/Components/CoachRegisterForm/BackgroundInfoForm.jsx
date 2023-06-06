@@ -1,6 +1,9 @@
-import { ErrorMessage, Field } from "formik";
-import React from "react";
-
+import React, { useState } from "react";
+import CountriesData from "../../config/countries.json";
+import StateData from "../../config/states.json";
+import CitiesData from "../../config/cities.json";
+import { TextField } from "../Input/TextField";
+import SelectField from "../Input/SelectField";
 function BackgroundInfoForm(props) {
   const {
     formField: {
@@ -13,131 +16,111 @@ function BackgroundInfoForm(props) {
       coachingPinCode,
       coachingStreet,
     },
+    setFile,
   } = props;
+
+  const [Country, setCountry] = useState(props.values[coachingCountry.name]);
+  const [State, setState] = useState(props.values[coachingState.name]);
 
   return (
     <div>
       <div className="grid grid-cols-2 gap-3 ">
-        <div className="w-full">
-          {" "}
-          <label> {skillLevel.label}</label>
-          <Field
-            name={skillLevel.name}
-            as={"select"}
-            placeholder="select skill"
-            className="border border-black w-full px-3 py-2 rounded-md "
-          >
-            {skillLevel.value.map((value, index) => (
-              <option value={value.value} key={index}>
-                {value.name}
+        <SelectField
+          name={skillLevel.name}
+          label={skillLevel.label}
+          onChange={(e) => {
+            props.setFieldValue(skillLevel.name, e.target.value);
+          }}
+        >
+          <option value="">Select an level</option>
+          {skillLevel.value.map((value, index) => (
+            <option value={value.value} key={index}>
+              {value.name}
+            </option>
+          ))}
+        </SelectField>
+        <SelectField
+          value={props.values[coachingCountry.name]}
+          onChange={(e) => {
+            setCountry(e.target.value);
+            console.log(e.target.value);
+            props.setFieldValue(coachingCountry.name, e.target.value);
+          }}
+          name={coachingCountry.name}
+          label={coachingCountry.label}
+        >
+          <>
+            <option value="">Select an Country</option>
+            {CountriesData.map((country, index) => (
+              <option value={country.name} key={index}>
+                {country.name}
               </option>
             ))}
-          </Field>
-        </div>{" "}
-        <div className="w-full">
-          <label> {coachingCity.label}</label>
-          <Field
-            name={coachingCity.name}
-            placeholder={coachingCity.placeholder}
-            // as={"input"}
-            type="text"
-            className="border border-black w-full px-3 py-2 rounded-md "
-          />
-          <ErrorMessage
-            name={coachingCity.name}
-            component="div"
-            className="text-red-500"
-          />
-        </div>{" "}
-        <div className="w-full">
-          <label> {coachingState.label}</label>
-          <Field
-            name={coachingState.name}
-            placeholder={coachingState.placeholder}
-            // as={"input"}
-            type="text"
-            className="border border-black w-full px-3 py-2 rounded-md "
-          />
-          <ErrorMessage
-            name={coachingState.name}
-            component="div"
-            className="text-red-500"
-          />
-        </div>{" "}
-        <div className="w-full">
-          <label> {coachingCountry.label}</label>
-          <Field
-            name={coachingCountry.name}
-            placeholder={coachingCountry.placeholder}
-            // as={"input"}
-            type="text"
-            className="border border-black w-full px-3 py-2 rounded-md "
-          />
-          <ErrorMessage
-            name={coachingCountry.name}
-            component="div"
-            className="text-red-500"
-          />
-        </div>{" "}
-        <div className="w-full">
-          <label> {coachingPinCode.label}</label>
-          <Field
-            name={coachingPinCode.name}
-            placeholder={coachingPinCode.placeholder}
-            // as={"input"}
-            type="number"
-            className="border border-black w-full px-3 py-2 rounded-md "
-          />
-          <ErrorMessage
-            name={coachingPinCode.name}
-            component="div"
-            className="text-red-500"
-          />
-        </div>{" "}
-        <div className="w-full">
-          <label> {coachingStreet.label}</label>
-          <Field
-            name={coachingStreet.name}
-            placeholder={coachingStreet.placeholder}
-            // as={"input"}
-            type="text"
-            className="border border-black w-full px-3 py-2 rounded-md "
-          />
-          <ErrorMessage
-            name={coachingStreet.name}
-            component="div"
-            className="text-red-500"
-          />
-        </div>{" "}
-        <div className="w-full">
-          <label> {experience.label}</label>
-          <Field
-            name={experience.name}
-            placeholder={experience.placeholder}
-            // as={"input"}
-            type="number"
-            className="border border-black w-full px-3 py-2 rounded-md "
-          />
-          <ErrorMessage
-            name={experience.name}
-            component="div"
-            className="text-red-500"
-          />
-        </div>{" "}
-        <div className="w-full">
-          <label> {document.label}</label>
-          <Field
-            name={document.name}
-            placeholder={document.placeholder}
-            type="file"
-            className="border border-black w-full px-3 py-2 rounded-md "
-          />
-          {/* <ErrorMessage
-            name={document.name}
-            component="div"
-            className="text-red-500"
-          /> */}
-        </div>{" "}
+          </>
+        </SelectField>
+        {/* //State */}
+        <SelectField
+          value={props.values[coachingState.name]}
+          onChange={(e) => {
+            setState(e.target.value);
+            props.setFieldValue(coachingState.name, e.target.value);
+          }}
+          name={coachingState.name}
+          label={coachingState.label}
+        >
+          <option value="">Select an State</option>
+          {StateData.filter((obj) => obj.country_name === Country).map(
+            (state, index) => (
+              <option value={state.name} key={index}>
+                {state.name}
+              </option>
+            )
+          )}
+        </SelectField>
+        <SelectField
+          value={props.values[coachingCity.name]}
+          name={coachingCity.name}
+          label={coachingCity.label}
+          onChange={(e) => {
+            props.setFieldValue(coachingCity.name, e.target.value);
+          }}
+        >
+          <option value="">Select an City</option>
+          {CitiesData.filter((obj) => obj.state_name === State).map(
+            (city, index) => (
+              <option value={city.name} key={index}>
+                {city.name}
+              </option>
+            )
+          )}
+        </SelectField>
+        <TextField
+          name={coachingPinCode.name}
+          label={coachingPinCode.label}
+          placeholder={coachingPinCode.placeholder}
+          htmlType="number"
+        />
+        <TextField
+          name={coachingStreet.name}
+          label={coachingStreet.label}
+          placeholder={coachingStreet.placeholder}
+        />
+        <TextField
+          name={experience.name}
+          label={experience.label}
+          placeholder={experience.placeholder}
+          htmlType="number"
+        />{" "}
+        <TextField
+          name={document.name}
+          label={document.label}
+          placeholder={document.placeholder}
+          htmlType="file"
+          onChange={(e) => {
+            setFile(e.target.files[0]);
+            console.log(e.target.files[0]);
+          }}
+        />
       </div>
     </div>
   );

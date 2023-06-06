@@ -3,10 +3,11 @@ import { useFormik } from "formik";
 import sunset from "../assets/sunset.jpg";
 import { useLazyQuery } from "@apollo/client";
 import { GetCourts } from "../graphql/query/Query";
-import PBUGoogleMap from "../Components/Maps/Map";
+import PBUCourtGoogleMap from "../Components/Maps/CourtMap";
+import Swal from "sweetalert2";
 function CourtsPage() {
-  const [getCourts] = useLazyQuery(GetCourts);
-  const { render, latLong } = PBUGoogleMap();
+  const [getCourts, { error }] = useLazyQuery(GetCourts);
+  const { render, latLong } = PBUCourtGoogleMap();
   const [Courts, setCourts] = useState([]);
   const formik = useFormik({
     initialValues: {
@@ -14,14 +15,39 @@ function CourtsPage() {
       city: "",
     },
     onSubmit: (values) => {
+      console.log({
+        variables: {
+          city: values?.city?.trim(),
+          pinCode: values?.pincode?.toString(),
+        },
+      });
       getCourts({
         variables: {
-          ...values,
+          city: values?.city?.trim(),
+          pinCode: values?.pincode?.toString(),
         },
-      }).then((values) => {
-        console.log(values.data);
-        setCourts(values.data.getCourts);
-      });
+      })
+        .then((values) => {
+          console.log("hfghfg", values.data);
+          setCourts(values.data.getCourts);
+
+          if (!values.data.getCourts?.length) {
+            Swal.fire({
+              text: "No courts Available on this location",
+              icon: "success",
+              confirmButtonText: "Cancel",
+            });
+          }
+        })
+        .catch((err) => {
+          setCourts([]);
+          Swal.fire({
+            title: error.message,
+            icon: "warning",
+            confirmButtonText: "Cancel",
+          });
+          console.log();
+        });
     },
   });
   return (
@@ -74,26 +100,19 @@ function CourtsPage() {
         </div>{" "}
         <div className="bg-primary-green">
           <div className="container py-10 ">
-            {/* <iframe
-              id="gmap_canvas"
-              width={"100%"}
-              height={"600px"}
-              className="rounded-md"
-              src="https://maps.google.com/maps?q=california&t=&z=10&ie=UTF8&iwloc=&output=embed"
-            /> */}
-
-            {render({
-              marker: {
-                draggable: false,
-                positions: Courts.map((marker) => ({
-                  __typename: marker.location.__typename,
-                  lat: marker.location.latitude,
-                  lng: marker.location.longitude,
-                  street: marker?.street,
-                })),
-              },
-              isCenter: true,
-            })}
+            {Courts.length > 0 &&
+              render({
+                marker: {
+                  draggable: false,
+                  positions: Courts.map((marker) => ({
+                    __typename: marker.location.__typename,
+                    lat: marker.location.latitude,
+                    lng: marker.location.longitude,
+                    street: marker?.street,
+                  })),
+                },
+                isCenter: true,
+              })}
           </div>
         </div>
       </div>

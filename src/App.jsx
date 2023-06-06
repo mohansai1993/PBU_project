@@ -10,7 +10,7 @@ import LoginPage from "./Pages/Auth/LoginPage";
 import FindCoach from "./Pages/FindCoach";
 import BecomeCoach from "./Pages/BecomeCoach";
 import CoachDetails from "./Pages/Auth/CoachDetails";
-import PBUFeedPage from "./Pages/PBUFeedPage";
+import PBUFeedPage from "./Pages/CoachProfile/PBUFeedPage";
 import ApplyBecomeCoach from "./Pages/ApplyBecomeCoach";
 import CourtsPage from "./Pages/CourtsPage";
 import FeedPage from "./Pages/FeedPage";
@@ -19,6 +19,8 @@ import ProtectedRoute from "./ProtectedRoute";
 import { AuthContext } from "./context/AuthContext";
 import Success from "./Pages/Checkout/Success";
 import Cancel from "./Pages/Checkout/Cancel";
+import PrivacyPolicy from "./Pages/PrivacyPolicy";
+import TermsConditions from "./Pages/Terms";
 
 function App() {
   const { currentUser } = useContext(AuthContext);
@@ -49,6 +51,8 @@ function App() {
         </Route>
         <Route path="/register" element={<SignUpPage />} />
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/privacy" element={<PrivacyPolicy />} />
+        <Route path="/terms" element={<TermsConditions />} />
         <Route
           path="*"
           element={

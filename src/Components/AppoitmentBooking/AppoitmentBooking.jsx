@@ -205,7 +205,7 @@ function AppoitmentBooking({
                 if (isCoach(currentUser?.userType)) {
                   Swal.fire({
                     title: "Warning",
-                    text: "You have coach you can't book session.",
+                    text: "Coach should not have the option to book a session",
                     icon: "warning",
                     confirmButtonText: "Cancel",
                   });
@@ -228,7 +228,7 @@ function AppoitmentBooking({
                   })
                     .then((res) => {
                       window.location.href = res.data?.bookSession;
-                      // Swal.fire("Success!", "Session Booked ", "success");
+                      Swal.fire("Success!", "Session Booked ", "success");
                     })
                     .catch((err) => {
                       Swal.fire("Error!", err, "error");

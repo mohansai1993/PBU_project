@@ -35,11 +35,6 @@ function Footer() {
                         PBU Feeds
                       </Link>
                     </li>{" "}
-                    <li className="mb-4">
-                      <Link to="/contact" className="hover:underline">
-                        Contact us
-                      </Link>
-                    </li>
                   </ul>
                 </div>
                 <div>
@@ -48,12 +43,12 @@ function Footer() {
                   </h2>
                   <ul className="font-medium text-white ">
                     <li className="mb-4">
-                      <Link href="/find/coach" className="hover:underline ">
+                      <Link to="/find/coach" className="hover:underline ">
                         Find a Coach
                       </Link>
                     </li>
                     <li>
-                      <Link href="/become/coach" className="hover:underline">
+                      <Link to="/become/coach" className="hover:underline">
                         Become a Coach
                       </Link>
                     </li>
@@ -65,12 +60,12 @@ function Footer() {
                   </h2>
                   <ul className="font-medium text-white ">
                     <li className="mb-4  ">
-                      <Link href="/privacy" className="hover:underline">
+                      <Link to="/privacy" className="hover:underline">
                         Privacy Policy
                       </Link>
                     </li>
                     <li>
-                      <Link href="/terms" className="hover:underline">
+                      <Link to="/terms" className="hover:underline">
                         Terms &amp; Conditions
                       </Link>
                     </li>

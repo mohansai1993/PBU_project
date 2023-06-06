@@ -28,11 +28,10 @@ function BecomeCoach() {
             <img src="https://img.freepik.com/free-photo/paralyzed-asian-employee-working-call-center-reception-disability-friendly-office-female-operator-wheelchair-user-with-impairment-giving-assistance-customer-service-helpline_482257-43001.jpg" />
             <div className="bg-white p-4 rounded-md">
               <h3 className="text-2xl font-bold  py-5">
-                PBU
-                <span className="text-primary-green">Provides</span>
+                PBU&nbsp;<span className="text-primary-green">Provides</span>
               </h3>
-              <div>
-                <ol className="flex flex-col gap-3">
+              <div className="mb-10">
+                <ol className="flex flex-col gap-7">
                   <li className="flex items-center gap-2 ">
                     <IoIosArrowDroprightCircle
                       className="text-primary-green "
@@ -64,13 +63,6 @@ function BecomeCoach() {
                     A fixed rate of revenue sharing that beats competitors rates
                     so both coaches and PBallU thrive together
                   </li>{" "}
-                  <li className="flex items-center gap-2 ">
-                    <IoIosArrowDroprightCircle
-                      className="text-primary-green "
-                      size={20}
-                    />{" "}
-                    Instead of “Apply to Coach” put “Become a Coach”
-                  </li>
                 </ol>
               </div>
               <Link className="pt-3" to="/become/coach/apply">

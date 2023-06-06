@@ -73,6 +73,7 @@ export const AuthContextProvider = ({ children }) => {
     })
       .then(async (user) => {
         console.log(user.data.registerCoach);
+        navigate("/login");
         setCurrentUser(user.data.registerCoach);
         await setDoc(doc(db, "users", user.data.registerCoach.userId), {
           uid: user.data.registerCoach.userId,
@@ -85,6 +86,12 @@ export const AuthContextProvider = ({ children }) => {
       })
       .catch((err) => {
         console.log(err);
+        Swal.fire({
+          title: "Warning",
+          text: err.message,
+          icon: "warning",
+          confirmButtonText: "Cancel",
+        });
       });
   };
   const handleLogout = () => {
@@ -112,6 +119,7 @@ export const AuthContextProvider = ({ children }) => {
           doc(db, "userChats", user.data.registerAthlete.userId),
           {}
         );
+        navigate("/");
       })
       .catch((err) => {
         Swal.fire({
@@ -139,7 +147,7 @@ export const AuthContextProvider = ({ children }) => {
         });
       } else {
         if (isCoach) {
-          handleRegisterAthlete({
+          handleRegisterCoach({
             values: {
               ...values,
               email: uid.email,
@@ -149,8 +157,9 @@ export const AuthContextProvider = ({ children }) => {
             },
           });
         } else {
-          handleRegisterCoach({
+          handleRegisterAthlete({
             values: {
+              ...values,
               email: uid.email,
               googleId: uid.uid,
               firstName: uid?.displayName?.split(" ")[0],

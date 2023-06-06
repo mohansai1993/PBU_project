@@ -13,11 +13,13 @@ function PaymentForm(props) {
       {" "}
       <div className="w-full my-10">
         <div className="grid  grid-cols-3 gap-3">
-          {paymentpaln.map((value, index) => (
+          {plans?.map((value, index) => (
             <div key={index}>
               <h3 className="text-xl  font-bold  ">
-                <span className="text-primary-green capitalize">PBU</span>{" "}
-                {value.name}
+                <span className="text-primary-green capitalize">
+                  {value.name.split(" ")[0]}
+                </span>{" "}
+                {value.name.split(" ")[1]}
               </h3>
               <ol className="flex flex-col gap-2 my-3">
                 <li className="flex items-center gap-2 ">

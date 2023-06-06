@@ -241,9 +241,21 @@ const Login = gql`
 `;
 
 const BookSession = gql`
-mutation BookSession($athleteId: ID, $coachId: ID, $sessionDate: Date, $sessionPlanId: ID, $startTime: Int) {
-  bookSession(athleteId: $athleteId, coachId: $coachId, sessionDate: $sessionDate, sessionPlanId: $sessionPlanId, startTime: $startTime)
-}
+  mutation BookSession(
+    $athleteId: ID
+    $coachId: ID
+    $sessionDate: Date
+    $sessionPlanId: ID
+    $startTime: Int
+  ) {
+    bookSession(
+      athleteId: $athleteId
+      coachId: $coachId
+      sessionDate: $sessionDate
+      sessionPlanId: $sessionPlanId
+      startTime: $startTime
+    )
+  }
 `;
 export {
   PostFeed,
