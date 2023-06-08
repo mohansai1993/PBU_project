@@ -3,6 +3,7 @@ import { createContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Login,
+  PaySubscription,
   RegisterAthlete,
   RegisterCoach,
 } from "../graphql/mutations/mutations";
@@ -22,6 +23,7 @@ export const AuthContextProvider = ({ children }) => {
   const [login] = useMutation(Login);
   const [registerCoach] = useMutation(RegisterCoach);
   const [registerAthlete] = useMutation(RegisterAthlete);
+  const [paySubscription] = useMutation(PaySubscription);
   const navigate = useNavigate();
   const client = useApolloClient();
   useEffect(() => {
@@ -55,34 +57,14 @@ export const AuthContextProvider = ({ children }) => {
       });
   };
   const handleRegisterCoach = ({ values }) => {
-    return registerCoach({
+    return paySubscription({
       variables: {
-        firstName: values.firstName,
-        lastName: values.lastName,
-        email: values.email,
-        password: values.password,
-        skillLevelId: "644117be660a4dbcc1b81adc",
-        coachingCity: values.coachingCity,
-        coachingState: values.coachingState,
-        coachingCountry: values.coachingCountry,
-        coachingPinCode: values.coachingPinCode.toString(),
-        document: values.document,
-        coachingStreet: values.coachingStreet,
-        subscriptionPlanId: values.paymentpaln,
+        ...values,
       },
     })
-      .then(async (user) => {
-        console.log(user.data.registerCoach);
-        navigate("/login");
-        setCurrentUser(user.data.registerCoach);
-        await setDoc(doc(db, "users", user.data.registerCoach.userId), {
-          uid: user.data.registerCoach.userId,
-          displayName: values.firstName,
-          email: values.email,
-          photoURL:
-            "https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8dXNlcnxlbnwwfHwwfHw%3D&w=1000&q=80",
-        });
-        await setDoc(doc(db, "userChats", user.data.registerCoach.userId), {});
+      .then((data) => {
+        console.log(data?.data?.paySubscription);
+        window.location.href = data?.data?.paySubscription;
       })
       .catch((err) => {
         console.log(err);
@@ -93,7 +75,46 @@ export const AuthContextProvider = ({ children }) => {
           confirmButtonText: "Cancel",
         });
       });
+    // return registerCoach({
+    //   variables: {
+    //     firstName: values.firstName,
+    //     lastName: values.lastName,
+    //     email: values.email,
+    //     password: values.password,
+    //     skillLevelId: "644117be660a4dbcc1b81adc",
+    //     coachingCity: values.coachingCity,
+    //     coachingState: values.coachingState,
+    //     coachingCountry: values.coachingCountry,
+    //     coachingPinCode: values.coachingPinCode.toString(),
+    //     document: values.document,
+    //     coachingStreet: values.coachingStreet,
+    //     subscriptionPlanId: values.paymentpaln,
+    //   },
+    // })
+    //   .then(async (user) => {
+    //     console.log(user.data.registerCoach);
+    //     navigate("/login");
+    //     setCurrentUser(user.data.registerCoach);
+    //     await setDoc(doc(db, "users", user.data.registerCoach.userId), {
+    //       uid: user.data.registerCoach.userId,
+    //       displayName: values.firstName,
+    //       email: values.email,
+    //       photoURL:
+    //         "https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8dXNlcnxlbnwwfHwwfHw%3D&w=1000&q=80",
+    //     });
+    //     await setDoc(doc(db, "userChats", user.data.registerCoach.userId), {});
+    //   })
+    //   .catch((err) => {
+    //     console.log(err);
+    //     Swal.fire({
+    //       title: "Warning",
+    //       text: err.message,
+    //       icon: "warning",
+    //       confirmButtonText: "Cancel",
+    //     });
+    //   });
   };
+
   const handleLogout = () => {
     // client.onResetStore();
     setCurrentUser(null);

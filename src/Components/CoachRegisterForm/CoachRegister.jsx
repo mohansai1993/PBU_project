@@ -15,8 +15,7 @@ import { GetSubscriptionPlans } from "../../graphql/query/Query";
 import { useQuery } from "@apollo/client";
 import { AuthContext } from "../../context/AuthContext";
 import { uploadImage } from "../../config/api";
-import axios from "axios";
-import { confirmPasswordReset } from "firebase/auth";
+
 const steps = [
   {
     title: "Basic Information",
@@ -39,19 +38,19 @@ const steps = [
 let formInitialValues = {
   firstName: "Ritik ",
   lastName: "Chhipa",
-  email: "ritik@gmail.com",
+  email: "ritikus@gmail.com",
   password: "123456789",
-  countryCode: 91,
+  countryCode: 1,
   number: 91001586400,
   googleId: null,
   facebookId: null,
   //Form 2
-  skillLevel: "level1",
-  coachingCity: "",
-  coachingState: "",
-  coachingCountry: "",
-  coachingPinCode: 312001,
-  coachingStreet: "ashok nagar",
+  skillLevel: "",
+  coachingCity: "Whiteville",
+  coachingState: "North Carolina",
+  coachingCountry: "United States",
+  coachingPinCode: 28472,
+  coachingStreet: "34, Malviya Nagar",
   experience: 21,
   document: "",
   //Form 3
@@ -73,6 +72,7 @@ function CoachRegister() {
   const { data: getSubscriptionPlans } = useQuery(GetSubscriptionPlans);
 
   const { handleRegisterCoach, handleGoogleSignIn } = useContext(AuthContext);
+
   function _renderStepContent(step, values, setFieldValue) {
     switch (step) {
       case 0:
@@ -119,12 +119,24 @@ function CoachRegister() {
     try {
       if (values.loginOption === "password") {
         let data = await handleRegisterCoach({
-          values: { ...values, document: path },
+          values: {
+            ...values,
+            coachingPinCode: String(values.coachingPinCode),
+            subscriptionPlanId: values.paymentpaln,
+            skillLevelId: values.skillLevel,
+            document: path,
+          },
         });
         console.log(data);
       } else if (values.loginOption === "google") {
         handleGoogleSignIn({
-          values: { ...values, password: null, document: path },
+          values: {
+            ...values,
+            coachingPinCode: String(values.coachingPinCode),
+            subscriptionPlanId: values.paymentpaln,
+            skillLevelId: values.skillLevel,
+            document: path,
+          },
           isCoach: true,
           isLogin: false,
         });

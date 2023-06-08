@@ -257,6 +257,66 @@ const BookSession = gql`
     )
   }
 `;
+
+const PaySubscription = gql`
+  mutation PaySubscription(
+    $firstName: String
+    $lastName: String
+    $email: String
+    $password: String
+    $googleId: String
+    $facebookId: String
+    $subscriptionPlanId: ID
+    $skillLevelId: ID
+    $coachingCity: String
+    $coachingStreet: String
+    $coachingState: String
+    $coachingCountry: String
+    $coachingPinCode: String
+    $coachingLocation: LocationInput
+    $document: String
+    $game: String
+    $experience: Float
+  ) {
+    paySubscription(
+      firstName: $firstName
+      lastName: $lastName
+      email: $email
+      password: $password
+      googleId: $googleId
+      facebookId: $facebookId
+      subscriptionPlanId: $subscriptionPlanId
+      skillLevelId: $skillLevelId
+      coachingCity: $coachingCity
+      coachingStreet: $coachingStreet
+      coachingState: $coachingState
+      coachingCountry: $coachingCountry
+      coachingPinCode: $coachingPinCode
+      coachingLocation: $coachingLocation
+      document: $document
+      game: $game
+      experience: $experience
+    )
+  }
+`;
+
+const PaySession = gql`
+  mutation PaySession(
+    $athleteId: ID
+    $coachId: ID
+    $sessionDate: Date
+    $sessionPlanId: ID
+    $startTime: Int
+  ) {
+    paySession(
+      athleteId: $athleteId
+      coachId: $coachId
+      sessionDate: $sessionDate
+      sessionPlanId: $sessionPlanId
+      startTime: $startTime
+    )
+  }
+`;
 export {
   PostFeed,
   RegisterCoach,
@@ -271,4 +331,6 @@ export {
   Login,
   CreateSessionPlan,
   BookSession,
+  PaySubscription,
+  PaySession,
 };

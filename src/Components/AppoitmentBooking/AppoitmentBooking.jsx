@@ -22,7 +22,7 @@ import { Fragment, useContext, useState } from "react";
 import { chunkify } from "./utils";
 import moment from "moment";
 import { useMutation } from "@apollo/client";
-import { BookSession } from "../../graphql/mutations/mutations";
+import { BookSession, PaySession } from "../../graphql/mutations/mutations";
 import { AuthContext } from "../../context/AuthContext";
 import { isCoach } from "../../utils";
 import Swal from "sweetalert2";
@@ -41,7 +41,7 @@ function AppoitmentBooking({
 }) {
   let today = startOfToday();
   const [bookSession, { loading: bookSessionLoading }] =
-    useMutation(BookSession);
+    useMutation(PaySession);
   const { currentUser } = useContext(AuthContext);
   let [selectedDay, setSelectedDay] = useState(today);
   const [bookedSlot, setBookedSlot] = useState({});
@@ -227,8 +227,9 @@ function AppoitmentBooking({
                     ],
                   })
                     .then((res) => {
-                      window.location.href = res.data?.bookSession;
-                      Swal.fire("Success!", "Session Booked ", "success");
+                      console.log(res?.data?.paySession);
+                      window.location.href = res?.data?.paySession;
+                      // Swal.fire("Success!", "Session Booked ", "success");
                     })
                     .catch((err) => {
                       Swal.fire("Error!", err, "error");

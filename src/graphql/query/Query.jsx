@@ -257,6 +257,17 @@ const GetCourts = gql`
     }
   }
 `;
+
+const GetSkillLevels = gql`
+  query GetSkillLevels {
+    getSkillLevels {
+      id
+      name
+      createdAt
+      updatedAt
+    }
+  }
+`;
 export {
   GetFeeds,
   Couch,
@@ -265,4 +276,5 @@ export {
   GetSubscriptionPlans,
   GetTop4Reviews,
   GetCourts,
+  GetSkillLevels,
 };

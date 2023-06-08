@@ -4,6 +4,8 @@ import StateData from "../../config/states.json";
 import CitiesData from "../../config/cities.json";
 import { TextField } from "../Input/TextField";
 import SelectField from "../Input/SelectField";
+import { useQuery } from "@apollo/client";
+import { GetSkillLevels } from "../../graphql/query/Query";
 function BackgroundInfoForm(props) {
   const {
     formField: {
@@ -22,6 +24,10 @@ function BackgroundInfoForm(props) {
   const [Country, setCountry] = useState(props.values[coachingCountry.name]);
   const [State, setState] = useState(props.values[coachingState.name]);
 
+  const { data: getSkillLevels } = useQuery(GetSkillLevels, {
+    skip: false,
+  });
+  console.log(getSkillLevels?.getSkillLevels);
   return (
     <div>
       <div className="grid grid-cols-2 gap-3 ">
@@ -33,8 +39,8 @@ function BackgroundInfoForm(props) {
           }}
         >
           <option value="">Select an level</option>
-          {skillLevel.value.map((value, index) => (
-            <option value={value.value} key={index}>
+          {getSkillLevels?.getSkillLevels?.map((value, index) => (
+            <option value={value.id} key={index}>
               {value.name}
             </option>
           ))}
@@ -58,7 +64,6 @@ function BackgroundInfoForm(props) {
             ))}
           </>
         </SelectField>
-        {/* //State */}
         <SelectField
           value={props.values[coachingState.name]}
           onChange={(e) => {
