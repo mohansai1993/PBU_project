@@ -36,6 +36,7 @@ const steps = [
 ];
 
 let formInitialValues = {
+  loginOption: "password",
   firstName: "Ritik ",
   lastName: "Chhipa",
   email: "ritikus@gmail.com",

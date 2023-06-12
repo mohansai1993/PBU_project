@@ -1,19 +1,23 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { GetFeeds, GetTop4Reviews } from "../graphql/query/Query";
-import { useLazyQuery, useQuery } from "@apollo/client";
+import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import moment from "moment/moment";
 import { Link } from "react-router-dom";
 import Loading from "../Components/Loading/Loading";
 import { AiFillStar } from "react-icons/ai";
+import { ErrorMessage, Field, Form, Formik } from "formik";
+import { CommentOnPost } from "../graphql/mutations/mutations";
+import { AuthContext } from "../context/AuthContext";
 function FeedPage() {
-  const [getFeedsByPage] = useLazyQuery(GetFeeds);
+  const [getFeedsByPage, { loading }] = useLazyQuery(GetFeeds);
   const [Post, setPost] = useState([]);
   const { data: Reviews } = useQuery(GetTop4Reviews);
   const [Page, setPage] = useState(1);
 
   useEffect(() => {
     handlePost();
-  }, [Page]);
+  }, [Page, loading]);
+
   const handlePost = () => {
     console.log(Page);
     getFeedsByPage({
@@ -80,6 +84,7 @@ function FeedPage() {
             </div>
           </div>
           <div className="flex-[0.6] mt-6 ">
+            {console.log(Post)}
             {/* //Message  */}
             {Post.map((feed, index) => (
               <div
@@ -126,7 +131,8 @@ function FeedPage() {
                       </Link>
                     )}
                   </div>
-                </div>
+                </div>{" "}
+                <CommentPanel comments={feed?.comments} feedId={feed?.id} />
               </div>
             ))}
             <div className="py-10 flex justify-center ">
@@ -148,4 +154,126 @@ function FeedPage() {
   );
 }
 
+const CommentPanel = ({ comments, feedId }) => {
+  const [openComment, setOpenComment] = useState(false);
+  const [commentOnPost] = useMutation(CommentOnPost);
+  const { currentUser } = useContext(AuthContext);
+  console.log(currentUser?.userType);
+  return (
+    <>
+      <div>
+        <div className="flex justify-between text-white text-xs mt-3 cursor-pointer hover:text-primary-green">
+          <span onClick={() => setOpenComment(!openComment)}>
+            <span>View Comments</span>
+          </span>
+        </div>
+        {openComment ? (
+          <>
+            {" "}
+            <div className="p-6 mb-6 text-base">
+              <Formik
+                initialValues={{
+                  message: "",
+                }}
+                validate={(values) => {
+                  const errors = {};
+                  if (!values.message) {
+                    errors.message = "Message is required";
+                  }
+                  return errors;
+                }}
+                onSubmit={(values, { setSubmitting }) => {
+                  setTimeout(() => {
+                    // alert(JSON.stringify(values, null, 2));
+                    console.log(values);
+                    commentOnPost({
+                      variables: {
+                        comment: values.message,
+                        athleteId: !currentUser?.userType
+                          ? currentUser?.userId
+                          : null,
+                        coachId: currentUser?.userType
+                          ? currentUser?.userId
+                          : null,
+                        commentBy: currentUser?.userType,
+                        feedId: feedId,
+                      },
+                      refetchQueries: [
+                        {
+                          query: GetFeeds,
+                        },
+                      ],
+                    });
+                    setSubmitting(false);
+                  }, 400);
+                }}
+              >
+                {({ isSubmitting }) => (
+                  <Form className="w-full">
+                    <div className="w-full">
+                      <Field
+                        name="message"
+                        render={({ field }) => (
+                          <textarea
+                            {...field}
+                            className="w-full text-black p-3 placeholder:text-black rounded-md"
+                            placeholder="Write comment here..."
+                          />
+                        )}
+                      />
+                      <ErrorMessage
+                        name="message"
+                        component="div"
+                        className="text-red-500"
+                      />
+                      <button
+                        type="submit"
+                        className="gap-2 px-3 bg-primary-green text-white py-3 rounded-md min-w-[150px]"
+                        disabled={isSubmitting}
+                      >
+                        {isSubmitting ? "Submitting..." : "Comment"}
+                      </button>
+                    </div>
+                  </Form>
+                )}
+              </Formik>
+            </div>
+            <div>
+              {comments?.map((comment, index) => (
+                <>
+                  <article className="p-6 mb-6 text-base" key={index}>
+                    <footer className="flex justify-between items-center mb-2">
+                      <div className="flex items-center">
+                        <p className="inline-flex items-center mr-3 text-sm text-white">
+                          <img
+                            className="mr-2 w-6 h-6 rounded-full"
+                            src={comment?.[comment?.commentBy].profilePicture}
+                            alt="Bonnie Green"
+                          />
+                          {comment?.[comment?.commentBy].firstName +
+                            " " +
+                            comment?.[comment?.commentBy].lastName}
+                        </p>
+                        <p className="text-sm text-primary-green ">
+                          <time
+                            pubdate
+                            dateTime="2022-03-12"
+                            title="March 12th, 2022"
+                          >
+                            {moment(comment?.createdAt).format("LL")}
+                          </time>
+                        </p>
+                      </div>
+                    </footer>
+                    <p className="text-gray-300 ">{comment?.comment}</p>
+                  </article>
+                </>
+              ))}
+            </div>
+          </>
+        ) : null}
+      </div>
+    </>
+  );
+};
 export default FeedPage;

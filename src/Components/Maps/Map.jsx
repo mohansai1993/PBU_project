@@ -52,7 +52,7 @@ export default function PBUGoogleMap() {
               width: "100%",
             }}
           >
-            {marker.positions ? (
+            {marker.positions?.length > 0 ? (
               <>
                 {marker.positions.map((value, index) => (
                   <Marker
@@ -73,7 +73,14 @@ export default function PBUGoogleMap() {
                 ))}
               </>
             ) : (
-              <Marker {...marker} onDragEnd={onDargEndGetAddress} />
+              <Marker
+                {...marker}
+                position={{
+                  lat: latLong.latitude,
+                  lng: latLong.longitude,
+                }}
+                onDragEnd={onDargEndGetAddress}
+              />
             )}
           </GoogleMap>
         ) : null}

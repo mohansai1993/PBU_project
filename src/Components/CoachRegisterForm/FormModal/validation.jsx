@@ -20,6 +20,9 @@ const {
 // eslint-disable-next-line import/no-anonymous-default-export
 export default [
   Yup.object().shape({
+    [loginOption.name]: Yup.string().required(
+      `${loginOption.requiredErrorMsg}`
+    ),
     [firstName.name]: Yup.string().required(`${firstName.requiredErrorMsg}`),
     [lastName.name]: Yup.string().required(`${lastName.requiredErrorMsg}`),
     [email.name]: Yup.string().email().required(`${email.requiredErrorMsg}`),

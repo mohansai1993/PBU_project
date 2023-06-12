@@ -10,6 +10,7 @@ import SessionPurchaseModal from "../../Components/Modal/SessionPurchaseModal";
 import SingleChat from "../../module/pages/SingleChat";
 import LoadingSVG from "../../Components/Loading/LoadingSvg";
 import PBUGoogleMap from "../../Components/Maps/Map";
+import ReviewModal from "../../Components/Modal/ReviewModal";
 
 function CoachDetails() {
   let { id } = useParams();
@@ -22,6 +23,7 @@ function CoachDetails() {
       coachId: id,
     },
   });
+  console.log(couch);
 
   return (
     <>
@@ -37,7 +39,6 @@ function CoachDetails() {
               <div className="md:flex gap-4">
                 <div className="flex-1 mb-4">
                   {couch?.getCoach && <CoachCard couch={couch} />}
-
                   <div>
                     <h3 className="font-semibold text-3xl text-white py-10 ">
                       Session Plans
@@ -70,7 +71,7 @@ function CoachDetails() {
                   {render({
                     marker: {
                       draggable: false,
-                      positions: couch?.getCoach?.coachingLocation.map(
+                      positions: couch?.getCoach?.coachingLocation?.map(
                         (marker) => ({
                           __typename: marker.location.__typename,
                           lat: marker.location.latitude,

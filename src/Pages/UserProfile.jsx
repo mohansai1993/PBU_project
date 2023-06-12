@@ -15,6 +15,7 @@ import LoadingSvg from "../Components/Loading/LoadingSvg";
 import * as Yup from "yup";
 import Swal from "sweetalert2";
 import { uploadImage } from "../config/api";
+import ReviewModal from "../Components/Modal/ReviewModal";
 function UserProfile() {
   let { id } = useParams();
   const { currentUser } = useContext(AuthContext);
@@ -119,7 +120,12 @@ function UserProfile() {
               athlete={athlete?.getAthlete}
             />
           </Tab.Panel>
-          <Tab.Panel>Transaction</Tab.Panel>
+          <Tab.Panel>
+            <TransactionPanel
+              athleteId={currentUser?.userId}
+              transactions={athlete?.getAthlete?.transactions}
+            />
+          </Tab.Panel>
           <Tab.Panel>
             <BookingPanel bookings={athlete?.getAthlete?.sessions} />
           </Tab.Panel>
@@ -134,174 +140,176 @@ const ProfilePanel = ({ athlete, postFeed }) => {
   const { data: Reviews } = useQuery(GetTop4Reviews);
   return (
     <>
-      <div>
-        <div className="md:flex text-white gap-5">
-          <div className="flex-[0.4]">
-            <div className="bg-[#212F48] p-6 rounded-2xl mt-6">
-              {athlete ? (
-                <div>
+      <div className="">
+        <div className="container mx-auto px-4 sm:px-8">
+          <div className="md:flex text-white gap-5">
+            <div className="flex-[0.4]">
+              <div className="bg-[#212F48] p-6 rounded-2xl mt-6">
+                {athlete ? (
                   <div>
-                    <h3 className="my-4  text-2xl font-bold  ">Info</h3>
-                  </div>{" "}
-                  <ol className="flex flex-col gap-3">
-                    <li className="flex items-center gap-2 ">
-                      Skill Level:{" "}
-                      <span className="text-primary-green font-semibold">
-                        {athlete?.skillLevel?.name}
-                      </span>
-                    </li>
+                    <div>
+                      <h3 className="my-4  text-2xl font-bold  ">Info</h3>
+                    </div>{" "}
+                    <ol className="flex flex-col gap-3">
+                      <li className="flex items-center gap-2 ">
+                        Skill Level:{" "}
+                        <span className="text-primary-green font-semibold">
+                          {athlete?.skillLevel?.name}
+                        </span>
+                      </li>
 
-                    <li className="flex items-center gap-2 ">
-                      Email:
-                      <span className="text-primary-green font-semibold">
-                        {athlete?.email}
-                      </span>
-                    </li>
-                  </ol>
-                </div>
-              ) : (
-                <LoadingSVG />
-              )}
-            </div>
-
-            <div className="bg-[#212F48] p-6 rounded-2xl mt-6">
-              {" "}
-              {athlete ? (
-                <>
-                  <h3 className="my-3  text-2xl font-bold  ">Coach List </h3>
-                  <div className="flex flex-col  gap-4">
-                    {" "}
-                    {Reviews?.getTop4Reviews?.map((value, index) => (
-                      <Link
-                        index={index}
-                        to={`/coach/${value.id}`}
-                        className="flex items-center  gap-4"
-                      >
-                        <img
-                          src={value?.profilePicture}
-                          className="rounded-md h-[50px] w-[50px] object-cover"
-                          alt="img"
-                        />
-                        <div>
-                          <h3 className="mb-1 text-xl font-bold ">
-                            {value.firstName}&nbsp;{value.lastName}{" "}
-                          </h3>
-                          <h5 className="text-xs">
-                            {value.coachingLocation[0].city}
-                          </h5>
-                        </div>{" "}
-                      </Link>
-                    ))}
+                      <li className="flex items-center gap-2 ">
+                        Email:
+                        <span className="text-primary-green font-semibold">
+                          {athlete?.email}
+                        </span>
+                      </li>
+                    </ol>
                   </div>
-                </>
-              ) : (
-                <LoadingSvg />
-              )}
-            </div>
-          </div>
-          <div className="flex-[0.6] mt-6">
-            <div className="flex items-start  gap-4 bg-[#212F48] p-6 rounded-2xl  mb-6">
-              <img
-                src={athlete?.profilePicture}
-                className="rounded-md h-[50px] w-[50px] object-cover"
-                alt=""
-              />
-              <Formik
-                initialValues={{
-                  message: "",
-                }}
-                validate={(values) => {
-                  const errors = {};
-                  if (!values.message) {
-                    errors.message = "Message is required";
-                  }
-                  return errors;
-                }}
-                onSubmit={(values, { setSubmitting }) => {
-                  setTimeout(() => {
-                    postFeed({
-                      variables: {
-                        post: values.message,
-                        athleteId: athlete?.id,
-                        postBy: "athlete",
-                      },
-                      refetchQueries: [
-                        {
-                          query: Athlete,
-                          variables: {
-                            email: currentUser?.email,
-                          },
-                        },
-                      ],
-                    });
-                    setSubmitting(false);
-                  }, 400);
-                }}
-              >
-                {({ isSubmitting }) => (
-                  <Form className="w-full">
-                    <div className="w-full">
-                      <Field
-                        name="message"
-                        render={({ field }) => (
-                          <textarea
-                            {...field}
-                            className="w-full text-black p-3 placeholder:text-black rounded-md"
-                            placeholder="Write here"
-                          />
-                        )}
-                      />
-                      <ErrorMessage
-                        name="message"
-                        component="div"
-                        className="text-red-500"
-                      />
-                      <button
-                        type="submit"
-                        className="gap-2 px-3 bg-primary-green text-white py-3 rounded-md min-w-[150px]"
-                        disabled={isSubmitting}
-                      >
-                        {isSubmitting ? "Submitting..." : "Message"}
-                      </button>
-                    </div>
-                  </Form>
+                ) : (
+                  <LoadingSVG />
                 )}
-              </Formik>
-            </div>
+              </div>
 
-            {/* //Message  */}
-            <div className="grid gap-4">
-              {athlete?.feed?.map((feed, index) => (
-                <div className="   bg-[#212F48] p-6 rounded-2xl ">
-                  <div className="flex  justify-between w-full">
-                    <div className="flex  gap-3">
-                      <img
-                        src={athlete?.profilePicture}
-                        className="rounded-md h-[50px] w-[50px] object-cover"
-                      />
+              <div className="bg-[#212F48] p-6 rounded-2xl mt-6">
+                {" "}
+                {athlete ? (
+                  <>
+                    <h3 className="my-3  text-2xl font-bold  ">Coach List </h3>
+                    <div className="flex flex-col  gap-4">
+                      {" "}
+                      {Reviews?.getTop4Reviews?.map((value, index) => (
+                        <Link
+                          index={index}
+                          to={`/coach/${value.id}`}
+                          className="flex items-center  gap-4"
+                        >
+                          <img
+                            src={value?.profilePicture}
+                            className="rounded-md h-[50px] w-[50px] object-cover"
+                            alt="img"
+                          />
+                          <div>
+                            <h3 className="mb-1 text-xl font-bold ">
+                              {value.firstName}&nbsp;{value.lastName}{" "}
+                            </h3>
+                            <h5 className="text-xs">
+                              {value.coachingLocation[0].city}
+                            </h5>
+                          </div>{" "}
+                        </Link>
+                      ))}
+                    </div>
+                  </>
+                ) : (
+                  <LoadingSvg />
+                )}
+              </div>
+            </div>
+            <div className="flex-[0.6] mt-6">
+              <div className="flex items-start  gap-4 bg-[#212F48] p-6 rounded-2xl  mb-6">
+                <img
+                  src={athlete?.profilePicture}
+                  className="rounded-md h-[50px] w-[50px] object-cover"
+                  alt=""
+                />
+                <Formik
+                  initialValues={{
+                    message: "",
+                  }}
+                  validate={(values) => {
+                    const errors = {};
+                    if (!values.message) {
+                      errors.message = "Message is required";
+                    }
+                    return errors;
+                  }}
+                  onSubmit={(values, { setSubmitting }) => {
+                    setTimeout(() => {
+                      postFeed({
+                        variables: {
+                          post: values.message,
+                          athleteId: athlete?.id,
+                          postBy: "athlete",
+                        },
+                        refetchQueries: [
+                          {
+                            query: Athlete,
+                            variables: {
+                              email: currentUser?.email,
+                            },
+                          },
+                        ],
+                      });
+                      setSubmitting(false);
+                    }, 400);
+                  }}
+                >
+                  {({ isSubmitting }) => (
+                    <Form className="w-full">
                       <div className="w-full">
-                        <h3 className="text-xl">
-                          {athlete?.firstName + " " + athlete?.lastName}
-                        </h3>
-                        {console.log(athlete)}
-                        <h3 className="text-sm">{athlete?.game}</h3>
+                        <Field
+                          name="message"
+                          render={({ field }) => (
+                            <textarea
+                              {...field}
+                              className="w-full text-black p-3 placeholder:text-black rounded-md"
+                              placeholder="Write here"
+                            />
+                          )}
+                        />
+                        <ErrorMessage
+                          name="message"
+                          component="div"
+                          className="text-red-500"
+                        />
+                        <button
+                          type="submit"
+                          className="gap-2 px-3 bg-primary-green text-white py-3 rounded-md min-w-[150px]"
+                          disabled={isSubmitting}
+                        >
+                          {isSubmitting ? "Submitting..." : "Message"}
+                        </button>
+                      </div>
+                    </Form>
+                  )}
+                </Formik>
+              </div>
+
+              {/* //Message  */}
+              <div className="grid gap-4">
+                {athlete?.feed?.map((feed, index) => (
+                  <div className="   bg-[#212F48] p-6 rounded-2xl ">
+                    <div className="flex  justify-between w-full">
+                      <div className="flex  gap-3">
+                        <img
+                          src={athlete?.profilePicture}
+                          className="rounded-md h-[50px] w-[50px] object-cover"
+                        />
+                        <div className="w-full">
+                          <h3 className="text-xl">
+                            {athlete?.firstName + " " + athlete?.lastName}
+                          </h3>
+                          {console.log(athlete)}
+                          <h3 className="text-sm">{athlete?.game}</h3>
+                        </div>
+                      </div>
+                      <AiFillDelete
+                        size={24}
+                        color={"#ed5e68"}
+                        cursor={"pointer"}
+                      />
+                    </div>
+                    <div>
+                      <p className="py-4">{feed?.post}</p>
+                      <div className="flex justify-between text-primary-green ">
+                        <span>{moment(feed?.updatedAt).format("LLL")}</span>
+                        {/* <span>Book Now</span> */}
                       </div>
                     </div>
-                    <AiFillDelete
-                      size={24}
-                      color={"#ed5e68"}
-                      cursor={"pointer"}
-                    />
                   </div>
-                  <div>
-                    <p className="py-4">{feed?.post}</p>
-                    <div className="flex justify-between text-primary-green ">
-                      <span>{moment(feed?.updatedAt).format("LLL")}</span>
-                      {/* <span>Book Now</span> */}
-                    </div>
-                  </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </div>
         </div>
@@ -384,104 +392,115 @@ const SettingPanel = ({ editAthlete, athleteId, athlete }) => {
 
   return (
     <>
-      <form
-        className="text-white grid grid-cols-2 gap-3 "
-        onSubmit={formik.handleSubmit}
-      >
-        <div className="flex flex-col gap-3">
-          <div>
-            <label>First Name </label>
-          </div>
-          <div className="relative text-gray-600 rounded-md ">
-            <div className="w-full">
-              <input
-                type="text"
-                name="firstName"
-                onChange={formik.handleChange}
-                value={formik.values.firstName}
-                onBlur={formik.handleBlur}
-                className={`p-3 rounded-md w-full  text-sm  rounded-md focus:outline-none 
-              placeholder:text-primary-gray `}
-                placeholder="First name"
-              />{" "}
-              <ErrorPrint value={"firstName"} />
+      <div className="">
+        <div className="container mx-auto px-4 sm:px-8">
+          <div className="py-8">
+            <div>
+              <h2 className="text-2xl mb-2 text-primary-green  font-semibold leading-tight">
+                Profile Setting
+              </h2>
             </div>
+            <form
+              className="text-white grid grid-cols-2 gap-3 "
+              onSubmit={formik.handleSubmit}
+            >
+              <div className="flex flex-col gap-3">
+                <div>
+                  <label>First Name </label>
+                </div>
+                <div className="relative text-gray-600 rounded-md ">
+                  <div className="w-full">
+                    <input
+                      type="text"
+                      name="firstName"
+                      onChange={formik.handleChange}
+                      value={formik.values.firstName}
+                      onBlur={formik.handleBlur}
+                      className={`p-3 rounded-md w-full  text-sm  rounded-md focus:outline-none 
+              placeholder:text-primary-gray `}
+                      placeholder="First name"
+                    />{" "}
+                    <ErrorPrint value={"firstName"} />
+                  </div>
+                </div>
+              </div>
+              <div className="flex flex-col gap-3">
+                <div>
+                  <label>Last Name </label>
+                </div>
+                <div className="relative text-gray-600 rounded-md ">
+                  <div className="w-full">
+                    <input
+                      type="text"
+                      name="lastName"
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      value={formik.values.lastName}
+                      className={`p-3 rounded-md w-full  text-sm  rounded-md  focus:outline-none 
+              placeholder:text-primary-gray `}
+                      placeholder="last name"
+                    />
+                    <ErrorPrint value={"lastName"} />
+                  </div>
+                </div>
+              </div>{" "}
+              <div className="flex flex-col gap-3">
+                <div>
+                  <label>Game</label>
+                </div>
+                <div className="relative text-gray-600 rounded-md ">
+                  <div className="w-full">
+                    <input
+                      type="text"
+                      name="game"
+                      onChange={formik.handleChange}
+                      value={formik.values.game}
+                      onBlur={formik.handleBlur}
+                      className={`p-3 rounded-md w-full  text-sm  rounded-md  focus:outline-none 
+              placeholder:text-primary-gray `}
+                      placeholder="Game"
+                    />
+                    <ErrorPrint value={"game"} />
+                  </div>
+                </div>
+              </div>
+              <div className="flex flex-col gap-3">
+                <div>
+                  <label>Profile Image </label>
+                </div>
+                <div className="relative text-gray-600 rounded-md ">
+                  <div className="w-full">
+                    <input
+                      type="file"
+                      name="profilePicture"
+                      onChange={
+                        (e) => {
+                          console.log(e.target.files[0]);
+                          setFile(e.target.files[0]);
+                        }
+                        // formik.handleChange
+                      }
+                      className={`p-3 rounded-md w-full bg-white  text-sm  rounded-md focus:outline-none 
+              placeholder:text-primary-gray `}
+                      placeholder="Select Profile image"
+                    />
+                  </div>
+                </div>
+              </div>{" "}
+              <div>
+                <button
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  className="bg-primary-green text-white py-1  rounded-md min-w-[150px]"
+                >
+                  Submit
+                </button>
+              </div>
+            </form>
           </div>
         </div>
-        <div className="flex flex-col gap-3">
-          <div>
-            <label>Last Name </label>
-          </div>
-          <div className="relative text-gray-600 rounded-md ">
-            <div className="w-full">
-              <input
-                type="text"
-                name="lastName"
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                value={formik.values.lastName}
-                className={`p-3 rounded-md w-full  text-sm  rounded-md  focus:outline-none 
-              placeholder:text-primary-gray `}
-                placeholder="last name"
-              />
-              <ErrorPrint value={"lastName"} />
-            </div>
-          </div>
-        </div>{" "}
-        <div className="flex flex-col gap-3">
-          <div>
-            <label>Game</label>
-          </div>
-          <div className="relative text-gray-600 rounded-md ">
-            <div className="w-full">
-              <input
-                type="text"
-                name="game"
-                onChange={formik.handleChange}
-                value={formik.values.game}
-                onBlur={formik.handleBlur}
-                className={`p-3 rounded-md w-full  text-sm  rounded-md  focus:outline-none 
-              placeholder:text-primary-gray `}
-                placeholder="Game"
-              />
-              <ErrorPrint value={"game"} />
-            </div>
-          </div>
-        </div>
-        <div className="flex flex-col gap-3">
-          <div>
-            <label>Profile Image </label>
-          </div>
-          <div className="relative text-gray-600 rounded-md ">
-            <div className="w-full">
-              <input
-                type="file"
-                name="profilePicture"
-                onChange={
-                  (e) => {
-                    console.log(e.target.files[0]);
-                    setFile(e.target.files[0]);
-                  }
-                  // formik.handleChange
-                }
-                className={`p-3 rounded-md w-full bg-white  text-sm  rounded-md focus:outline-none 
-              placeholder:text-primary-gray `}
-                placeholder="Select Profile image"
-              />
-            </div>
-          </div>
-        </div>{" "}
-        <div>
-          <button
-            type="submit"
-            variant="contained"
-            color="primary"
-            className="bg-primary-green text-white py-1  rounded-md min-w-[150px]"
-          >
-            Submit
-          </button>
-        </div>
-      </form>
+      </div>
     </>
   );
 };
@@ -516,7 +535,9 @@ const BookingPanel = ({ bookings }) => {
                     <th className="px-5 py-3 border-b-2 border-gray-200 text-white  text-left text-xs font-semibold  uppercase tracking-wider">
                       Appointment Date
                     </th>
-                    <th className="px-5 py-3 border-b-2 border-gray-200 text-white " />
+                    <th className="px-5 py-3 border-b-2 border-gray-200 text-white ">
+                      Actions
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -568,7 +589,75 @@ const BookingPanel = ({ bookings }) => {
                       <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                         {moment.utc(value.sessionDate).format("LL")}
                       </td>
-                      <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm text-right"></td>
+                      <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm text-right">
+                        {" "}
+                        <ReviewModal sessionId={value.id} />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const TransactionPanel = ({ transactions, athleteId }) => {
+  return (
+    <div className="">
+      <div className="container mx-auto px-4 sm:px-8">
+        <div className="py-8">
+          <div>
+            <h2 className="text-2xl text-primary-green  font-semibold leading-tight">
+              Booking
+            </h2>
+          </div>
+          <div className="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
+            <div className="inline-block min-w-full shadow-md rounded-lg overflow-hidden">
+              <table className="min-w-full leading-normal">
+                <thead>
+                  <tr className="bg-[#212F48]">
+                    {" "}
+                    <th className="px-5 py-3 border-b-2 border-gray-200 text-left text-xs font-semibold  text-white  uppercase tracking-wider">
+                      S.No
+                    </th>
+                    <th className="px-5 py-3 border-b-2 border-gray-200 text-left text-xs font-semibold  text-white  uppercase tracking-wider">
+                      Transaction Type
+                    </th>
+                    <th className="px-5 py-3 border-b-2 border-gray-200  text-left text-xs font-semibold  uppercase text-white tracking-wider">
+                      Status
+                    </th>
+                    <th className="px-5 py-3 border-b-2 border-gray-200 text-white  text-left text-xs font-semibold  uppercase tracking-wider">
+                      Booking Date
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {transactions.map((trans, index) => (
+                    <tr key={index}>
+                      <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                        <p className="text-gray-900 whitespace-no-wrap">
+                          {index + 1}
+                        </p>
+                      </td>
+                      <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                        <p className="text-gray-900 whitespace-no-wrap capitalize">
+                          {trans?.transactionType}
+                        </p>
+                      </td>
+                      <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                        <p className="text-gray-900 whitespace-no-wrap">
+                          {trans?.status}
+                        </p>
+                      </td>
+                      <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                        <p className="text-gray-900 whitespace-no-wrap">
+                          {moment(trans?.date).format("LL")}
+                        </p>
+                      </td>
                     </tr>
                   ))}
                 </tbody>

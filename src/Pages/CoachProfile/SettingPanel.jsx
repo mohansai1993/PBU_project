@@ -5,6 +5,7 @@ import Swal from "sweetalert2";
 import { uploadImage } from "../../config/api";
 import * as Yup from "yup";
 import { useFormik } from "formik";
+import LoadingSVG from "../../Components/Loading/LoadingSvg";
 const SettingPanel = ({ editCoach, coachId, couch }) => {
   const [File, setFile] = useState(null);
 
@@ -45,11 +46,18 @@ const SettingPanel = ({ editCoach, coachId, couch }) => {
       pinCode: couch?.contactDetails?.pinCode,
     },
     validationSchema: validationSchema,
-    onSubmit: async (values) => {
+    onSubmit: async (values, actions) => {
       const formData = new FormData();
       formData.append("file", File);
-      const path = await uploadImage(formData);
-      console.log(path.data?.fileName);
+      var path = null;
+
+      if (!File) {
+        path = couch?.contactDetails?.profilePicture;
+      } else {
+        path = await uploadImage(formData);
+        path = path.data?.fileName;
+      }
+      actions.setSubmitting(true);
       await editCoach({
         variables: {
           coachId: coachId,
@@ -72,7 +80,8 @@ const SettingPanel = ({ editCoach, coachId, couch }) => {
             "success"
           );
         })
-        .catch(() => {});
+        .catch(() => {})
+        .finally(() => actions.setSubmitting(false));
     },
   });
 
@@ -304,16 +313,19 @@ const SettingPanel = ({ editCoach, coachId, couch }) => {
           </div>
         </div>
         <div>
-          <button
-            type="submit"
-            variant="contained"
-            color="primary"
-            className="bg-primary-green text-white py-1  rounded-md min-w-[150px]"
-          >
-            Submit
-          </button>
+          {!formik.isSubmitting && (
+            <button
+              type="submit"
+              variant="contained"
+              color="primary"
+              className="bg-primary-green text-white py-1  rounded-md min-w-[150px]"
+            >
+              Submit
+            </button>
+          )}
         </div>
       </form>
+      {formik.isSubmitting && <LoadingSVG />}
     </>
   );
 };

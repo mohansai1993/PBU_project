@@ -11,6 +11,7 @@ import AvaibilityPanel from "./AvaibilityPanel";
 import CoachingPanel from "./CoachingPanel";
 import SettingPanel from "./SettingPanel";
 import ProfilePanel from "./ProfilePanel";
+import BookingPanel from "./BookingPanel";
 
 function PBUFeedPage() {
   let { id } = useParams();
@@ -42,6 +43,9 @@ function PBUFeedPage() {
     },
     {
       title: "Chats",
+    },
+    {
+      title: "Booking",
     },
   ];
 
@@ -135,6 +139,9 @@ function PBUFeedPage() {
               </Tab.Panel>
               <Tab.Panel>
                 <MultiChat couch={couch} />
+              </Tab.Panel>
+              <Tab.Panel>
+                <BookingPanel booking={couch?.getCoach?.sessions} />
               </Tab.Panel>
             </Tab.Panels>
           </Tab.Group>

@@ -317,6 +317,37 @@ const PaySession = gql`
     )
   }
 `;
+const CommentOnPost = gql`
+  mutation CommentOnPost(
+    $comment: String
+    $athleteId: ID
+    $coachId: ID
+    $commentBy: String
+    $feedId: ID
+  ) {
+    commentOnPost(
+      comment: $comment
+      athleteId: $athleteId
+      coachId: $coachId
+      commentBy: $commentBy
+      feedId: $feedId
+    ) {
+      id
+      post
+      createdAt
+      updatedAt
+    }
+  }
+`;
+const PostFeedback = gql`
+  mutation PostFeedback($rating: Float, $sessionId: ID, $review: String) {
+    postFeedback(rating: $rating, sessionId: $sessionId, review: $review) {
+      id
+      rating
+      review
+    }
+  }
+`;
 export {
   PostFeed,
   RegisterCoach,
@@ -333,4 +364,6 @@ export {
   BookSession,
   PaySubscription,
   PaySession,
+  CommentOnPost,
+  PostFeedback,
 };

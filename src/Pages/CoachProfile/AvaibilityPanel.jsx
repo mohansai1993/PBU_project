@@ -39,16 +39,29 @@ const AvaibilityPanel = ({ coachId, openingHours, loading }) => {
       end: openingHours?.Saturday.endTime,
     },
   };
+  const startEndTimeValidation = Yup.object().shape({
+    start: Yup.number()
+      .min(6, "not be less than 6")
+      .max(24, "not be greater than 24")
+      .when("end", (end, schema) =>
+        schema.test({
+          test: function (start) {
+            return start < end;
+          },
+          message: "Start time must be less than end time",
+        })
+      ),
+    end: Yup.number()
+      .min(6, "not be less than 6")
+      .max(24, "not be greater than 24"),
+  });
   const validation = Yup.object().shape({
-    sunday: Yup.object().shape({
-      start: Yup.number()
-        .min(6, "not be less than 6")
-        .max(24, "not be greater than 24"),
-      end: Yup.number()
-        .min(6, "not be less than 6")
-        .max(24, "not be greater than 24"),
-    }),
-    // add validation for other days here
+    sunday: startEndTimeValidation,
+    monday: startEndTimeValidation,
+    tuesday: startEndTimeValidation,
+    thursday: startEndTimeValidation,
+    friday: startEndTimeValidation,
+    saturday: startEndTimeValidation,
   });
 
   return (
@@ -61,6 +74,7 @@ const AvaibilityPanel = ({ coachId, openingHours, loading }) => {
           validationSchema={validation}
           onSubmit={(values, actions) => {
             console.log(values);
+            actions.setSubmitting(true);
             slot({
               variables: {
                 coachId: coachId,
@@ -113,11 +127,14 @@ const AvaibilityPanel = ({ coachId, openingHours, loading }) => {
               })
               .catch((err) => {
                 Swal.fire("Error", "Something went wrong", "error");
+              })
+              .finally(() => {
+                actions.setSubmitting(false);
               });
           }}
           enableReinitialize={true}
         >
-          {({ values, handleSubmit }) => (
+          {({ values, handleSubmit, isSubmitting }) => (
             <Form onSubmit={handleSubmit}>
               <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400 rounded-md">
                 <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -186,6 +203,7 @@ const AvaibilityPanel = ({ coachId, openingHours, loading }) => {
                   <li>End Time must be less or equal to 24.</li>
                 </ul>
               </div>
+
               <button
                 type="submit"
                 className="bg-primary-green text-white py-1  rounded-md min-w-[150px]  mt-5"

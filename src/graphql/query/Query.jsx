@@ -9,6 +9,25 @@ const GetFeeds = gql`
       postBy
       updatedAt
       files
+      comments {
+        id
+        comment
+        commentBy
+        createdAt
+        updatedAt
+        athlete {
+          id
+          firstName
+          lastName
+          profilePicture
+        }
+        coach {
+          id
+          firstName
+          lastName
+          profilePicture
+        }
+      }
       athlete {
         profilePicture
         firstName
@@ -50,13 +69,23 @@ const Athlete = gql`
           lastName
           profilePicture
         }
+
         sessionPlan {
           duration
           price
           createdAt
         }
       }
-
+      transactions {
+        id
+        amount
+        transactionType
+        status
+        date
+        stripeId
+        createdAt
+        updatedAt
+      }
       chats {
         athlete {
           id
@@ -87,6 +116,11 @@ const Couch = gql`
         id
         coach {
           id
+          firstName
+          lastName
+          profilePicture
+        }
+        athlete {
           firstName
           lastName
           profilePicture

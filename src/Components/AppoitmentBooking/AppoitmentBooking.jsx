@@ -370,9 +370,8 @@ function AvailSlots({
                         : "bg-red-500"
                     }`}
                   >
-                    {index}:00
-                    {/* //moment(bookingSession).format("LLL"), //
-                  moment(selectedDay).format("LLL") */}
+                    {/* {index}:00 */}
+                    {moment(index, "hh").format("LT")}
                   </span>
                 )
               )}
