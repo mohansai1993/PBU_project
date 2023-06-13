@@ -110,6 +110,7 @@ const Couch = gql`
       profilePicture
       averageRating
       lastName
+      stripeId
       sessions {
         startTime
         sessionDate
@@ -302,6 +303,16 @@ const GetSkillLevels = gql`
     }
   }
 `;
+const CreateConnectedAccount = gql`
+  query CreateConnectedAccount($coachId: ID) {
+    createConnectedAccount(coachId: $coachId)
+  }
+`;
+const WithdrawSessionAmount = gql`
+  query WithdrawSessionAmount($coachId: ID, $sessionId: ID) {
+    withdrawSessionAmount(coachId: $coachId, sessionId: $sessionId)
+  }
+`;
 export {
   GetFeeds,
   Couch,
@@ -311,4 +322,6 @@ export {
   GetTop4Reviews,
   GetCourts,
   GetSkillLevels,
+  CreateConnectedAccount,
+  WithdrawSessionAmount,
 };

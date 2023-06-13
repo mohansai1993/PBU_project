@@ -3,19 +3,62 @@ import moment from "moment";
 import React from "react";
 import { AiFillDelete } from "react-icons/ai";
 
-import { Couch, GetTop4Reviews } from "../../graphql/query/Query";
-import { useMutation, useQuery } from "@apollo/client";
+import {
+  Couch,
+  CreateConnectedAccount,
+  GetTop4Reviews,
+} from "../../graphql/query/Query";
+import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import { DeletePost } from "../../graphql/mutations/mutations";
 import { Link } from "react-router-dom";
+import Swal from "sweetalert2";
 
 const ProfilePanel = ({ couch, postFeed }) => {
   const [deletePost] = useMutation(DeletePost);
   const { data: Reviews } = useQuery(GetTop4Reviews);
+  const [createConnectedAccount] = useLazyQuery(CreateConnectedAccount);
   return (
     <>
       <div>
         <div className="md:flex text-white gap-5">
           <div className="flex-[0.4]">
+            {!couch?.stripeId ? (
+              <div className="bg-[#212F48] p-6 rounded-2xl mt-6">
+                <h3 className="my-3  text-2xl font-bold  ">Account Setup</h3>
+                <p className="mb-4">
+                  To accept payments from the platform, please set up a
+                  Connected Account. &nbsp;
+                  <strong>You need to complete the follow in one go.</strong>
+                  &nbsp; You might want to keep the following things on hand for
+                  the onboarding process::<br></br>
+                  <br></br> 1. Phone for OTP
+                  <br></br>
+                  2. Bank account or card details
+                  <br></br> 3. Identity Proof Document
+                </p>
+
+                <button
+                  onClick={() => {
+                    createConnectedAccount({
+                      variables: {
+                        coachId: couch?.id,
+                      },
+                    }).then(({ data, error }) => {
+                      console.log(data);
+
+                      if (error) {
+                        Swal.fire("Warning!", error.message, "warning");
+                      } else {
+                        window.location.href = data?.createConnectedAccount;
+                      }
+                    });
+                  }}
+                  className="gap-2 px-3 bg-primary-green text-white py-3 rounded-md min-w-[150px]"
+                >
+                  Create Account
+                </button>
+              </div>
+            ) : null}
             <div className="bg-[#212F48] p-6 rounded-2xl mt-6">
               <h3 className="my-3  text-2xl font-bold  ">About Coach</h3>
               <p className="mb-4">{couch?.about}</p>
@@ -38,7 +81,6 @@ const ProfilePanel = ({ couch, postFeed }) => {
                 </li>
               </ol>
             </div>
-
             <div className="bg-[#212F48] p-6 rounded-2xl mt-6">
               {" "}
               <h3 className="my-3  text-2xl font-bold  ">Coach List </h3>

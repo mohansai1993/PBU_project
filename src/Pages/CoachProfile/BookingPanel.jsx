@@ -1,8 +1,11 @@
+import { useLazyQuery } from "@apollo/client";
 import moment from "moment";
 import React from "react";
+import { Couch, WithdrawSessionAmount } from "../../graphql/query/Query";
+import Swal from "sweetalert2";
 
 function BookingPanel({ booking }) {
-  console.log(booking);
+  const [withdrawSessionAmount] = useLazyQuery(WithdrawSessionAmount);
   return (
     <div className="">
       <div className="container mx-auto px-4 sm:px-8">
@@ -32,6 +35,9 @@ function BookingPanel({ booking }) {
                     </th>
                     <th className="px-5 py-3 border-b-2 border-gray-200 text-white  text-left text-xs font-semibold  uppercase tracking-wider">
                       Athlete
+                    </th>{" "}
+                    <th className="px-5 py-3 border-b-2 border-gray-200 text-white  text-left text-xs font-semibold  uppercase tracking-wider">
+                      Withdrawal
                     </th>
                   </tr>
                 </thead>
@@ -71,6 +77,45 @@ function BookingPanel({ booking }) {
                               booking?.athlete?.lastName}
                           </div>
                         </div>
+                      </td>
+                      <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                        <button
+                          className="gap-2 px-3 bg-primary-green text-white py-3 rounded-md min-w-[150px]"
+                          onClick={() => {
+                            console.log({
+                              coachId: booking?.coach?.id,
+                              sessionId: booking?.id,
+                            });
+                            withdrawSessionAmount({
+                              variables: {
+                                coachId: booking?.coach?.id,
+                                sessionId: booking?.id,
+                              },
+                              refetchQueries: [
+                                {
+                                  query: Couch,
+                                  variables: {
+                                    coachId: booking?.coach?.id,
+                                  },
+                                },
+                              ],
+                            }).then(({ data, error }) => {
+                              console.log(data);
+
+                              if (error) {
+                                Swal.fire("Warning!", error.message, "warning");
+                              } else {
+                                Swal.fire(
+                                  "Success!",
+                                  "Withdraw has completed",
+                                  "success"
+                                );
+                              }
+                            });
+                          }}
+                        >
+                          Withdraw
+                        </button>
                       </td>
                     </tr>
                   ))}
