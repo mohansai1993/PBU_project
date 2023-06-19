@@ -3,6 +3,7 @@ import { AiFillStar } from "react-icons/ai";
 import { useQuery } from "@apollo/client";
 import { Couches } from "../graphql/query/Query";
 import { Link } from "react-router-dom";
+import Default from "../assets/default.png";
 function FindCoach() {
   let { data: coaches } = useQuery(Couches);
   console.log(coaches);
@@ -43,7 +44,7 @@ const CoachCard = ({ value, index }) => {
       >
         <div className="">
           <img
-            src={value.profilePicture}
+            src={value.profilePicture ? value.profilePicture : Default}
             className="object-cover w-full rounded-xl  h-full  "
             alt=""
           />

@@ -7,14 +7,12 @@ import { FaAnchor } from "react-icons/fa";
 import Swal from "sweetalert2";
 Geocode.setApiKey("AIzaSyDp8i_SiNUXrpREuWYpTXpBys9-sdYLWro");
 export default function PBUGoogleMap() {
-  const [searchResult, setSearchResult] = useState(null);
   const [latLong, setlatLong] = useState({
     latitude: 39.09366,
     longitude: -94.5875,
   });
   const showLabel = (text) => {
     Swal.fire(text);
-    // console.log(text);
   };
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: "AIzaSyDp8i_SiNUXrpREuWYpTXpBys9-sdYLWro",
@@ -26,6 +24,13 @@ export default function PBUGoogleMap() {
       latitude: latLng.lat(),
       longitude: latLng.lng(),
     });
+  };
+
+  const generateMapsLink = (lat, lng) => {
+    const baseUrl = "https://www.google.com/maps/search/?api=1&query=";
+    const location = encodeURIComponent(`${lat},${lng}`);
+    const link = `${baseUrl}${location}`;
+    return link;
   };
 
   const render = ({ marker = {}, isCenter = false }) => {
@@ -45,7 +50,6 @@ export default function PBUGoogleMap() {
                     lng: latLong.longitude,
                   }
             }
-            // onBoundsChanged={(e) => console.log(e)}
             mapContainerStyle={{
               maxHeight: "100%",
               height: "80%",
@@ -56,14 +60,14 @@ export default function PBUGoogleMap() {
               <>
                 {marker.positions.map((value, index) => (
                   <Marker
-                    {...marker}
                     key={index}
                     position={{
                       lat: value.lat,
                       lng: value.lng,
                     }}
                     onClick={() => {
-                      console.log(value);
+                      const link = generateMapsLink(value.lat, value.lng);
+                      window.open(link, "_blank");
                       showLabel(value.street);
                     }}
                     onDragEnd={onDargEndGetAddress}
@@ -74,7 +78,6 @@ export default function PBUGoogleMap() {
               </>
             ) : (
               <Marker
-                {...marker}
                 position={{
                   lat: latLong.latitude,
                   lng: latLong.longitude,
@@ -87,6 +90,7 @@ export default function PBUGoogleMap() {
       </>
     );
   };
+
   return {
     render,
     latLong,

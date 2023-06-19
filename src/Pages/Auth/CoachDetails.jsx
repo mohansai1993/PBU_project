@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { AiFillStar } from "react-icons/ai";
-
+import Default from "../../assets/default.png";
 import { IoIosArrowDroprightCircle } from "react-icons/io";
 import { Tab } from "@headlessui/react";
 import { useQuery } from "@apollo/client";
@@ -175,6 +175,12 @@ const CoachCard = ({ couch }) => {
             <img
               src={couch?.getCoach?.profilePicture}
               className="object-cover w-[400px] rounded-xl  h-full"
+              alt={"profile"}
+              src={
+                couch?.getCoach?.profilePicture
+                  ? couch?.getCoach?.profilePicture
+                  : Default
+              }
             />
           </div>
           <div className="text-white flex flex-col gap-3 ">

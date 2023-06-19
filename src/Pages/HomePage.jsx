@@ -3,9 +3,7 @@ import { FiSearch } from "react-icons/fi";
 import { IoNavigate, IoLocationSharp } from "react-icons/io5";
 import { AiFillStar } from "react-icons/ai";
 import bg_01 from "../assets/bg-01.png";
-import ball from "../assets/coach/ball.jpg";
-import baseball from "../assets/coach/baseball.jpg";
-import hockey from "../assets/coach/hockey.jpg";
+import Default from "../assets/default.png";
 import Slider from "../Components/Slider/Slider";
 import comm1 from "../assets/community/comm1.jpg";
 import comm2 from "../assets/community/comm2.jpg";
@@ -138,7 +136,11 @@ function HomePage() {
                         <div className="text-black  font-semibold flex  items-center justify-between">
                           <img
                             className="max-w-[80px] h-[80px] rounded-lg w-full object-cover"
-                            src={value.profilePicture}
+                            src={
+                              value.profilePicture
+                                ? value.profilePicture
+                                : Default
+                            }
                             alt=""
                           />
                           <div className="text-left">
@@ -246,7 +248,9 @@ function HomePage() {
                     <div>
                       {" "}
                       <img
-                        src={value.profilePicture}
+                        src={
+                          value.profilePicture ? value.profilePicture : Default
+                        }
                         alt={value.firstName}
                         className="object-cover w-full h-[200px]  rounded-xl"
                       />
