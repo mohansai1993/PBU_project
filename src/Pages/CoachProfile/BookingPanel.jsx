@@ -5,6 +5,7 @@ import { Couch, WithdrawSessionAmount } from "../../graphql/query/Query";
 import Swal from "sweetalert2";
 
 function BookingPanel({ booking }) {
+  console.log(booking);
   const [withdrawSessionAmount] = useLazyQuery(WithdrawSessionAmount);
   return (
     <div className="">
@@ -27,6 +28,9 @@ function BookingPanel({ booking }) {
                     <th className="px-5 py-3 border-b-2 border-gray-200 text-left text-xs font-semibold  text-white  uppercase tracking-wider">
                       Duration
                     </th>
+                    <th className="px-5 py-3 border-b-2 border-gray-200 text-left text-xs font-semibold  text-white  uppercase tracking-wider">
+                      Appointment Time
+                    </th>
                     <th className="px-5 py-3 border-b-2 border-gray-200  text-left text-xs font-semibold  uppercase text-white tracking-wider">
                       Price
                     </th>
@@ -42,7 +46,7 @@ function BookingPanel({ booking }) {
                   </tr>
                 </thead>
                 <tbody>
-                  {booking.map((booking, index) => (
+                  {booking?.map((booking, index) => (
                     <tr key={index}>
                       <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                         <p className="text-gray-900 whitespace-no-wrap">
@@ -51,12 +55,34 @@ function BookingPanel({ booking }) {
                       </td>
                       <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                         <p className="text-gray-900 whitespace-no-wrap capitalize">
-                          {booking?.sessionPlan?.duration} Hr
+                          {booking?.endTime - booking?.startTime} Hr
                         </p>
                       </td>
                       <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                        <p className="text-gray-900 whitespace-no-wrap capitalize">
+                          {booking.sessionPlan?.duration > 1
+                            ? moment(booking.startTime, ["HH"]).format("hh A") +
+                              " - " +
+                              moment
+                                .utc(
+                                  booking?.startTime +
+                                    booking.sessionPlan?.duration,
+                                  ["HH"]
+                                )
+                                .format("hh A")
+                            : moment(booking?.startTime, ["HH"]).format(
+                                "hh A"
+                              ) +
+                              " - " +
+                              moment(booking?.startTime + 1, ["HH"]).format(
+                                "hh A"
+                              )}
+                        </p>
+                      </td>
+
+                      <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                         <p className="text-gray-900 whitespace-no-wrap">
-                          ${booking?.sessionPlan?.price}
+                          ${booking?.amountToCoach}
                         </p>
                       </td>
                       <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">

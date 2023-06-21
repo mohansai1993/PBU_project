@@ -58,11 +58,19 @@ const SettingPanel = ({ editCoach, coachId, couch }) => {
         path = path.data?.fileName;
       }
       actions.setSubmitting(true);
+      console.log({
+        path,
+        variables: {
+          ...values,
+          coachId: coachId,
+          profilePicture: File ? path : null,
+        },
+      });
       await editCoach({
         variables: {
-          coachId: coachId,
-          profilePicture: File ? path.data?.fileName : null,
           ...values,
+          coachId: coachId,
+          profilePicture: File ? path : null,
         },
         refetchQueries: [
           {

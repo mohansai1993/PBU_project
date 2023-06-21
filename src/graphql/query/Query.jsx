@@ -115,6 +115,8 @@ const Couch = gql`
         startTime
         sessionDate
         id
+        amountToCoach
+        endTime
         coach {
           id
           firstName

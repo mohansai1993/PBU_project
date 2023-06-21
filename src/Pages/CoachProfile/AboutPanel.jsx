@@ -317,8 +317,8 @@ const AboutPanel = ({ coachId, values }) => {
             }}
           >
             <textarea
-              className="w-full text-black p-3 placeholder:text-black rounded-md"
-              placeholder="Tell us about your athlete "
+              className="w-full text-black p-3 placeholder:text-gray-500  rounded-md"
+              placeholder="Add Athlete Highlighting "
               id="highlighting"
               defaultValue={values?.highlights}
             />{" "}
