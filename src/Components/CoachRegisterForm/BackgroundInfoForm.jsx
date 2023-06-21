@@ -6,6 +6,7 @@ import { TextField } from "../Input/TextField";
 import SelectField from "../Input/SelectField";
 import { useQuery } from "@apollo/client";
 import { GetSkillLevels } from "../../graphql/query/Query";
+import { ErrorMessage, Field } from "formik";
 function BackgroundInfoForm(props) {
   const {
     formField: {
@@ -99,23 +100,56 @@ function BackgroundInfoForm(props) {
             )
           )}
         </SelectField>
-        <TextField
-          name={coachingPinCode.name}
-          label={coachingPinCode.label}
-          placeholder={coachingPinCode.placeholder}
-          htmlType="number"
-        />
-        <TextField
-          name={coachingStreet.name}
-          label={coachingStreet.label}
-          placeholder={coachingStreet.placeholder}
-        />
-        <TextField
-          name={experience.name}
-          label={experience.label}
-          placeholder={experience.placeholder}
-          htmlType="number"
-        />{" "}
+        <div className="w-full">
+          {" "}
+          <label> {coachingPinCode.label}</label>
+          <Field
+            name={coachingPinCode.name}
+            label={coachingPinCode.label}
+            placeholder={coachingPinCode.placeholder}
+            as={"input"}
+            className="border border-black w-full px-3 py-2 rounded-md "
+            htmlType="number"
+          />
+          <ErrorMessage
+            name={coachingPinCode.name}
+            component="div"
+            className="text-red-500"
+          />
+        </div>
+        <div className="w-full">
+          {" "}
+          <label> {coachingStreet.label}</label>
+          <Field
+            name={coachingStreet.name}
+            label={coachingStreet.label}
+            placeholder={coachingStreet.placeholder}
+            as={"input"}
+            className="border border-black w-full px-3 py-2 rounded-md "
+          />
+          <ErrorMessage
+            name={coachingStreet.name}
+            component="div"
+            className="text-red-500"
+          />
+        </div>{" "}
+        <div className="w-full my-3">
+          {" "}
+          <label className="mb-2"> {experience.label}</label>
+          <Field
+            name={experience.name}
+            label={experience.label}
+            placeholder={experience.placeholder}
+            as={"input"}
+            className="border border-black w-full px-3 py-2 rounded-md h-[40px]"
+            htmlType="number"
+          />{" "}
+          <ErrorMessage
+            name={experience.name}
+            component="div"
+            className="text-red-500"
+          />
+        </div>
         <TextField
           name={document.name}
           label={document.label}

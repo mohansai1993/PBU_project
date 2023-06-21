@@ -117,6 +117,7 @@ function CoachRegister() {
     if (!File) {
       path = null;
     }
+    console.log(values);
     try {
       if (values.loginOption === "password") {
         let data = await handleRegisterCoach({
@@ -125,6 +126,7 @@ function CoachRegister() {
             coachingPinCode: String(values.coachingPinCode),
             subscriptionPlanId: values.paymentpaln,
             skillLevelId: values.skillLevel,
+            experience: Number(values.experience),
             document: path,
           },
         });
@@ -136,6 +138,7 @@ function CoachRegister() {
             coachingPinCode: String(values.coachingPinCode),
             subscriptionPlanId: values.paymentpaln,
             skillLevelId: values.skillLevel,
+            experience: Number(values.experience),
             document: path,
           },
           isCoach: true,

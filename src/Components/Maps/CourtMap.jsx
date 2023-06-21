@@ -12,8 +12,16 @@ export default function PBUCourtGoogleMap() {
     latitude: 39.09366,
     longitude: -94.5875,
   });
-  const showLabel = (text) => {
-    Swal.fire(text);
+  const showLabel = (text, link) => {
+    Swal.fire({
+      title: text,
+      showCancelButton: true,
+      confirmButtonText: "Open In Google Maps",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        window.open(link, "_blank");
+      }
+    });
     // console.log(text);
   };
   const { isLoaded } = useLoadScript({
@@ -26,6 +34,13 @@ export default function PBUCourtGoogleMap() {
       latitude: latLng.lat(),
       longitude: latLng.lng(),
     });
+  };
+
+  const generateMapsLink = (lat, lng) => {
+    const baseUrl = "https://www.google.com/maps/search/?api=1&query=";
+    const location = encodeURIComponent(`${lat},${lng}`);
+    const link = `${baseUrl}${location}`;
+    return link;
   };
 
   const render = ({ marker = {}, isCenter = false }) => {
@@ -63,9 +78,13 @@ export default function PBUCourtGoogleMap() {
                       lat: value.lat,
                       lng: value.lng,
                     }}
+                    // onClick={() => {
+                    //   console.log(value);
+                    //   showLabel(value.street);
+                    // }}
                     onClick={() => {
-                      console.log(value);
-                      showLabel(value.street);
+                      const link = generateMapsLink(value.lat, value.lng);
+                      showLabel(value.street, link);
                     }}
                     onDragEnd={onDargEndGetAddress}
                   >

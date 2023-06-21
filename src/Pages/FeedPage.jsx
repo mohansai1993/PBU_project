@@ -9,25 +9,32 @@ import { ErrorMessage, Field, Form, Formik } from "formik";
 import { CommentOnPost } from "../graphql/mutations/mutations";
 import { AuthContext } from "../context/AuthContext";
 import Default from "../assets/default.png";
+import Swal from "sweetalert2";
 function FeedPage() {
   const [getFeedsByPage, { loading }] = useLazyQuery(GetFeeds);
   const [Post, setPost] = useState([]);
   const { data: Reviews } = useQuery(GetTop4Reviews);
   const [Page, setPage] = useState(1);
+  const { data: getFeeds } = useQuery(GetFeeds, {
+    variables: {
+      pageNumber: Page,
+    },
+  });
 
   useEffect(() => {
     handlePost();
-  }, [Page, loading]);
+  }, [Page, loading, getFeeds]);
 
   const handlePost = () => {
-    console.log(Page);
     getFeedsByPage({
       variables: {
         pageNumber: Page,
       },
     })
       .then(({ data }) => {
-        setPost(data.getFeeds);
+        console.log(data);
+
+        setPost(getFeeds?.getFeeds);
       })
       .catch((err) => {
         console.error(err);
@@ -36,6 +43,7 @@ function FeedPage() {
   if (!Post) {
     return <Loading />;
   }
+
   return (
     <div className="bg-[#152033]">
       <div>
@@ -89,7 +97,7 @@ function FeedPage() {
           <div className="flex-[0.6] mt-6 ">
             {console.log(Post)}
             {/* //Message  */}
-            {Post.map((feed, index) => (
+            {Post?.map((feed, index) => (
               <div
                 key={index}
                 className="mb-4 gap-4 bg-[#212F48] p-6 rounded-2xl "
@@ -139,7 +147,12 @@ function FeedPage() {
                     )}
                   </div>
                 </div>{" "}
-                <CommentPanel comments={feed?.comments} feedId={feed?.id} />
+                <CommentPanel
+                  comments={feed?.comments}
+                  feedId={feed?.id}
+                  handlePost={handlePost}
+                  Page={Page}
+                />
               </div>
             ))}
             <div className="py-10 flex justify-center ">
@@ -161,7 +174,7 @@ function FeedPage() {
   );
 }
 
-const CommentPanel = ({ comments, feedId }) => {
+const CommentPanel = ({ comments, feedId, handlePost, Page }) => {
   const [openComment, setOpenComment] = useState(false);
   const [commentOnPost] = useMutation(CommentOnPost);
   const { currentUser } = useContext(AuthContext);
@@ -171,7 +184,7 @@ const CommentPanel = ({ comments, feedId }) => {
       <div>
         <div className="flex justify-between text-white text-xs mt-3 cursor-pointer hover:text-primary-green">
           <span onClick={() => setOpenComment(!openComment)}>
-            <span>View Comments</span>
+            <span> Comments</span>
           </span>
         </div>
         {openComment ? (
@@ -208,10 +221,29 @@ const CommentPanel = ({ comments, feedId }) => {
                       refetchQueries: [
                         {
                           query: GetFeeds,
+                          variables: {
+                            pageNumber: Page,
+                          },
                         },
                       ],
-                    });
-                    setSubmitting(false);
+                    })
+                      .then((data) => {
+                        console.log(data);
+                        handlePost();
+                        Swal.fire({
+                          title: "Successfully",
+                          text: "Comment has posted successfully",
+                        });
+                      })
+                      .catch((err) => {
+                        Swal.fire({
+                          title: "Warning",
+                          text: err?.message,
+                        });
+                      })
+                      .finally(() => {
+                        setSubmitting(false);
+                      });
                   }, 400);
                 }}
               >

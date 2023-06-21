@@ -1,6 +1,5 @@
-import React, { useState } from "react";
+import React from "react";
 import "react-calendar/dist/Calendar.css";
-import { RadioGroup } from "@headlessui/react";
 import CoachRegister from "../Components/CoachRegisterForm/CoachRegister";
 
 function ApplyBecomeCoach() {
