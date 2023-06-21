@@ -63,14 +63,14 @@ const SettingPanel = ({ editCoach, coachId, couch }) => {
         variables: {
           ...values,
           coachId: coachId,
-          profilePicture: File ? path : null,
+          ...(File && { profilePicture: path }),
         },
       });
       await editCoach({
         variables: {
           ...values,
           coachId: coachId,
-          profilePicture: File ? path : null,
+          ...(File && { profilePicture: path }),
         },
         refetchQueries: [
           {

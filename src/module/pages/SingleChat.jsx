@@ -164,7 +164,7 @@ function SingleChat({ couch }) {
               if (isCoach(currentUser?.userType)) {
                 Swal.fire({
                   title: "Warning",
-                  text: "You have coach you can send message to other coach ",
+                  text: "Sorry,You cannot message another coach!",
                   icon: "warning",
                   confirmButtonText: "Cancel",
                 });

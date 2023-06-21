@@ -77,6 +77,7 @@ function BasicInfoForm(props) {
               name={password.name}
               placeholder={password.placeholder}
               as={"input"}
+              type="password"
               className="border border-black w-full px-3 py-2 rounded-md "
             />
             <ErrorMessage

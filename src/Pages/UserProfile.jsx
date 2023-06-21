@@ -9,7 +9,11 @@ import { Tab } from "@headlessui/react";
 import moment from "moment";
 import { AiFillDelete } from "react-icons/ai";
 import { ErrorMessage, Field, Form, Formik, useFormik } from "formik";
-import { EditAthlete, PostFeed } from "../graphql/mutations/mutations";
+import {
+  DeletePost,
+  EditAthlete,
+  PostFeed,
+} from "../graphql/mutations/mutations";
 import LoadingSVG from "../Components/Loading/LoadingSvg";
 import LoadingSvg from "../Components/Loading/LoadingSvg";
 import * as Yup from "yup";
@@ -138,6 +142,7 @@ function UserProfile() {
 const ProfilePanel = ({ athlete, postFeed }) => {
   const { currentUser } = useContext(AuthContext);
   const { data: Reviews } = useQuery(GetTop4Reviews);
+  const [deletePost] = useMutation(DeletePost);
   return (
     <>
       <div className="">
@@ -252,7 +257,8 @@ const ProfilePanel = ({ athlete, postFeed }) => {
               {/* //Message  */}
               <div className="grid gap-4">
                 {athlete?.feed?.map((feed, index) => (
-                  <div className="   bg-[#212F48] p-6 rounded-2xl ">
+                  <div className="   bg-[#212F48] p-6 rounded-2xl " key={index}>
+                    {console.log(feed)}
                     <div className="flex  justify-between w-full">
                       <div className="flex  gap-3">
                         <img
@@ -271,6 +277,21 @@ const ProfilePanel = ({ athlete, postFeed }) => {
                         size={24}
                         color={"#ed5e68"}
                         cursor={"pointer"}
+                        onClick={() => {
+                          deletePost({
+                            variables: { postId: feed.id },
+                            refetchQueries: [
+                              {
+                                query: Athlete,
+                                variables: {
+                                  email: currentUser?.email,
+                                },
+                              },
+                            ],
+                          })
+                            .then(() => {})
+                            .catch(() => {});
+                        }}
                       />
                     </div>
                     <div>

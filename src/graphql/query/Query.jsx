@@ -55,6 +55,7 @@ const Athlete = gql`
       createdAt
       updatedAt
       feed {
+        id
         post
         postBy
         updatedAt

@@ -128,7 +128,8 @@ export const AuthContextProvider = ({ children }) => {
       },
     })
       .then(async (user) => {
-        setCurrentUser(user.data.registerAthlete);
+        console.log(user);
+        // setCurrentUser(user.data.registerAthlete);
         await setDoc(doc(db, "users", user.data.registerAthlete.userId), {
           uid: user.data.registerAthlete.userId,
           displayName: values.firstName,
@@ -141,6 +142,12 @@ export const AuthContextProvider = ({ children }) => {
           {}
         );
         navigate("/");
+        Swal.fire({
+          title: "Success",
+          text: "You have been registered",
+          icon: "success",
+          confirmButtonText: "Cancel",
+        });
       })
       .catch((err) => {
         Swal.fire({
