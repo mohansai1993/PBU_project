@@ -78,7 +78,12 @@ function UserProfile() {
                       className="rounded-md h-[100px] w-[100px] object-cover"
                     />
                     <div>
-                      <h3 className="mb-2 text-3xl font-bold ">{`${athlete?.getAthlete?.firstName} ${athlete?.getAthlete?.lastName}`}</h3>
+                      <h3 className="mb-2 text-3xl font-bold ">
+                        {`${athlete?.getAthlete?.firstName} ${athlete?.getAthlete?.lastName}`}{" "}
+                        <span className="text-xs ml-1 text-primary-green">
+                          ({athlete?.getAthlete?.email})
+                        </span>
+                      </h3>
                       <h5>{athlete?.getAthlete?.game} </h5>
                     </div>
                   </div>

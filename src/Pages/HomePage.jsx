@@ -273,10 +273,6 @@ function HomePage() {
                         </div>
                         <div>
                           <h4>{value.firstName + " " + value.lastName}</h4>
-                          <p className="text-gray-700">
-                            Fancy advertising Lots of excuses, but they are all
-                            lies. Never buy anything from this company!
-                          </p>
                         </div>
                       </div>
                     </div>
