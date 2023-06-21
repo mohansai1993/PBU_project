@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 export const uploadImage = async (formData) => {
-  let data = await axios.post('http://192.168.1.49:5000/upload', formData, {
+  let data = await axios.post('http://pballu.com:5000/upload', formData, {
     headers: {
       'Access-Control-Allow-Origin': '*',
     },
