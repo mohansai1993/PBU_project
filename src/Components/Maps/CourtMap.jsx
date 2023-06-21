@@ -78,10 +78,6 @@ export default function PBUCourtGoogleMap() {
                       lat: value.lat,
                       lng: value.lng,
                     }}
-                    // onClick={() => {
-                    //   console.log(value);
-                    //   showLabel(value.street);
-                    // }}
                     onClick={() => {
                       const link = generateMapsLink(value.lat, value.lng);
                       showLabel(value.street, link);

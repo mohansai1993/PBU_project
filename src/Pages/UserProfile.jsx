@@ -145,33 +145,6 @@ const ProfilePanel = ({ athlete, postFeed }) => {
           <div className="md:flex text-white gap-5">
             <div className="flex-[0.4]">
               <div className="bg-[#212F48] p-6 rounded-2xl mt-6">
-                {athlete ? (
-                  <div>
-                    <div>
-                      <h3 className="my-4  text-2xl font-bold  ">Info</h3>
-                    </div>{" "}
-                    <ol className="flex flex-col gap-3">
-                      <li className="flex items-center gap-2 ">
-                        Skill Level:{" "}
-                        <span className="text-primary-green font-semibold">
-                          {athlete?.skillLevel?.name}
-                        </span>
-                      </li>
-
-                      <li className="flex items-center gap-2 ">
-                        Email:
-                        <span className="text-primary-green font-semibold">
-                          {athlete?.email}
-                        </span>
-                      </li>
-                    </ol>
-                  </div>
-                ) : (
-                  <LoadingSVG />
-                )}
-              </div>
-
-              <div className="bg-[#212F48] p-6 rounded-2xl mt-6">
                 {" "}
                 {athlete ? (
                   <>

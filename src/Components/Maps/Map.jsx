@@ -11,8 +11,17 @@ export default function PBUGoogleMap() {
     latitude: 39.09366,
     longitude: -94.5875,
   });
-  const showLabel = (text) => {
-    Swal.fire(text);
+  const showLabel = (text, link) => {
+    Swal.fire({
+      title: text,
+      showCancelButton: true,
+      confirmButtonText: "Open In Google Maps",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        window.open(link, "_blank");
+      }
+    });
+    // console.log(text);
   };
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: "AIzaSyDp8i_SiNUXrpREuWYpTXpBys9-sdYLWro",
@@ -60,6 +69,7 @@ export default function PBUGoogleMap() {
               <>
                 {marker.positions.map((value, index) => (
                   <Marker
+                    {...marker}
                     key={index}
                     position={{
                       lat: value.lat,
@@ -67,8 +77,8 @@ export default function PBUGoogleMap() {
                     }}
                     onClick={() => {
                       const link = generateMapsLink(value.lat, value.lng);
-                      window.open(link, "_blank");
-                      showLabel(value.street);
+
+                      showLabel(value.street, link);
                     }}
                     onDragEnd={onDargEndGetAddress}
                   >
@@ -78,6 +88,7 @@ export default function PBUGoogleMap() {
               </>
             ) : (
               <Marker
+                {...marker}
                 position={{
                   lat: latLong.latitude,
                   lng: latLong.longitude,

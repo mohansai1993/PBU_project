@@ -109,7 +109,7 @@ function BackgroundInfoForm(props) {
             placeholder={coachingPinCode.placeholder}
             as={"input"}
             className="border border-black w-full px-3 py-2 rounded-md "
-            htmlType="number"
+            type="number"
           />
           <ErrorMessage
             name={coachingPinCode.name}
@@ -142,24 +142,42 @@ function BackgroundInfoForm(props) {
             placeholder={experience.placeholder}
             as={"input"}
             className="border border-black w-full px-3 py-2 rounded-md h-[40px]"
-            htmlType="number"
+            type="number"
           />{" "}
           <ErrorMessage
             name={experience.name}
             component="div"
             className="text-red-500"
           />
+        </div>{" "}
+        <div className="w-full my-3">
+          {" "}
+          <label className="mb-2"> {document.label}</label>
+          <input
+            name={document.name}
+            placeholder={document.placeholder}
+            className="border border-black w-full px-3 py-2 rounded-md h-[40px]"
+            type="file"
+            onChange={(e) => {
+              setFile(e.target.files[0]);
+              console.log(e.target.files[0]);
+            }}
+          />{" "}
+          <ErrorMessage
+            name={document.name}
+            component="div"
+            className="text-red-500"
+          />
         </div>
-        <TextField
+        {/* <Field
           name={document.name}
           label={document.label}
           placeholder={document.placeholder}
-          htmlType="file"
-          onChange={(e) => {
-            setFile(e.target.files[0]);
-            console.log(e.target.files[0]);
-          }}
-        />
+          as={"input"}
+          className="border border-black w-full px-3 py-2 rounded-md h-[40px]"
+          type="file"
+          
+        /> */}
       </div>
     </div>
   );
