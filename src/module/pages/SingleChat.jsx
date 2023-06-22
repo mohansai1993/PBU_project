@@ -19,7 +19,7 @@ import { useMutation } from "@apollo/client";
 import { AddChatRoom } from "../../graphql/mutations/mutations";
 import { AuthContext } from "../../context/AuthContext";
 import Swal from "sweetalert2";
-import { isCoach } from "../../utils";
+import { imageOnError, isCoach } from "../../utils";
 
 function SingleChat({ couch }) {
   const { currentUser } = useContext(AuthContext);
@@ -243,6 +243,7 @@ function SingleChat({ couch }) {
                                   </div>
                                   <img
                                     src={couch?.getCoach?.profilePicture}
+                                    onError={imageOnError}
                                     alt="My profile"
                                     className="w-6 h-6 rounded-full order-2 object-cover"
                                   />
@@ -260,6 +261,7 @@ function SingleChat({ couch }) {
                                   </div>
                                   <img
                                     src={couch?.getCoach?.profilePicture}
+                                    onError={imageOnError}
                                     alt="My profile"
                                     className="w-6 h-6 rounded-full order-1 object-cover"
                                   />

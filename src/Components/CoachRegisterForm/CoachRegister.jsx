@@ -14,7 +14,7 @@ import PaymentForm from "./PaymentForm";
 import { GetSubscriptionPlans } from "../../graphql/query/Query";
 import { useQuery } from "@apollo/client";
 import { AuthContext } from "../../context/AuthContext";
-import { uploadImage } from "../../config/api";
+import { uploadImage, uploadImageFirebase } from "../../config/api";
 
 const steps = [
   {
@@ -107,8 +107,9 @@ function CoachRegister() {
     const formData = new FormData();
     formData.append("file", File);
     try {
-      var path = await uploadImage(formData);
-      path = path.data?.fileName;
+      // var path = await uploadImage(formData);
+      // path = path.data?.fileName;
+      var path = await uploadImageFirebase(File);
     } catch (err) {
       console.log(err);
       path = null;

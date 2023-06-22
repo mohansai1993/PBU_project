@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { imageOnError } from "../../utils";
 
 const Sidebar = ({ userList, handlePersonChat }) => {
   const [selectUser, setSelectUser] = useState(userList?.chats[0]?.athlete?.id);
@@ -20,6 +21,7 @@ const Sidebar = ({ userList, handlePersonChat }) => {
           <div className="flex items-center gap-5">
             <img
               src={user.athlete.profilePicture}
+              onError={imageOnError}
               className="object-cover h-12 w-12 rounded-full"
               alt=""
             />

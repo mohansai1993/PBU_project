@@ -15,6 +15,7 @@ import {
 import { db } from "../firebase";
 import { useQuery } from "@apollo/client";
 import { Couch } from "../../graphql/query/Query";
+import { imageOnError } from "../../utils";
 function MultiChat({ couch }) {
   const [roomId, setRoomId] = React.useState("");
   const [athleteId, setAthleteId] = React.useState("");
@@ -182,6 +183,7 @@ function MultiChat({ couch }) {
                       </div>
                       <img
                         src={couch?.getCoach?.profilePicture}
+                        onError={imageOnError}
                         alt="My profile"
                         className="w-6 h-6 rounded-full order-2 object-cover"
                       />
@@ -199,6 +201,7 @@ function MultiChat({ couch }) {
                       </div>
                       <img
                         src={couch?.getCoach?.profilePicture}
+                        onError={imageOnError}
                         alt="My profile"
                         className="w-6 h-6 rounded-full order-1 object-cover"
                       />

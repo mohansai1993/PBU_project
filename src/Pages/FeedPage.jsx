@@ -10,6 +10,7 @@ import { CommentOnPost } from "../graphql/mutations/mutations";
 import { AuthContext } from "../context/AuthContext";
 import Default from "../assets/default.png";
 import Swal from "sweetalert2";
+import { imageOnError } from "../utils";
 function FeedPage() {
   const [getFeedsByPage, { loading }] = useLazyQuery(GetFeeds);
   const [Post, setPost] = useState([]);
@@ -58,9 +59,8 @@ function FeedPage() {
                 {Reviews?.getTop4Reviews?.map((value, index) => (
                   <div className="flex items-center  gap-4" key={index}>
                     <img
-                      src={
-                        value.profilePicture ? value.profilePicture : Default
-                      }
+                      src={value.profilePicture}
+                      onError={imageOnError}
                       alt={value.firstName}
                       className="rounded-full  object-cover h-[50px] w-[50px]"
                     />
@@ -108,12 +108,9 @@ function FeedPage() {
                       src={
                         feed.postBy === "athlete"
                           ? feed?.athlete?.profilePicture
-                            ? feed?.athlete?.profilePicture
-                            : Default
                           : feed?.coach?.profilePicture
-                          ? feed?.coach?.profilePicture
-                          : Default
                       }
+                      onError={imageOnError}
                       alt="dsf"
                       className="rounded-full  object-cover h-[50px] w-[50px]"
                     />
@@ -286,11 +283,8 @@ const CommentPanel = ({ comments, feedId, handlePost, Page }) => {
                         <p className="inline-flex items-center mr-3 text-sm text-white">
                           <img
                             className="mr-2 w-6 h-6 rounded-full"
-                            src={
-                              comment?.[comment?.commentBy].profilePicture
-                                ? comment?.[comment?.commentBy].profilePicture
-                                : Default
-                            }
+                            src={comment?.[comment?.commentBy].profilePicture}
+                            onError={imageOnError}
                             alt="Bonnie Green"
                           />
                           {comment?.[comment?.commentBy].firstName +

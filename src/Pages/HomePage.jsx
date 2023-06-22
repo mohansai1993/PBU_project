@@ -14,6 +14,7 @@ import { Couches, GetTop4Reviews } from "../graphql/query/Query";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
 import { SwiperSlide } from "swiper/react";
+import { imageOnError } from "../utils";
 function HomePage() {
   const [Coaches, setCoaches] = useState([]);
   const { data: Reviews } = useQuery(GetTop4Reviews);
@@ -136,11 +137,8 @@ function HomePage() {
                         <div className="text-black  font-semibold flex  items-center justify-between">
                           <img
                             className="max-w-[80px] h-[80px] rounded-lg w-full object-cover"
-                            src={
-                              value.profilePicture
-                                ? value.profilePicture
-                                : Default
-                            }
+                            src={value.profilePicture}
+                            onError={imageOnError}
                             alt=""
                           />
                           <div className="text-left">
@@ -248,9 +246,8 @@ function HomePage() {
                     <div>
                       {" "}
                       <img
-                        src={
-                          value.profilePicture ? value.profilePicture : Default
-                        }
+                        src={value.profilePicture}
+                        onError={imageOnError}
                         alt={value.firstName}
                         className="object-cover w-full h-[200px]  rounded-xl"
                       />

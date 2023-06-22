@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { IoNavigate } from "react-icons/io5";
 import { Couch } from "../../graphql/query/Query";
 import Swal from "sweetalert2";
-import { uploadImage } from "../../config/api";
+import { uploadImage, uploadImageFirebase } from "../../config/api";
 import * as Yup from "yup";
 import { useFormik } from "formik";
 import LoadingSVG from "../../Components/Loading/LoadingSvg";
@@ -54,8 +54,9 @@ const SettingPanel = ({ editCoach, coachId, couch }) => {
       if (!File) {
         path = couch?.contactDetails?.profilePicture;
       } else {
-        path = await uploadImage(formData);
-        path = path.data?.fileName;
+        // path = await uploadImage(formData);
+        // path = path.data?.fileName;
+        path = await uploadImageFirebase(File);
       }
       actions.setSubmitting(true);
       console.log({

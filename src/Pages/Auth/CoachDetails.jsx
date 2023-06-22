@@ -11,6 +11,7 @@ import SingleChat from "../../module/pages/SingleChat";
 import LoadingSVG from "../../Components/Loading/LoadingSvg";
 import PBUGoogleMap from "../../Components/Maps/Map";
 import ReviewModal from "../../Components/Modal/ReviewModal";
+import { imageOnError } from "../../utils";
 
 function CoachDetails() {
   let { id } = useParams();
@@ -176,11 +177,7 @@ const CoachCard = ({ couch }) => {
               src={couch?.getCoach?.profilePicture}
               className="object-cover w-[400px] rounded-xl  h-full"
               alt={"profile"}
-              src={
-                couch?.getCoach?.profilePicture
-                  ? couch?.getCoach?.profilePicture
-                  : Default
-              }
+              onError={imageOnError}
             />
           </div>
           <div className="text-white flex flex-col gap-3 ">

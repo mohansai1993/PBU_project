@@ -13,6 +13,7 @@ import { DeletePost } from "../../graphql/mutations/mutations";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
 import Default from "../../assets/default.png";
+import { imageOnError } from "../../utils";
 const ProfilePanel = ({ couch, postFeed }) => {
   const [deletePost] = useMutation(DeletePost);
   const { data: Reviews } = useQuery(GetTop4Reviews);
@@ -92,9 +93,8 @@ const ProfilePanel = ({ couch, postFeed }) => {
                     className="flex items-center  gap-4"
                   >
                     <img
-                      src={
-                        value?.profilePicture ? value?.profilePicture : Default
-                      }
+                      src={value?.profilePicture}
+                      onError={imageOnError}
                       className="rounded-md h-[50px] w-[50px] object-cover"
                       alt="img"
                     />
@@ -114,7 +114,8 @@ const ProfilePanel = ({ couch, postFeed }) => {
           <div className="flex-[0.6] mt-6">
             <div className="flex items-start  gap-4 bg-[#212F48] p-6 rounded-2xl  mb-6">
               <img
-                src={couch?.profilePicture ? couch?.profilePicture : Default}
+                src={couch?.profilePicture}
+                onError={imageOnError}
                 className="rounded-md h-[50px] w-[50px] object-cover"
                 alt=""
               />
@@ -190,11 +191,8 @@ const ProfilePanel = ({ couch, postFeed }) => {
                   <div className="flex  justify-between w-full">
                     <div className="flex  gap-3">
                       <img
-                        src={
-                          couch?.profilePicture
-                            ? couch?.profilePicture
-                            : Default
-                        }
+                        src={couch?.profilePicture}
+                        onError={imageOnError}
                         className="rounded-md h-[50px] w-[50px] object-cover"
                         alt=""
                       />

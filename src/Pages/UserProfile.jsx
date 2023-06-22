@@ -2,7 +2,7 @@ import React, { Fragment, useEffect, useState } from "react";
 import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { isCoach } from "../utils";
+import { imageOnError, isCoach } from "../utils";
 import { useMutation, useQuery } from "@apollo/client";
 import { Athlete, GetTop4Reviews } from "../graphql/query/Query";
 import { Tab } from "@headlessui/react";
@@ -18,7 +18,7 @@ import LoadingSVG from "../Components/Loading/LoadingSvg";
 import LoadingSvg from "../Components/Loading/LoadingSvg";
 import * as Yup from "yup";
 import Swal from "sweetalert2";
-import { uploadImage } from "../config/api";
+import { uploadImage, uploadImageFirebase } from "../config/api";
 import ReviewModal from "../Components/Modal/ReviewModal";
 function UserProfile() {
   let { id } = useParams();
@@ -75,6 +75,7 @@ function UserProfile() {
                     <img
                       alt=""
                       src={athlete?.getAthlete?.profilePicture}
+                      onError={imageOnError}
                       className="rounded-md h-[100px] w-[100px] object-cover"
                     />
                     <div>
@@ -169,6 +170,7 @@ const ProfilePanel = ({ athlete, postFeed }) => {
                         >
                           <img
                             src={value?.profilePicture}
+                            onError={imageOnError}
                             className="rounded-md h-[50px] w-[50px] object-cover"
                             alt="img"
                           />
@@ -193,6 +195,7 @@ const ProfilePanel = ({ athlete, postFeed }) => {
               <div className="flex items-start  gap-4 bg-[#212F48] p-6 rounded-2xl  mb-6">
                 <img
                   src={athlete?.profilePicture}
+                  onError={imageOnError}
                   className="rounded-md h-[50px] w-[50px] object-cover"
                   alt=""
                 />
@@ -268,6 +271,8 @@ const ProfilePanel = ({ athlete, postFeed }) => {
                       <div className="flex  gap-3">
                         <img
                           src={athlete?.profilePicture}
+                          alt="new"
+                          onError={imageOnError}
                           className="rounded-md h-[50px] w-[50px] object-cover"
                         />
                         <div className="w-full">
@@ -353,8 +358,9 @@ const SettingPanel = ({ editAthlete, athleteId, athlete }) => {
       if (!File) {
         path = athlete.profilePicture;
       } else {
-        path = await uploadImage(formData);
-        path = path.data?.fileName;
+        // path = await uploadImage(formData);
+        // path = path.data?.fileName;
+        path = await uploadImageFirebase(File);
       }
 
       console.log(path, {
@@ -551,6 +557,7 @@ const BookingPanel = ({ bookings }) => {
                             <img
                               className="w-full h-full rounded-full object-cover "
                               src={value.coach.profilePicture}
+                              onError={imageOnError}
                               alt=""
                             />
                           </div>

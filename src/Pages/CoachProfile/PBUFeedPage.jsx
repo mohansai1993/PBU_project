@@ -13,6 +13,7 @@ import SettingPanel from "./SettingPanel";
 import ProfilePanel from "./ProfilePanel";
 import BookingPanel from "./BookingPanel";
 import Default from "../../assets/default.png";
+import { imageOnError } from "../../utils";
 function PBUFeedPage() {
   let { id } = useParams();
 
@@ -70,11 +71,8 @@ function PBUFeedPage() {
                       <div className="flex items-center  gap-4">
                         <img
                           alt=""
-                          src={
-                            couch?.getCoach?.profilePicture
-                              ? couch?.getCoach?.profilePicture
-                              : Default
-                          }
+                          src={couch?.getCoach?.profilePicture}
+                          onError={imageOnError}
                           className="rounded-md h-[100px] w-[100px] object-cover"
                         />
                         <div>
