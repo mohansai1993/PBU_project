@@ -141,6 +141,7 @@ function CoachRegister() {
             skillLevelId: values.skillLevel,
             experience: Number(values.experience),
             document: path,
+            password: null,
           },
           isCoach: true,
           isLogin: false,
