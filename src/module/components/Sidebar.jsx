@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { imageOnError } from "../../utils";
 
-const Sidebar = ({ userList, handlePersonChat }) => {
+const Sidebar = ({ userList, handlePersonChat, setAthleteProfile }) => {
   const [selectUser, setSelectUser] = useState(userList?.chats[0]?.athlete?.id);
-  console.log(selectUser);
+
   return (
     <div className="bg-transparent min-w-[300px] p-2 ">
       {userList?.chats?.map((user) => (
@@ -11,6 +11,7 @@ const Sidebar = ({ userList, handlePersonChat }) => {
           onClick={() => {
             setSelectUser(user.athlete.id);
             handlePersonChat(user.chatId, user.athlete.id);
+            setAthleteProfile(user.athlete);
           }}
           className={`py-2  px-1   rounded-md hover:bg-primary-green hover:text-white cursor-pointer mb-2 ${
             selectUser == user.athlete.id

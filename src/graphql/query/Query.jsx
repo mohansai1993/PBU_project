@@ -316,6 +316,11 @@ const WithdrawSessionAmount = gql`
     withdrawSessionAmount(coachId: $coachId, sessionId: $sessionId)
   }
 `;
+const LoginExpressDashboard = gql`
+  query Query($coachId: ID) {
+    loginExpressDashboard(coachId: $coachId)
+  }
+`;
 export {
   GetFeeds,
   Couch,
@@ -327,4 +332,5 @@ export {
   GetSkillLevels,
   CreateConnectedAccount,
   WithdrawSessionAmount,
+  LoginExpressDashboard,
 };

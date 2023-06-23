@@ -14,8 +14,8 @@ import ChatContextProvider from "./context/ChatContext";
 import { setContext } from "@apollo/client/link/context";
 
 const httpLink = createHttpLink({
-  // uri: "http://192.168.1.49:5000/graphql", // Replace with your GraphQL server endpoint
-  uri: "http://pballu.com:5000/graphql",
+  uri: "http://192.168.1.49:5000/graphql", // Replace with your GraphQL server endpoint
+  // uri: "http://pballu.com:5000/graphql",
 });
 
 const authLink = setContext((_, { headers }) => {

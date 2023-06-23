@@ -7,6 +7,7 @@ import {
   Couch,
   CreateConnectedAccount,
   GetTop4Reviews,
+  LoginExpressDashboard,
 } from "../../graphql/query/Query";
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import { DeletePost } from "../../graphql/mutations/mutations";
@@ -18,6 +19,12 @@ const ProfilePanel = ({ couch, postFeed }) => {
   const [deletePost] = useMutation(DeletePost);
   const { data: Reviews } = useQuery(GetTop4Reviews);
   const [createConnectedAccount] = useLazyQuery(CreateConnectedAccount);
+  const { data: loginExpressDashboard } = useQuery(LoginExpressDashboard, {
+    variables: {
+      coachId: couch?.id,
+    },
+    skip: false,
+  });
   return (
     <>
       <div>
@@ -61,7 +68,16 @@ const ProfilePanel = ({ couch, postFeed }) => {
               </div>
             ) : null}
             <div className="bg-[#212F48] p-6 rounded-2xl mt-6">
-              <h3 className="my-3  text-2xl font-bold  ">About Coach</h3>
+              <div className="flex justify-between items-center ">
+                <h3 className="my-3  text-2xl font-bold  ">About Coach</h3>
+                <a
+                  target="_blank"
+                  href={loginExpressDashboard?.loginExpressDashboard}
+                  className="gap-2 px-2 bg-primary-green text-white py-3 rounded-md min-w-[150px] text-center "
+                >
+                  Express Login
+                </a>
+              </div>
               <p className="mb-4">{couch?.about}</p>
               <div>
                 <h3 className="my-4  text-2xl font-bold  ">Info</h3>

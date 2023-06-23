@@ -19,6 +19,7 @@ import { imageOnError } from "../../utils";
 function MultiChat({ couch }) {
   const [roomId, setRoomId] = React.useState("");
   const [athleteId, setAthleteId] = React.useState("");
+  const [athleteProfile, setAthleteProfile] = React.useState({});
   const [messages, setMessages] = React.useState([]);
   const [message, setMessage] = React.useState("");
   const { data: getChatUser } = useQuery(Couch, {
@@ -27,17 +28,6 @@ function MultiChat({ couch }) {
       coachId: couch?.getCoach?.id,
     },
   });
-
-  const RoomList = [
-    {
-      athlete: "64522604b36e0d952fc2fd7c",
-      roomId: "64522604b36e0d952fc2fd7c645226890355497bc3420260",
-    },
-    {
-      athlete: "64522604b36e0d952fc2fd7c",
-      roomId: "64522604b36e0d952fc2fd7c645226890355497bc3420260",
-    },
-  ];
 
   useEffect(() => {
     return () => {};
@@ -78,7 +68,6 @@ function MultiChat({ couch }) {
     setRoomId(roomid);
     getMessages(roomid);
     setAthleteId(athleteId);
-    console.log(docSnap);
 
     if (docSnap.exists()) {
       updateDoc(chats_ref, {
@@ -127,7 +116,7 @@ function MultiChat({ couch }) {
   const sendMsg = async (e) => {
     e.preventDefault();
     const msg = message.trim();
-    console.log();
+
     if (msg) {
       const msgObj = {
         time: Timestamp.now(),
@@ -135,7 +124,7 @@ function MultiChat({ couch }) {
         sender: couch?.getCoach?.id,
         receiver: athleteId,
       };
-      console.log(msgObj);
+
       setMessages((oldArray) => [...oldArray, msgObj]);
       updateUnreadCount();
       setTimeout(() => {
@@ -163,6 +152,7 @@ function MultiChat({ couch }) {
           couch={couch}
           handlePersonChat={handlePersonChat}
           userList={getChatUser?.getCoach}
+          setAthleteProfile={setAthleteProfile}
         />
         <div className="flex-1">
           <div
@@ -200,7 +190,7 @@ function MultiChat({ couch }) {
                         </div>
                       </div>
                       <img
-                        src={couch?.getCoach?.profilePicture}
+                        src={athleteProfile?.profilePicture}
                         onError={imageOnError}
                         alt="My profile"
                         className="w-6 h-6 rounded-full order-1 object-cover"

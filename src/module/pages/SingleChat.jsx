@@ -67,11 +67,7 @@ function SingleChat({ couch }) {
     const chats_ref = doc(db, "chats", roomid);
     const myId = currentUser?.userId;
     const docSnap = await getDoc(chats_ref);
-    console.log({
-      chatId: roomid,
-      coachId: couch?.getCoach?.id,
-      athleteId: currentUser?.userId,
-    });
+
     let chat = await addChatRoom({
       variables: {
         chatId: roomid,
@@ -79,7 +75,6 @@ function SingleChat({ couch }) {
         athleteId: currentUser?.userId,
       },
     });
-    console.log(chat);
 
     if (docSnap.exists()) {
       updateDoc(chats_ref, {
@@ -242,7 +237,7 @@ function SingleChat({ couch }) {
                                     </div>
                                   </div>
                                   <img
-                                    src={couch?.getCoach?.profilePicture}
+                                    src={currentUser.profilePicture}
                                     onError={imageOnError}
                                     alt="My profile"
                                     className="w-6 h-6 rounded-full order-2 object-cover"

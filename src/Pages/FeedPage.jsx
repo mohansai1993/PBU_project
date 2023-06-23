@@ -33,8 +33,6 @@ function FeedPage() {
       },
     })
       .then(({ data }) => {
-        console.log(data);
-
         setPost(getFeeds?.getFeeds);
       })
       .catch((err) => {
@@ -59,18 +57,18 @@ function FeedPage() {
                 {Reviews?.getTop4Reviews?.map((value, index) => (
                   <div className="flex items-center  gap-4" key={index}>
                     <img
-                      src={value.profilePicture}
+                      src={value?.profilePicture}
                       onError={imageOnError}
-                      alt={value.firstName}
+                      alt={value?.firstName}
                       className="rounded-full  object-cover h-[50px] w-[50px]"
                     />
                     <div>
                       <div>
                         <h3 className="mb-1 text-xl font-bold ">
-                          {value.firstName + " " + value.lastName}
+                          {value?.firstName + " " + value?.lastName}
                         </h3>
                         <div className="flex ">
-                          {Array(parseInt(value.averageRating)).fill(
+                          {Array(parseInt(value?.averageRating)).fill(
                             <span>
                               <AiFillStar
                                 size={15}
@@ -78,14 +76,14 @@ function FeedPage() {
                               />
                             </span>
                           )}
-                          {Array(5 - parseInt(value.averageRating)).fill(
+                          {Array(5 - parseInt(value?.averageRating)).fill(
                             <span>
                               <AiFillStar size={15} className="text-gray-200" />
                             </span>
                           )}
                         </div>
                       </div>{" "}
-                      <Link to={"/coach/" + value.id}>
+                      <Link to={"/coach/" + value?.id}>
                         <span className="text-primary-green">Book Now</span>
                       </Link>
                     </div>
@@ -95,7 +93,6 @@ function FeedPage() {
             </div>
           </div>
           <div className="flex-[0.6] mt-6 ">
-            {console.log(Post)}
             {/* //Message  */}
             {Post?.map((feed, index) => (
               <div
@@ -157,7 +154,7 @@ function FeedPage() {
                 className=" bg-primary-green rounded-md  px-10 text-white py-2"
                 onClick={() => {
                   setPage(Page + 1);
-                  console.log(Page);
+
                   handlePost();
                 }}
               >
@@ -175,7 +172,6 @@ const CommentPanel = ({ comments, feedId, handlePost, Page }) => {
   const [openComment, setOpenComment] = useState(false);
   const [commentOnPost] = useMutation(CommentOnPost);
   const { currentUser } = useContext(AuthContext);
-  console.log(currentUser?.userType);
   return (
     <>
       <div>
@@ -194,24 +190,24 @@ const CommentPanel = ({ comments, feedId, handlePost, Page }) => {
                 }}
                 validate={(values) => {
                   const errors = {};
-                  if (!values.message) {
+                  if (!values?.message) {
                     errors.message = "Message is required";
                   }
                   return errors;
                 }}
                 onSubmit={(values, { setSubmitting }) => {
                   setTimeout(() => {
-                    // alert(JSON.stringify(values, null, 2));
-                    console.log(values);
                     commentOnPost({
                       variables: {
-                        comment: values.message,
-                        athleteId: !currentUser?.userType
-                          ? currentUser?.userId
-                          : null,
-                        coachId: currentUser?.userType
-                          ? currentUser?.userId
-                          : null,
+                        comment: values?.message,
+                        athleteId:
+                          currentUser?.userType === "athlete"
+                            ? currentUser?.userId
+                            : null,
+                        coachId:
+                          currentUser?.userType === "coach"
+                            ? currentUser?.userId
+                            : null,
                         commentBy: currentUser?.userType,
                         feedId: feedId,
                       },
@@ -283,13 +279,13 @@ const CommentPanel = ({ comments, feedId, handlePost, Page }) => {
                         <p className="inline-flex items-center mr-3 text-sm text-white">
                           <img
                             className="mr-2 w-6 h-6 rounded-full"
-                            src={comment?.[comment?.commentBy].profilePicture}
+                            src={comment?.[comment?.commentBy]?.profilePicture}
                             onError={imageOnError}
                             alt="Bonnie Green"
                           />
-                          {comment?.[comment?.commentBy].firstName +
+                          {comment?.[comment?.commentBy]?.firstName +
                             " " +
-                            comment?.[comment?.commentBy].lastName}
+                            comment?.[comment?.commentBy]?.lastName}
                         </p>
                         <p className="text-sm text-primary-green ">
                           <time
