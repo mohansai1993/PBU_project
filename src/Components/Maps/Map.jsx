@@ -72,13 +72,13 @@ export default function PBUGoogleMap() {
                     {...marker}
                     key={index}
                     position={{
-                      lat: value.lat,
-                      lng: value.lng,
+                      lat: value?.lat,
+                      lng: value?.lng,
                     }}
                     onClick={() => {
-                      const link = generateMapsLink(value.lat, value.lng);
+                      const link = generateMapsLink(value?.lat, value?.lng);
 
-                      showLabel(value.street, link);
+                      showLabel(value?.street, link);
                     }}
                     onDragEnd={onDargEndGetAddress}
                   >

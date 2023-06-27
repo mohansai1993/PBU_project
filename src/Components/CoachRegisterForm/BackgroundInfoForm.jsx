@@ -41,8 +41,8 @@ function BackgroundInfoForm(props) {
         >
           <option value="">Select an level</option>
           {getSkillLevels?.getSkillLevels?.map((value, index) => (
-            <option value={value.id} key={index}>
-              {value.name}
+            <option value={value?.id} key={index}>
+              {value?.name}
             </option>
           ))}
         </SelectField>

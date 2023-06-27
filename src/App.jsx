@@ -43,8 +43,6 @@ function App() {
 
         <Route element={<ProtectedRoute />}>
           <Route path="/profile">
-            {/* <Route path=":id" element={<PBUFeedPage />} /> */}
-
             <Route path="athlete/:id" element={<UserProfile />} />
             <Route path="coach/:id" element={<PBUFeedPage />} />
           </Route>

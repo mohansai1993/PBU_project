@@ -60,7 +60,7 @@ const CoachingPanel = ({ coachId, coachings }) => {
                     removeCoachingLocation({
                       variables: {
                         coachId: coachId,
-                        coachingLocationId: value.id,
+                        coachingLocationId: value?.id,
                       },
                       refetchQueries: [
                         {
@@ -82,7 +82,7 @@ const CoachingPanel = ({ coachId, coachings }) => {
                       <label>Coaching City </label>
                       <input
                         readOnly
-                        value={value.city}
+                        value={value?.city}
                         className={`p-3 rounded-md w-full  text-black  text-sm  rounded-md pl-10 focus:outline-none 
                 placeholder:text-primary-gray `}
                       />
@@ -93,7 +93,7 @@ const CoachingPanel = ({ coachId, coachings }) => {
                       <label>Coaching Country </label>
                       <input
                         readOnly
-                        value={value.country}
+                        value={value?.country}
                         className={`p-3 rounded-md w-full text-black  text-sm  rounded-md pl-10 focus:outline-none 
                 placeholder:text-primary-gray `}
                       />
@@ -104,7 +104,7 @@ const CoachingPanel = ({ coachId, coachings }) => {
                       <label>Coaching Street </label>
                       <input
                         readOnly
-                        value={value.street}
+                        value={value?.street}
                         className={`p-3 rounded-md w-full text-black  text-sm  rounded-md pl-10 focus:outline-none 
                 placeholder:text-primary-gray `}
                       />
@@ -115,7 +115,7 @@ const CoachingPanel = ({ coachId, coachings }) => {
                       <label>Coaching State </label>
                       <input
                         readOnly
-                        value={value.state}
+                        value={value?.state}
                         className={`p-3 rounded-md w-full text-black  text-sm  rounded-md pl-10 focus:outline-none 
                 placeholder:text-primary-gray `}
                       />
@@ -126,7 +126,7 @@ const CoachingPanel = ({ coachId, coachings }) => {
                       <label>Coaching Pincode </label>
                       <input
                         readOnly
-                        value={value.pinCode}
+                        value={value?.pinCode}
                         className={`p-3 rounded-md w-full text-black  text-sm  rounded-md pl-10 focus:outline-none 
                 placeholder:text-primary-gray `}
                       />

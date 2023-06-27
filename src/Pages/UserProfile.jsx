@@ -105,7 +105,7 @@ function UserProfile() {
                               : "px-3"
                           }
                         >
-                          {value.title}
+                          {value?.title}
                         </span>
                       )}
                     </Tab>
@@ -165,7 +165,7 @@ const ProfilePanel = ({ athlete, postFeed }) => {
                       {Reviews?.getTop4Reviews?.map((value, index) => (
                         <Link
                           index={index}
-                          to={`/coach/${value.id}`}
+                          to={`/coach/${value?.id}`}
                           className="flex items-center  gap-4"
                         >
                           <img
@@ -176,10 +176,10 @@ const ProfilePanel = ({ athlete, postFeed }) => {
                           />
                           <div>
                             <h3 className="mb-1 text-xl font-bold ">
-                              {value.firstName}&nbsp;{value.lastName}{" "}
+                              {value?.firstName}&nbsp;{value?.lastName}{" "}
                             </h3>
                             <h5 className="text-xs">
-                              {value.coachingLocation[0].city}
+                              {value?.coachingLocation[0]?.city}
                             </h5>
                           </div>{" "}
                         </Link>
@@ -205,7 +205,7 @@ const ProfilePanel = ({ athlete, postFeed }) => {
                   }}
                   validate={(values) => {
                     const errors = {};
-                    if (!values.message) {
+                    if (!values?.message) {
                       errors.message = "Message is required";
                     }
                     return errors;
@@ -214,7 +214,7 @@ const ProfilePanel = ({ athlete, postFeed }) => {
                     setTimeout(() => {
                       postFeed({
                         variables: {
-                          post: values.message,
+                          post: values?.message,
                           athleteId: athlete?.id,
                           postBy: "athlete",
                         },
@@ -419,7 +419,7 @@ const SettingPanel = ({ editAthlete, athleteId, athlete }) => {
                       type="text"
                       name="firstName"
                       onChange={formik.handleChange}
-                      value={formik.values.firstName}
+                      value={formik.values?.firstName}
                       onBlur={formik.handleBlur}
                       className={`p-3 rounded-md w-full  text-sm  rounded-md focus:outline-none 
               placeholder:text-primary-gray `}
@@ -440,7 +440,7 @@ const SettingPanel = ({ editAthlete, athleteId, athlete }) => {
                       name="lastName"
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
-                      value={formik.values.lastName}
+                      value={formik.values?.lastName}
                       className={`p-3 rounded-md w-full  text-sm  rounded-md  focus:outline-none 
               placeholder:text-primary-gray `}
                       placeholder="last name"
@@ -459,7 +459,7 @@ const SettingPanel = ({ editAthlete, athleteId, athlete }) => {
                       type="text"
                       name="game"
                       onChange={formik.handleChange}
-                      value={formik.values.game}
+                      value={formik.values?.game}
                       onBlur={formik.handleBlur}
                       className={`p-3 rounded-md w-full  text-sm  rounded-md  focus:outline-none 
               placeholder:text-primary-gray `}
@@ -551,41 +551,43 @@ const BookingPanel = ({ bookings }) => {
                       <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                         <Link
                           className="flex items-center "
-                          to={"/coach/" + value.coach.id}
+                          to={"/coach/" + value?.coach?.id}
                         >
                           <div className="flex-shrink-0 w-10 h-10">
                             <img
                               className="w-full h-full rounded-full object-cover "
-                              src={value.coach.profilePicture}
+                              src={value?.coach?.profilePicture}
                               onError={imageOnError}
                               alt=""
                             />
                           </div>
                           <div className="ml-3 text-gray-900 ">
-                            {value.coach.firstName + " " + value.coach.lastName}
+                            {value?.coach?.firstName +
+                              " " +
+                              value?.coach?.lastName}
                           </div>
                         </Link>
                       </td>
                       <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                         <p className="text-gray-900 whitespace-no-wrap">
-                          ${value.sessionPlan?.price}
+                          ${value?.sessionPlan?.price}
                         </p>
                         <p className="text-gray-600 whitespace-no-wrap">USD</p>
                       </td>
                       <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                         <p className="text-gray-900 whitespace-no-wrap">
-                          {moment(value.sessionPlan?.createdAt).format("LL")}
+                          {moment(value?.sessionPlan?.createdAt).format("LL")}
                         </p>
                       </td>
                       <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                         <p className="text-gray-900 whitespace-no-wrap">
-                          {value.sessionPlan?.duration > 1
-                            ? moment(value.startTime, ["HH"]).format("hh A") +
+                          {value?.sessionPlan?.duration > 1
+                            ? moment(value?.startTime, ["HH"]).format("hh A") +
                               " - " +
                               moment
                                 .utc(
                                   value?.startTime +
-                                    value.sessionPlan?.duration,
+                                    value?.sessionPlan?.duration,
                                   ["HH"]
                                 )
                                 .format("hh A")
@@ -593,11 +595,11 @@ const BookingPanel = ({ bookings }) => {
                         </p>
                       </td>
                       <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                        {moment.utc(value.sessionDate).format("LL")}
+                        {moment.utc(value?.sessionDate).format("LL")}
                       </td>
                       <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm text-right">
                         {" "}
-                        <ReviewModal sessionId={value.id} />
+                        <ReviewModal sessionId={value?.id} />
                       </td>
                     </tr>
                   ))}

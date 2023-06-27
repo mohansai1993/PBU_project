@@ -305,9 +305,10 @@ const CoachCard = ({ value }) => {
               <div className="flex text-white items-center gap-3">
                 <IoLocationSharp />{" "}
                 <span className="clamp-1">
-                  {" "}
-                  {value?.coachingLocation[0]?.street},{" "}
-                  {value?.coachingLocation[0]?.city},
+                  {value?.coachingLocation[0]?.street &&
+                    value?.coachingLocation[0]?.street + ","}
+                  {value?.coachingLocation[0]?.street &&
+                    value?.coachingLocation[0]?.city + ","}
                   {value?.coachingLocation[0]?.pinCode}
                 </span>
               </div>

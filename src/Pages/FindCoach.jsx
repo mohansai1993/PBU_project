@@ -18,7 +18,7 @@ function FindCoach() {
             </h3>
             <div className="grid  md:grid-cols-2 gap-4">
               {coaches?.getCoaches?.map((value, index) => (
-                <Link to={"/coach/" + value.id}>
+                <Link to={"/coach/" + value?.id}>
                   <CoachCard key={index} value={value} index={index} />
                 </Link>
               ))}
@@ -45,7 +45,7 @@ const CoachCard = ({ value, index }) => {
       >
         <div className="">
           <img
-            src={value.profilePicture}
+            src={value?.profilePicture}
             onError={imageOnError}
             className="object-cover w-full rounded-xl h-[200px] "
             alt=""
@@ -53,19 +53,19 @@ const CoachCard = ({ value, index }) => {
         </div>
         <div className="text-white flex flex-col gap-3 col-span-2 ">
           <h4 className="text-2xl font-bold ">
-            {value.firstName + " " + value.lastName}
+            {value?.firstName + " " + value?.lastName}
           </h4>
           <h5 className="text-primary-green capitalize font-semibold ">
             ready to complete training
           </h5>
           <div className="flex ">
             <div className="flex  items-center  ">
-              {Array(parseInt(value.averageRating)).fill(
+              {Array(parseInt(value?.averageRating)).fill(
                 <span>
                   <AiFillStar size={25} className="text-yellow-400" />
                 </span>
               )}
-              {Array(5 - parseInt(value.averageRating)).fill(
+              {Array(5 - parseInt(value?.averageRating)).fill(
                 <div>
                   <AiFillStar
                     size={25}
@@ -76,10 +76,10 @@ const CoachCard = ({ value, index }) => {
               )}
             </div>
             <span className="text-[10px]  items-center flex ml-2">
-              ({value.totalReviews} Reviews)
+              ({value?.totalReviews} Reviews)
             </span>
           </div>
-          <p className="line-clamp-3">{value.about}</p>
+          <p className="line-clamp-3">{value?.about}</p>
         </div>
       </div>
     </>

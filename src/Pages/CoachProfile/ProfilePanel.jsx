@@ -105,7 +105,7 @@ const ProfilePanel = ({ couch, postFeed }) => {
                 {Reviews?.getTop4Reviews?.map((value, index) => (
                   <Link
                     index={index}
-                    to={`/coach/${value.id}`}
+                    to={`/coach/${value?.id}`}
                     className="flex items-center  gap-4"
                   >
                     <img
@@ -116,10 +116,10 @@ const ProfilePanel = ({ couch, postFeed }) => {
                     />
                     <div>
                       <h3 className="mb-1 text-xl font-bold ">
-                        {value.firstName}&nbsp;{value.lastName}{" "}
+                        {value?.firstName}&nbsp;{value?.lastName}{" "}
                       </h3>
                       <h5 className="text-xs">
-                        {value.coachingLocation[0].city}
+                        {value?.coachingLocation[0]?.city}
                       </h5>
                     </div>{" "}
                   </Link>
@@ -141,7 +141,7 @@ const ProfilePanel = ({ couch, postFeed }) => {
                 }}
                 validate={(values) => {
                   const errors = {};
-                  if (!values.message) {
+                  if (!values?.message) {
                     errors.message = "Message is required";
                   }
                   return errors;
@@ -152,7 +152,7 @@ const ProfilePanel = ({ couch, postFeed }) => {
                     console.log(values);
                     postFeed({
                       variables: {
-                        post: values.message,
+                        post: values?.message,
                         coachId: couch?.id,
                         postBy: "coach",
                       },

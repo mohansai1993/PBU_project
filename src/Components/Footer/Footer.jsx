@@ -47,11 +47,6 @@ function Footer() {
                         Find a Coach
                       </Link>
                     </li>
-                    <li>
-                      <Link to="/become/coach" className="hover:underline">
-                        Become a Coach
-                      </Link>
-                    </li>
                   </ul>
                 </div>
                 <div>
