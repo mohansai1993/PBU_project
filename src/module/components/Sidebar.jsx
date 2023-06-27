@@ -5,7 +5,7 @@ const Sidebar = ({ userList, handlePersonChat, setAthleteProfile }) => {
   const [selectUser, setSelectUser] = useState(userList?.chats[0]?.athlete?.id);
 
   return (
-    <div className="bg-transparent min-w-[300px] p-2 ">
+    <div className="bg-transparent min-w-[300px] p-2 overflow-y-scroll h-[450px] ">
       {userList?.chats?.map((user) => (
         <div
           onClick={() => {

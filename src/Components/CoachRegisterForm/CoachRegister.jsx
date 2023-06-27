@@ -40,7 +40,7 @@ let formInitialValues = {
   firstName: "Ritik ",
   lastName: "Chhipa",
   email: "ritikus@gmail.com",
-  password: "123456789",
+  password: "12346789",
   countryCode: 1,
   number: 91001586400,
   googleId: null,

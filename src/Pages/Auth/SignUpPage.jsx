@@ -47,7 +47,7 @@ function SignUpPage() {
                   </div>
                   <div>
                     <div
-                      onClick={() => handleGoogleSignIn(false)}
+                      onClick={() => handleGoogleSignIn({ isLogin: false })}
                       className="rounded-md bg-white cursor-pointer  w-full text-primary-green text-center  py-3 my-4"
                     >
                       Register With Google

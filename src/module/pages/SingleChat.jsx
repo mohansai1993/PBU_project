@@ -236,6 +236,7 @@ function SingleChat({ couch }) {
                                       </span>
                                     </div>
                                   </div>
+                                  {console.log(currentUser)}
                                   <img
                                     src={currentUser.profilePicture}
                                     onError={imageOnError}

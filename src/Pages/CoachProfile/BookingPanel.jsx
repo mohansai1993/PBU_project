@@ -93,7 +93,7 @@ function BookingPanel({ booking }) {
                       <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                         <div class="flex items-center gap-2 px-5 py-5  bg-white text-sm ">
                           <img
-                            src="http://192.168.1.49:5000/public/uploads/2023-6-9_10-25-44_logo.cbf974fe515c47155956.png"
+                            src={booking?.athlete?.profilePicture}
                             class="rounded-md h-[50px] w-[50px] object-cover"
                             alt=""
                           ></img>
@@ -108,10 +108,6 @@ function BookingPanel({ booking }) {
                         <button
                           className="gap-2 px-3 bg-primary-green text-white py-3 rounded-md min-w-[150px]"
                           onClick={() => {
-                            console.log({
-                              coachId: booking?.coach?.id,
-                              sessionId: booking?.id,
-                            });
                             withdrawSessionAmount({
                               variables: {
                                 coachId: booking?.coach?.id,
@@ -135,7 +131,9 @@ function BookingPanel({ booking }) {
                                   "Success!",
                                   "Withdraw has completed",
                                   "success"
-                                );
+                                ).then(() => {
+                                  window.location.reload();
+                                });
                               }
                             });
                           }}

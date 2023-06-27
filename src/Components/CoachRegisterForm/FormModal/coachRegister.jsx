@@ -68,6 +68,7 @@ export default {
           value: "level3",
         },
       ],
+      requiredErrorMsg: "Level is required",
     },
     experience: {
       name: "experience",

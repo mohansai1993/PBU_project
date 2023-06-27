@@ -136,8 +136,8 @@ const AvaibilityPanel = ({ coachId, openingHours, loading }) => {
         >
           {({ values, handleSubmit, isSubmitting }) => (
             <Form onSubmit={handleSubmit}>
-              <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400 rounded-md">
-                <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+              <table className="w-full text-sm text-left text-gray-500  rounded-md">
+                <thead className="text-xs text-gray-700 uppercase bg-gray-50 ">
                   <tr>
                     <th scope="col" class="px-6 py-3">
                       Day
@@ -152,10 +152,7 @@ const AvaibilityPanel = ({ coachId, openingHours, loading }) => {
                 </thead>
                 <tbody>
                   {Object.entries(values).map(([day, { start, end }]) => (
-                    <tr
-                      key={day}
-                      className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
-                    >
+                    <tr key={day} className="bg-white border-b">
                       <td
                         scope="row"
                         className="px-6 py-4 capitalize text-[#212f48]  text-bold   "

@@ -236,6 +236,7 @@ const Login = gql`
       userType
       token
       userId
+      profilePicture
     }
   }
 `;

@@ -11,6 +11,7 @@ const {
     coachingCountry,
     coachingPinCode,
     coachingStreet,
+    skillLevel,
     experience,
     faqQuestions,
     loginOption,
@@ -26,6 +27,7 @@ export default [
     [firstName.name]: Yup.string().required(`${firstName.requiredErrorMsg}`),
     [lastName.name]: Yup.string().required(`${lastName.requiredErrorMsg}`),
     [email.name]: Yup.string().email().required(`${email.requiredErrorMsg}`),
+    [password.name]: Yup.string().required(`${password.requiredErrorMsg}`),
   }),
 
   Yup.object().shape({
@@ -38,6 +40,7 @@ export default [
     [coachingCountry.name]: Yup.string().required(
       `${coachingCountry.requiredErrorMsg}`
     ),
+    [skillLevel.name]: Yup.string().required(`${skillLevel.requiredErrorMsg}`),
     [coachingStreet.name]: Yup.string().required(
       `${coachingStreet.requiredErrorMsg}`
     ),

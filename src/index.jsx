@@ -15,7 +15,7 @@ import { setContext } from "@apollo/client/link/context";
 
 const httpLink = createHttpLink({
   // uri: "http://192.168.1.49:5000/graphql", // Replace with your GraphQL server endpoint
-  uri: "https://pballu.com/graphql",
+  uri: "https://api.pballu.com/graphql",
 });
 
 const authLink = setContext((_, { headers }) => {
