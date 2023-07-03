@@ -63,8 +63,8 @@ function HomePage() {
         >
           <div className="max-w-2xl  mx-auto ">
             <h1 className="text-5xl capitalize mb-16 font-semibold leading-tight  text-white  tracking-wide">
-              Find <span className="text-primary-green">PBU</span> Coach
-              <br></br>Near You ...
+              Find <span className="text-primary-green">PBallU</span> Coach
+              <br></br>Near You
             </h1>
 
             {/* Form Container */}
@@ -97,7 +97,7 @@ function HomePage() {
                   </div>
                   <div>
                     <div className="flex justify-between  items-center flex-wrap ">
-                      <label>Search Coach by Pin Code:</label>
+                      <label>Search Coach by Zip Code:</label>
                       <div className="relative text-gray-600 rounded-md ">
                         <span className="absolute bg-primary-gray-light inset-y-0 left-0 flex items-center px-1 ">
                           <IoNavigate

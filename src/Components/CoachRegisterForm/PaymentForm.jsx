@@ -12,6 +12,8 @@ function PaymentForm(props) {
     <div>
       {" "}
       <div className="w-full my-10">
+        {" "}
+        <h1 className="font-semibold text-2xl my-10 ">Choose Your Plan</h1>
         <div className="grid  grid-cols-3 gap-3">
           {plans?.map((value, index) => (
             <div key={index}>
@@ -27,14 +29,14 @@ function PaymentForm(props) {
                     className="text-primary-green "
                     size={20}
                   />{" "}
-                  You Keep ${plans[index]?.sessionRate}% of Session Rate
+                  You Keep {plans[index]?.sessionRate}% of Session Rate
                 </li>{" "}
                 <li className="flex items-center gap-2 ">
                   <IoIosArrowDroprightCircle
                     className="text-primary-green "
                     size={20}
                   />{" "}
-                  ${plans[index]?.platformFee}% PBU fee
+                  {plans[index]?.platformFee}% PBU fee
                 </li>{" "}
                 <li className="flex items-center gap-2 ">
                   <IoIosArrowDroprightCircle

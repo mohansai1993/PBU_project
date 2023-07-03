@@ -1,5 +1,4 @@
 import React from "react";
-import bg_01 from "../assets/bg-01.png";
 import { IoIosArrowDroprightCircle } from "react-icons/io";
 import { Link } from "react-router-dom";
 function BecomeCoach() {
@@ -24,8 +23,12 @@ function BecomeCoach() {
           </p>
         </div>
         <div className="container">
-          <div className="flex">
-            <img src="https://img.freepik.com/free-photo/paralyzed-asian-employee-working-call-center-reception-disability-friendly-office-female-operator-wheelchair-user-with-impairment-giving-assistance-customer-service-helpline_482257-43001.jpg" />
+          <div className="flex flex-col md:flex-row">
+            <img
+              alt="image"
+              className="object-cover"
+              src="https://img.freepik.com/free-photo/paralyzed-asian-employee-working-call-center-reception-disability-friendly-office-female-operator-wheelchair-user-with-impairment-giving-assistance-customer-service-helpline_482257-43001.jpg"
+            />
             <div className="bg-white p-4 rounded-md">
               <h3 className="text-2xl font-bold  py-5">
                 PBU&nbsp;<span className="text-primary-green">Provides</span>

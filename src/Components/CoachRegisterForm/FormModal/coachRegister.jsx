@@ -41,8 +41,8 @@ export default {
     },
     coachingPinCode: {
       name: "coachingPinCode",
-      label: "Pincode",
-      requiredErrorMsg: "Pincode is required",
+      label: "Zip code",
+      requiredErrorMsg: "Zip Code is required",
     },
 
     coachingStreet: {
@@ -72,12 +72,12 @@ export default {
     },
     experience: {
       name: "experience",
-      label: "How many years of experience",
+      label: "Years of experience",
       requiredErrorMsg: "experience is required",
     },
     document: {
       name: "document",
-      label: "Upload document ",
+      label: "Upload Proof of Certification (if certified)",
     },
 
     faqQuestions: [

@@ -17,8 +17,8 @@ const SettingPanel = ({ editCoach, coachId, couch }) => {
     state: Yup.string().required(" State is required"),
     country: Yup.string().required(" Country is required"),
     pinCode: Yup.string()
-      .matches(/^\d+$/, " Pincode not correct")
-      .required(" Pincode is required"),
+      .matches(/^\d+$/, " Zip Code not correct")
+      .required(" Zip Code is required"),
     street: Yup.string().required(" Street is required"),
     about: Yup.string().required("About is required"),
   });
@@ -232,7 +232,7 @@ const SettingPanel = ({ editCoach, coachId, couch }) => {
         </div>
         <div className="flex flex-col gap-3">
           <div>
-            <label> Pincode </label>
+            <label> Zip Code </label>
           </div>
           <div className="relative text-gray-600 rounded-md ">
             <span className="absolute bg-primary-gray-light inset-y-0 left-0 flex items-center px-1 ">
@@ -247,7 +247,7 @@ const SettingPanel = ({ editCoach, coachId, couch }) => {
                 value={formik.values.pinCode}
                 className={`p-3 rounded-md w-full  text-sm  rounded-md pl-10 focus:outline-none 
                 placeholder:text-primary-gray `}
-                placeholder=" Pincode"
+                placeholder="Zip Code"
               />
               <ErrorPrint value={"pinCode"} />
             </div>

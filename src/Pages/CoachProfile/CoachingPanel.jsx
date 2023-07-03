@@ -38,8 +38,8 @@ const CoachingPanel = ({ coachId, coachings }) => {
         coachingState: Yup.string().required("State is required"),
         coachingCountry: Yup.string().required("Country is required"),
         coachingPinCode: Yup.string()
-          .matches(/^\d+$/, "Pincode not correct")
-          .required("Pincode is required"),
+          .matches(/^\d+$/, "Zip Code not correct")
+          .required("Zip Code  is required"),
       })
     ),
   });
@@ -123,7 +123,7 @@ const CoachingPanel = ({ coachId, coachings }) => {
                   </div>
                   <div className="flex flex-col gap-3">
                     <div>
-                      <label>Coaching Pincode </label>
+                      <label>Coaching Zip Code </label>
                       <input
                         readOnly
                         value={value?.pinCode}

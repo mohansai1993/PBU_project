@@ -40,8 +40,13 @@ function Header() {
         <div className="">
           <div className=" bg-primary-black px-3">
             <div className=" container relative  py-4 flex justify-end ">
-              <img className="left-0 max-w-[100px] top-0 absolute" src={logo} />
-
+              <Link to="/">
+                <img
+                  alt="logo"
+                  className="left-0 max-w-[100px] top-0 absolute"
+                  src={logo}
+                />
+              </Link>
               <span
                 className="flex cursor-pointer  md:hidden"
                 onClick={() => setOpen(!Open)}
@@ -117,26 +122,41 @@ function Header() {
           >
             <div>
               <nav className="">
-                {ROUTER.map((links, index) => (
-                  <div className="py-3">
-                    <Link
-                      onClick={() => setOpen(false)}
-                      className="px-4 hover:text-primary-green  text-white py-2 hover:text-[#4BFD00]"
-                      to={links.link}
-                      key={index}
-                    >
-                      {links.title}
-                    </Link>
-                  </div>
-                ))}
+                {ROUTER.map(
+                  (links, index) =>
+                    !links.isShow && (
+                      <div className="py-3">
+                        <Link
+                          onClick={() => setOpen(false)}
+                          className="px-4 hover:text-primary-green  text-white py-2 hover:text-[#4BFD00]"
+                          to={links.link}
+                          key={index}
+                        >
+                          {links.title}
+                        </Link>
+                      </div>
+                    )
+                )}
                 <div className="py-3">
-                  <Link
-                    onClick={() => setOpen(false)}
-                    className="px-4 hover:text-primary-green  text-white py-2 hover:text-[#4BFD00]"
-                    to={"/coach"}
-                  >
-                    Profile
-                  </Link>
+                  {currentUser ? (
+                    currentUser.userType === "athlete" ? (
+                      <Link
+                        onClick={() => setOpen(false)}
+                        className="px-4 text-white py-2 hover:text-[#4BFD00]"
+                        to={`/profile/athlete/${currentUser?.userId}`}
+                      >
+                        Athlete Profile
+                      </Link>
+                    ) : (
+                      <Link
+                        onClick={() => setOpen(false)}
+                        className="px-4 text-white py-2 hover:text-[#4BFD00]"
+                        to={`/profile/coach/${currentUser?.userId}`}
+                      >
+                        Coach Profile
+                      </Link>
+                    )
+                  ) : null}
                 </div>
               </nav>
             </div>{" "}
