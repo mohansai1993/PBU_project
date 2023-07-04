@@ -41,7 +41,7 @@ export default {
     },
     coachingPinCode: {
       name: "coachingPinCode",
-      label: "Zip code",
+      label: "Zip Code",
       requiredErrorMsg: "Zip Code is required",
     },
 

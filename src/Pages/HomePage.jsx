@@ -46,7 +46,7 @@ function HomePage() {
         setCoaches([]);
         Swal.fire({
           title: "Warning",
-          text: "Please enter coach name or Zip code",
+          text: "Please enter coach name or Zip Code",
           icon: "warning",
           confirmButtonText: "Cancel",
         });

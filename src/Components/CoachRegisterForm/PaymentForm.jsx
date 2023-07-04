@@ -10,11 +10,9 @@ function PaymentForm(props) {
   console.log(plans);
   return (
     <div>
-      {" "}
       <div className="w-full my-10">
-        {" "}
         <h1 className="font-semibold text-2xl my-10 ">Choose Your Plan</h1>
-        <div className="grid  grid-cols-3 gap-3">
+        <div className="grid  md:grid-cols-3 gap-3">
           {plans?.map((value, index) => (
             <div key={index}>
               <h3 className="text-xl  font-bold  ">
