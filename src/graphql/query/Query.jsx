@@ -321,8 +321,24 @@ const LoginExpressDashboard = gql`
     loginExpressDashboard(coachId: $coachId)
   }
 `;
+
+const GetCoachesByLocation = gql`
+  query GetCoachesByLocation($location: LocationInput) {
+    getCoachesByLocation(location: $location) {
+      lastName
+      firstName
+      id
+      profilePicture
+      about
+      averageRating
+      distance
+      totalReviews
+    }
+  }
+`;
 export {
   GetFeeds,
+  GetCoachesByLocation,
   Couch,
   Couches,
   Athlete,

@@ -1,13 +1,63 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { AiFillStar } from "react-icons/ai";
-import { useQuery } from "@apollo/client";
-import { Couches } from "../graphql/query/Query";
+import { useLazyQuery, useQuery } from "@apollo/client";
+import { Couches, GetCoachesByLocation } from "../graphql/query/Query";
 import { Link } from "react-router-dom";
-import Default from "../assets/default.png";
 import { imageOnError } from "../utils";
+
 function FindCoach() {
-  let { data: coaches } = useQuery(Couches);
-  console.log(coaches);
+  const [coaches, setCoaches] = useState([]);
+  const [isLocation, setIsLocation] = useState(false);
+  let [getCoachesByLocation] = useLazyQuery(GetCoachesByLocation);
+
+  useEffect(() => {
+    const success = (position) => {
+      const latitude = position?.coords?.latitude;
+      const longitude = position?.coords?.longitude;
+      getCoachesByLocation({
+        variables: {
+          location: { latitude, longitude },
+        },
+      })
+        .then((value) => {
+          setCoaches(value?.data?.getCoachesByLocation);
+          setIsLocation(true);
+        })
+        .catch(() => {
+          setCoaches([]);
+        });
+    };
+
+    const error = () => {
+      getCoachesByLocation({
+        variables: {
+          location: null,
+        },
+      })
+        .then((value) => {
+          setCoaches(value?.data?.getCoachesByLocation);
+        })
+        .catch(() => {
+          setCoaches([]);
+        });
+      setIsLocation(false);
+      console.log("Unable to retrieve your location");
+    };
+
+    if (navigator.geolocation) {
+      const intervalId = setInterval(() => {
+        navigator.geolocation.getCurrentPosition(success, error);
+      }, 3000);
+
+      return () => {
+        clearInterval(intervalId);
+      };
+    } else {
+      setIsLocation(false);
+      console.log("Geolocation is not supported by this browser.");
+    }
+  }, []);
+
   return (
     <div className="bg-[#152033] ">
       <div className="container">
@@ -17,9 +67,14 @@ function FindCoach() {
               Coach <span className="text-primary-green">Near by You</span>
             </h3>
             <div className="grid  md:grid-cols-2 gap-4">
-              {coaches?.getCoaches?.map((value, index) => (
+              {coaches?.map((value, index) => (
                 <Link to={"/coach/" + value?.id}>
-                  <CoachCard key={index} value={value} index={index} />
+                  <CoachCard
+                    key={index}
+                    value={value}
+                    index={index}
+                    isLocation={isLocation}
+                  />
                 </Link>
               ))}
             </div>
@@ -36,7 +91,7 @@ function FindCoach() {
   );
 }
 
-const CoachCard = ({ value, index }) => {
+const CoachCard = ({ value, index, isLocation }) => {
   return (
     <>
       <div
@@ -56,7 +111,10 @@ const CoachCard = ({ value, index }) => {
             {value?.firstName + " " + value?.lastName}
           </h4>
           <h5 className="text-primary-green capitalize font-semibold ">
-            ready to complete training
+            ready to complete training{" "}
+            {isLocation &&
+              value?.distance &&
+              `(${parseInt(value?.distance)} Kms away)`}
           </h5>
           <div className="flex ">
             <div className="flex  items-center  ">
