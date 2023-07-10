@@ -15,6 +15,9 @@ const {
     experience,
     faqQuestions,
     loginOption,
+    document,
+    areYouCertified,
+    faq2Text,
   },
 } = coachRegisterFormModel;
 
@@ -53,13 +56,24 @@ export default [
       .min(1)
       .max(100)
       .required(`${experience.requiredErrorMsg}`),
+    [areYouCertified.name]: Yup.string().required(
+      `${areYouCertified.requiredErrorMsg}`
+    ),
+    [document.name]: Yup.string().when("areYouCertified", {
+      is: (val) => val === "yes",
+      then: () => Yup.string().required(`${document.requiredErrorMsg}`),
+    }),
   }),
   Yup.object().shape({
     [faqQuestions[0].name]: Yup.string().oneOf(["yes", "no"]).required(),
     [faqQuestions[1].name]: Yup.string().oneOf(["yes", "no"]).required(),
     [faqQuestions[2].name]: Yup.string().oneOf(["yes", "no"]).required(),
     [faqQuestions[3].name]: Yup.string().oneOf(["yes", "no"]).required(),
-    [faqQuestions[4].name]: Yup.string().oneOf(["yes", "no"]).required(),
+    [faq2Text.name]: Yup.string().when(faqQuestions[0].name, {
+      is: (val) => val === "yes",
+      then: () =>
+        Yup.string().min(100).required(`${faq2Text.requiredErrorMsg}`),
+    }),
   }),
 
   Yup.object().shape({

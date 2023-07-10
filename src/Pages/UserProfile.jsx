@@ -154,7 +154,7 @@ const ProfilePanel = ({ athlete, postFeed }) => {
       <div className="">
         <div className="container mx-auto px-4 sm:px-8">
           <div className="md:flex text-white gap-5">
-            <div className="flex-[0.4]">
+            <div className="flex-1">
               <div className="bg-[#212F48] p-6 rounded-2xl mt-6">
                 {" "}
                 {athlete ? (
@@ -191,7 +191,7 @@ const ProfilePanel = ({ athlete, postFeed }) => {
                 )}
               </div>
             </div>
-            <div className="flex-[0.6] mt-6">
+            {/* <div className="flex-[0.6] mt-6">
               <div className="flex items-start  gap-4 bg-[#212F48] p-6 rounded-2xl  mb-6">
                 <img
                   src={athlete?.profilePicture}
@@ -260,14 +260,13 @@ const ProfilePanel = ({ athlete, postFeed }) => {
                     </Form>
                   )}
                 </Formik>
-              </div>
+              </div> */}
 
-              {/* //Message  */}
-              <div className="grid gap-4">
-                {athlete?.feed?.map((feed, index) => (
-                  <div className="   bg-[#212F48] p-6 rounded-2xl " key={index}>
-                    {console.log(feed)}
-                    <div className="flex  justify-between w-full">
+            {/* //Message  */}
+            {/* <div className="grid gap-4"> */}
+            {/* {athlete?.feed?.map((feed, index) => (
+                  <div className="   bg-[#212F48] p-6 rounded-2xl " key={index}> */}
+            {/* <div className="flex  justify-between w-full">
                       <div className="flex  gap-3">
                         <img
                           src={athlete?.profilePicture}
@@ -279,7 +278,7 @@ const ProfilePanel = ({ athlete, postFeed }) => {
                           <h3 className="text-xl">
                             {athlete?.firstName + " " + athlete?.lastName}
                           </h3>
-                          {console.log(athlete)}
+
                           <h3 className="text-sm">{athlete?.game}</h3>
                         </div>
                       </div>
@@ -303,19 +302,18 @@ const ProfilePanel = ({ athlete, postFeed }) => {
                             .catch(() => {});
                         }}
                       />
-                    </div>
-                    <div>
+                    </div> */}
+            {/* <div>
                       <p className="py-4">{feed?.post}</p>
                       <div className="flex justify-between text-primary-green ">
                         <span>{moment(feed?.updatedAt).format("LLL")}</span>
-                        {/* <span>Book Now</span> */}
                       </div>
                     </div>
-                  </div>
-                ))}
-              </div>
-            </div>
+                  </div> */}
+
+            {/* </div> */}
           </div>
+          {/* </div> */}
         </div>
       </div>
     </>

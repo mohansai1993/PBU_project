@@ -12,8 +12,6 @@ import BecomeCoach from "./Pages/BecomeCoach";
 import CoachDetails from "./Pages/Auth/CoachDetails";
 import PBUFeedPage from "./Pages/CoachProfile/PBUFeedPage";
 import ApplyBecomeCoach from "./Pages/ApplyBecomeCoach";
-import CourtsPage from "./Pages/CourtsPage";
-import FeedPage from "./Pages/FeedPage";
 import UserProfile from "./Pages/UserProfile";
 import ProtectedRoute from "./ProtectedRoute";
 import { AuthContext } from "./context/AuthContext";
@@ -21,6 +19,7 @@ import Success from "./Pages/Checkout/Success";
 import Cancel from "./Pages/Checkout/Cancel";
 import PrivacyPolicy from "./Pages/PrivacyPolicy";
 import TermsConditions from "./Pages/Terms";
+import ErrorPage from "./Pages/404Page";
 
 function App() {
   const { currentUser } = useContext(AuthContext);
@@ -31,8 +30,8 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/find/coach" element={<FindCoach />} />
-        <Route path="/feed" element={<FeedPage />} />
-        <Route path="/courts" element={<CourtsPage />} />
+        {/* <Route path="/feed" element={<FeedPage />} /> */}
+        {/* <Route path="/courts" element={<CourtsPage />} /> */}
         <Route path="/become/coach" element={<BecomeCoach />} />
         {!currentUser && (
           <Route path="/become/coach/apply" element={<ApplyBecomeCoach />} />
@@ -51,14 +50,7 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/privacy" element={<PrivacyPolicy />} />
         <Route path="/terms" element={<TermsConditions />} />
-        <Route
-          path="*"
-          element={
-            <>
-              <div>404 Page</div>
-            </>
-          }
-        />
+        <Route path="*" element={<ErrorPage />} />
       </Routes>
       <Footer />
     </div>

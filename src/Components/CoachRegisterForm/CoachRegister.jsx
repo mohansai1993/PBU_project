@@ -54,9 +54,10 @@ let formInitialValues = {
   coachingStreet: "34, Malviya Nagar",
   experience: 21,
   document: "",
+  areYouCertified: "no",
   //Form 3
-  faq1: "",
   faq2: "",
+  faq2Text: "fgdhfgdjhghsdjfgjh",
   faq3: "",
   faq4: "",
   faq5: "",
@@ -66,7 +67,7 @@ let formInitialValues = {
 const { formId, formField } = coachRegisterFormModel;
 
 function CoachRegister() {
-  const [activeStep, setActiveStep] = useState(0);
+  const [activeStep, setActiveStep] = useState(2);
   const [File, setFile] = useState(null);
   const currentValidationSchema = validationSchema[activeStep];
   const isLastStep = activeStep === steps.length - 1;
@@ -88,7 +89,13 @@ function CoachRegister() {
           />
         );
       case 2:
-        return <FaqQuestionsForm formField={formField} />;
+        return (
+          <FaqQuestionsForm
+            formField={formField}
+            values={values}
+            setFieldValue={setFieldValue}
+          />
+        );
       case 3:
         return (
           <PaymentForm
@@ -110,6 +117,8 @@ function CoachRegister() {
       // var path = await uploadImage(formData);
       // path = path.data?.fileName;
       var path = await uploadImageFirebase(File);
+      console.log(path);
+      actions.setFieldValue("document", path);
     } catch (err) {
       console.log(err);
       path = null;
@@ -121,7 +130,17 @@ function CoachRegister() {
     console.log(values);
     try {
       if (values.loginOption === "password") {
-        let data = await handleRegisterCoach({
+        // let data = await handleRegisterCoach({
+        //   values: {
+        //     ...values,
+        //     coachingPinCode: String(values.coachingPinCode),
+        //     subscriptionPlanId: values.paymentpaln,
+        //     skillLevelId: values.skillLevel,
+        //     experience: Number(values.experience),
+        //     document: path,
+        //   },
+        // });
+        console.log({
           values: {
             ...values,
             coachingPinCode: String(values.coachingPinCode),
@@ -131,7 +150,6 @@ function CoachRegister() {
             document: path,
           },
         });
-        console.log(data);
       } else if (values.loginOption === "google") {
         handleGoogleSignIn({
           values: {

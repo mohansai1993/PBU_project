@@ -18,6 +18,7 @@ function BackgroundInfoForm(props) {
       coachingCountry,
       coachingPinCode,
       coachingStreet,
+      areYouCertified,
     },
     setFile,
   } = props;
@@ -47,7 +48,30 @@ function BackgroundInfoForm(props) {
           ))}
         </SelectField>
         <SelectField
+          name={areYouCertified.name}
+          label={areYouCertified.label}
+          onChange={(e) => {
+            props.setFieldValue(areYouCertified.name, e.target.value);
+          }}
+        >
+          {[
+            {
+              id: "yes",
+              name: "Yes",
+            },
+            {
+              id: "no",
+              name: "No",
+            },
+          ]?.map((value, index) => (
+            <option value={value?.id} key={index}>
+              {value?.name}
+            </option>
+          ))}
+        </SelectField>
+        {/* <SelectField
           value={props.values[coachingCountry.name]}
+          disabled
           onChange={(e) => {
             setCountry(e.target.value);
             console.log(e.target.value);
@@ -64,7 +88,7 @@ function BackgroundInfoForm(props) {
               </option>
             ))}
           </>
-        </SelectField>
+        </SelectField> */}
         <SelectField
           value={props.values[coachingState.name]}
           onChange={(e) => {
@@ -158,6 +182,9 @@ function BackgroundInfoForm(props) {
             placeholder={document.placeholder}
             className="border border-black w-full px-3 py-2 rounded-md h-[40px]"
             type="file"
+            disabled={
+              props.values[areYouCertified.name] === "yes" ? false : true
+            }
             onChange={(e) => {
               setFile(e.target.files[0]);
               console.log(e.target.files[0]);

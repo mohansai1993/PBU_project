@@ -22,17 +22,13 @@ function Header() {
       isShow: currentUser,
     },
     {
-      link: "/courts",
-      title: "Courts",
-    },
-    {
       link: "/about",
       title: "About Us",
     },
-    {
-      link: "/feed",
-      title: "PBU Feed",
-    },
+    // {
+    //   link: "/feed",
+    //   title: "PBU Feed",
+    // },
   ];
   return (
     <>

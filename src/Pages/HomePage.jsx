@@ -3,11 +3,8 @@ import { FiSearch } from "react-icons/fi";
 import { IoNavigate, IoLocationSharp } from "react-icons/io5";
 import { AiFillStar } from "react-icons/ai";
 import bg_01 from "../assets/bg-01.png";
-import Default from "../assets/default.png";
 import Slider from "../Components/Slider/Slider";
-import comm1 from "../assets/community/comm1.jpg";
-import comm2 from "../assets/community/comm2.jpg";
-import comm3 from "../assets/community/comm3.jpg";
+
 import { useFormik } from "formik";
 import { useLazyQuery, useQuery } from "@apollo/client";
 import { Couches, GetTop4Reviews } from "../graphql/query/Query";
@@ -199,7 +196,7 @@ function HomePage() {
       </div>
 
       {/* //Community */}
-      <div className="bg-[#40C20936]   pb-16">
+      {/* <div className="bg-[#40C20936]   pb-16">
         <div className="container">
           <div>
             <h1 className="text-6xl font-bold  pt-16 pb-5">
@@ -231,7 +228,7 @@ function HomePage() {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
 
       {/* Reviews */}
       <div className="bg-[#E3E3E3]   pb-16">

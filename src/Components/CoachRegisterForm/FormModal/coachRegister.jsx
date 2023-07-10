@@ -50,6 +50,11 @@ export default {
       label: "Street",
       requiredErrorMsg: "Street is required",
     },
+    areYouCertified: {
+      name: "areYouCertified",
+      label: "Are You Certified?",
+      requiredErrorMsg: "Option is required",
+    },
 
     skillLevel: {
       name: "skillLevel",
@@ -78,34 +83,36 @@ export default {
     document: {
       name: "document",
       label: "Upload Proof of Certification (if certified)",
+      requiredErrorMsg: "Document is is required",
+    },
+    faq2Text: {
+      name: "faq2Text",
+      label: "Please Explain",
+      requiredErrorMsg: "You need to explain",
     },
 
     faqQuestions: [
       {
-        name: "faq1",
-        label: "Are you certified instructor? ",
-        requiredErrorMsg: "required",
-      },
-      {
         name: "faq2",
-        label: "Do You have criminal Record? ",
+        label: "Do You have criminal Record? *",
+        isText: true,
         requiredErrorMsg: "required",
       },
       {
         name: "faq3",
         label:
-          "You are responsible for the athletes you train and are liable if they get injured while you are training them",
+          "PBallU is not liable for costs associated with any injuries that occur during the time you are training them. You are liable to ensure the health and safety of anyone you train. Do you understand?*",
         requiredErrorMsg: "required",
       },
       {
         name: "faq4",
         label:
-          "All sessions with clients must be booked through PBU.Failure to adhere to this will lead to your coaching account terminated on PBU and both of us missing put on an profitable partnership.Will you are adhere to this principal?",
+          "All sessions with clients must be booked through PBallU.Failure to adhere to this will lead to your coaching account terminated on PBallU and both of us missing put on an profitable partnership. Will you are adhere to this principal?*",
         requiredErrorMsg: "required",
       },
       {
         name: "faq5",
-        label: "I have answered all questions honestly.",
+        label: "I have answered all questions honestly.*",
         requiredErrorMsg: "required",
       },
     ],

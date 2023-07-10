@@ -3,8 +3,9 @@ import React from "react";
 
 function FaqQuestionsForm(props) {
   const {
-    formField: { faqQuestions },
+    formField: { faqQuestions, faq2Text },
   } = props;
+
   return (
     <div>
       <div className="w-full">
@@ -41,11 +42,33 @@ function FaqQuestionsForm(props) {
                   No
                 </div>
               </label>
+
               <ErrorMessage
                 name={question.name}
                 component="div"
                 className="text-red-500"
               />
+            </div>
+            <div>
+              {question?.isText &&
+                props.values[faqQuestions[index].name] === "yes" && (
+                  <>
+                    <textarea
+                      placeholder="Please Explain"
+                      name="faq2Text"
+                      value={props.values[faq2Text.name]}
+                      className="w-full border p-2  rounded-md"
+                      onChange={(e) => {
+                        props.setFieldValue(faq2Text.name, e.target.value);
+                      }}
+                    ></textarea>
+                    <ErrorMessage
+                      name={faq2Text.name}
+                      component="div"
+                      className="text-red-500"
+                    />
+                  </>
+                )}
             </div>
           </div>
         ))}
