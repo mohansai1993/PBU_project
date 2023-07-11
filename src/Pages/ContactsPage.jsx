@@ -1,7 +1,13 @@
+import { useLazyQuery } from "@apollo/client";
 import React from "react";
 import { IoMail } from "react-icons/io5";
 import { MdCallEnd } from "react-icons/md";
+import { SendMail } from "../graphql/query/Query";
+import { ErrorMessage, Field, Form, Formik } from "formik";
+import * as Yup from "yup";
+import Swal from "sweetalert2";
 function ContactsPage() {
+  const [sendMail] = useLazyQuery(SendMail);
   const contact = [
     {
       title: "Email Us",
@@ -42,59 +48,100 @@ function ContactsPage() {
               Got a technical issue? Want to send feedback about a beta feature?
               Need details about our Business plan? Let us know.
             </p>
-            <form action="#" className="space-y-8">
-              <div>
-                <label
-                  htmlFor="email"
-                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300"
-                >
-                  Your email
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light"
-                  placeholder="name@flowbite.com"
-                  required
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="subject"
-                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300"
-                >
-                  Subject
-                </label>
-                <input
-                  type="text"
-                  id="subject"
-                  className="block p-3 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 shadow-sm focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light"
-                  placeholder="Let us know how we can help you"
-                  required
-                />
-              </div>
-              <div className="sm:col-span-2">
-                <label
-                  htmlFor="message"
-                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400"
-                >
-                  Your message
-                </label>
-                <textarea
-                  id="message"
-                  rows={6}
-                  className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg shadow-sm border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                  placeholder="Leave a comment..."
-                  defaultValue={""}
-                />
-              </div>
-              <button
-                type="submit"
-                className="py-3 px-5 text-sm font-medium text-center text-white rounded-lg bg-primary-700 sm:w-fit hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
-              >
-                Send message
-              </button>
-            </form>
+            <Formik
+              initialValues={{
+                email: "ritikchhipa@gmail.com",
+                firstName: "test",
+                lastName: "test",
+                body: "dfhgdfhgjd",
+              }}
+              className="space-y-8"
+              validationSchema={Yup.object({
+                email: Yup.string()
+                  .email("Invalid email address")
+                  .required("Email is required"),
+                firstName: Yup.string().required("first Name is required"),
+                lastName: Yup.string().required("last Name  is required"),
+                body: Yup.string().required("Comment  is required"),
+              })}
+              onSubmit={(values) => {
+                sendMail({
+                  variables: values,
+                })
+                  .then(() => {
+                    Swal.fire({
+                      title: "Success",
+                      text: "Mail has send successfully",
+                      type: "success",
+                    });
+                  })
+                  .catch((err) => {});
+              }}
+            >
+              {({ handleSubmit }) => (
+                <Form onSubmit={handleSubmit}>
+                  <div>
+                    <label
+                      htmlFor="email"
+                      className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+                    >
+                      Your email
+                    </label>
+                    <Field
+                      name="email"
+                      type="email"
+                      className="block p-3 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 shadow-sm focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light"
+                      placeholder="Let us know how we can help you"
+                    />
+                    <ErrorMessage name="email" />
+                  </div>
+                  <div>
+                    <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">
+                      First Name
+                    </label>
+                    <Field
+                      name="firstName"
+                      className="block p-3 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 shadow-sm focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light"
+                      placeholder="Let us know how we can help you"
+                    />
+                    <ErrorMessage name="firstName" />
+                  </div>{" "}
+                  <div>
+                    <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">
+                      Last Name
+                    </label>
+
+                    <Field
+                      name="lastName"
+                      className="block p-3 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 shadow-sm focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light"
+                      placeholder="Let us know how we can help you"
+                    />
+                    <ErrorMessage name="lastName" />
+                  </div>
+                  <div className="sm:col-span-2">
+                    <label
+                      htmlFor="message"
+                      className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400"
+                    >
+                      Your message
+                    </label>
+
+                    <Field
+                      as="textarea"
+                      name="body"
+                      className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg shadow-sm border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                      placeholder="Leave a comment..."
+                    />
+                    <ErrorMessage name="body" className="text-red-500" />
+                  </div>
+                  <div className="flex justify-end my-8">
+                    <button className="bg-primary-green text-white py-1  rounded-md min-w-[150px] h-[50px]">
+                      Send Message
+                    </button>
+                  </div>
+                </Form>
+              )}
+            </Formik>
           </div>
         </section>
         <section className="grid md:grid-cols-2 gap-5 px-5    ">

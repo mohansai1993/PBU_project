@@ -32,7 +32,7 @@ function HomePage() {
           setCoaches(res.data?.getCoaches);
           if (!res.data?.getCoaches.length) {
             Swal.fire({
-              title: "No Coach Found ",
+              title: "Soon coming to your location",
               icon: "success",
               confirmButtonText: "Cancel",
             });

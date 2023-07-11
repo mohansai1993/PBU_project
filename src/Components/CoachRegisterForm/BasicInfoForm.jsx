@@ -35,6 +35,7 @@ function BasicInfoForm(props) {
               name={firstName.name}
               label={firstName.label}
               as={"input"}
+              placeholder="First Name"
               className="border border-black w-full px-3 py-2 rounded-md "
             />
             <ErrorMessage
@@ -47,7 +48,8 @@ function BasicInfoForm(props) {
             <label> {lastName.label}</label>
             <Field
               name={lastName.name}
-              placeholder={lastName.placeholder}
+              // placeholder={lastName.placeholder}
+              placeholder="Last Name"
               as={"input"}
               className="border border-black w-full px-3 py-2 rounded-md "
             />

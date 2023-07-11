@@ -336,6 +336,22 @@ const GetCoachesByLocation = gql`
     }
   }
 `;
+
+const SendMail = gql`
+  query SendMail(
+    $firstName: String
+    $lastName: String
+    $email: String
+    $body: String
+  ) {
+    contactUs(
+      firstName: $firstName
+      lastName: $lastName
+      email: $email
+      body: $body
+    )
+  }
+`;
 export {
   GetFeeds,
   GetCoachesByLocation,
@@ -349,4 +365,5 @@ export {
   CreateConnectedAccount,
   WithdrawSessionAmount,
   LoginExpressDashboard,
+  SendMail,
 };
