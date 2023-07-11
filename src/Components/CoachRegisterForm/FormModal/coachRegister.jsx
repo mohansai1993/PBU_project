@@ -101,13 +101,13 @@ export default {
       {
         name: "faq3",
         label:
-          "PBallU is not liable for costs associated with any injuries that occur during the time you are training them. You are liable to ensure the health and safety of anyone you train. Do you understand?*",
+          "PBallU is not liable for costs associated with any injuries that occur during the time you are training them. You are liable to ensure the health and safety of anyone you train. Do you understand? Our History*",
         requiredErrorMsg: "required",
       },
       {
         name: "faq4",
         label:
-          "All sessions with clients must be booked through PBallU.Failure to adhere to this will lead to your coaching account terminated on PBallU and both of us missing put on an profitable partnership. Will you are adhere to this principal?*",
+          "All sessions with clients must be booked through PBallU. Failure to adhere to this will lead to your coaching account terminated on PBallU and both of us missing put on an profitable partnership. Will you are adhere to this principal? *",
         requiredErrorMsg: "required",
       },
       {

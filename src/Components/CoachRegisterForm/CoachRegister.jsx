@@ -57,7 +57,7 @@ let formInitialValues = {
   areYouCertified: "no",
   //Form 3
   faq2: "",
-  faq2Text: "fgdhfgdjhghsdjfgjh",
+  faq2Text: "",
   faq3: "",
   faq4: "",
   faq5: "",
@@ -67,7 +67,7 @@ let formInitialValues = {
 const { formId, formField } = coachRegisterFormModel;
 
 function CoachRegister() {
-  const [activeStep, setActiveStep] = useState(2);
+  const [activeStep, setActiveStep] = useState(0);
   const [File, setFile] = useState(null);
   const currentValidationSchema = validationSchema[activeStep];
   const isLastStep = activeStep === steps.length - 1;

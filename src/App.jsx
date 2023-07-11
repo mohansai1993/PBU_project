@@ -20,7 +20,7 @@ import Cancel from "./Pages/Checkout/Cancel";
 import PrivacyPolicy from "./Pages/PrivacyPolicy";
 import TermsConditions from "./Pages/Terms";
 import ErrorPage from "./Pages/404Page";
-
+import ContactsPage from "./Pages/ContactsPage";
 function App() {
   const { currentUser } = useContext(AuthContext);
   return (
@@ -47,6 +47,7 @@ function App() {
           </Route>
         </Route>
         <Route path="/register" element={<SignUpPage />} />
+        <Route path="/contact" element={<ContactsPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/privacy" element={<PrivacyPolicy />} />
         <Route path="/terms" element={<TermsConditions />} />

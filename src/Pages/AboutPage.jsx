@@ -102,14 +102,13 @@ function AboutPage() {
               </div>
               <p>
                 <div>
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                  Fugiat nostrum, perspiciatis aliquam quam harum sapiente
-                  libero itaque ex maiores architecto. Ad culpa necessitatibus
-                  omnis! Excepturi impedit consectetur voluptas ducimus nam!
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                  Fugiat nostrum, perspiciatis aliquam quam harum sapiente
-                  libero itaque ex maiores architecto. Ad culpa necessitatibus
-                  omnis! Excepturi impedit consectetur voluptas ducimus nam!
+                  In the summer of 2021, our CEO played pickleball for the first
+                  time. Over the next few years, his love for the game has only
+                  grown. We want the same love we have for pickleball to spread
+                  to as many people as possible, and for people to enjoy this
+                  amazing sport while continuing to improve at it. Become a
+                  coach, or book a session as an athlete and become a part of
+                  the fastest growing sport in America!
                 </div>
               </p>
             </div>

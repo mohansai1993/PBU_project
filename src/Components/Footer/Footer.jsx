@@ -30,11 +30,11 @@ function Footer() {
                         About Us
                       </Link>
                     </li>
-                    {/* <li className="mb-4">
-                      <Link to="/feed" className="hover:underline">
-                        PBU Feeds
+                    <li className="mb-4">
+                      <Link to="/contact" className="hover:underline">
+                        Contact Us
                       </Link>
-                    </li>{" "} */}
+                    </li>{" "}
                   </ul>
                 </div>
                 <div>
